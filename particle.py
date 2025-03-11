@@ -17,3 +17,6 @@ class Particle:
 
     def update_position(self):
         self.position = np.where(self.velocity > 0.5, 1-self.position, self.position)
+
+    def update_velocity(self):
+        pass
