@@ -40,15 +40,22 @@ class PSO:
             for particle in self.particles:
                 fitness = total_carbon_intensity()
 
+                # Update local values
                 if fitness < particle.fitness_best:
                     particle.fitness_best = fitness
                     particle.p_best = particle.position.copy()
 
+                # Update global values
                 if fitness < self.fitness_best:
                     self.fitness_best = fitness
                     self.g_best = particle.position.copy()
 
             # Update position and velocity of each particle
+            for particle in self.particles:
+                particle.update_position()
+                particle.update_velocity()
+
+        return self.g_best
 
 
 
