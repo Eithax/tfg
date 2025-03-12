@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 class Particle:
     def __init__(self, num_links):
@@ -18,5 +19,14 @@ class Particle:
     def update_position(self):
         self.position = np.where(self.velocity > 0.5, 1-self.position, self.position)
 
-    def update_velocity(self):
-        pass
+    def update_velocity(self, g_best, inertia_weight, cognitive_coefficient, social_coefficient):
+        r1 = random.random()
+        r2 = random.random()
+
+        cognitive_influence = cognitive_coefficient * r1 * (self.p_best - self.position)    # Personal influence
+        social_influence = social_coefficient * r2 * (g_best - self.position)               # Swarm/Global influence
+        inertia = inertia_weight * self.velocity
+
+        self.velocity = inertia + cognitive_influence + social_influence
+
+        self.velocity = np.clip(self.velocity, 0, 1)
