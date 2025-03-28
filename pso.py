@@ -23,7 +23,7 @@ class PSO:
         self.topology = np.genfromtxt(filename, delimiter=',')
         print(self.topology)
         print('\n\n\n')
-        self.topology_graph = nx.from_numpy_array(self.topology,  create_using=nx. DiGraph)
+        self.topology_graph = nx.from_numpy_array(self.topology,  create_using=nx.DiGraph)
         path_len = dict(nx.all_pairs_dijkstra_path_length(self.topology_graph))
         path = dict(nx.all_pairs_dijkstra_path(self.topology_graph))
 
