@@ -63,4 +63,6 @@ class PSO:
 
 pso = PSO(12, 37, 24)
 # pso.load_cap_matrix('.\\resources\\topologies\\AbileneCapMatrix.csv')
-pso.create_topology('.\\resources\\topologies\\AbileneCarbonMatrix.csv')
+# pso.create_topology('.\\resources\\topologies\\AbileneCarbonMatrix.csv')
+pso.create_topology('./resources/topologies/AbileneCarbonMatrix.csv')
+pso.evaluate_network(3)
