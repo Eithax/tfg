@@ -16,7 +16,7 @@ import networkx as nx
 - nodes_geoposition: dictionary -> dictionary of dictionaries containing the nodes and their positions (latitude, longitude)
 """
 
-def total_carbon_intensity(num_nodes, num_links, position, carbon_matrix, flow_matrix, nodes_geoposition) -> float:
+def total_carbon_intensity(num_nodes, num_links, position, carbon_matrix, flow_matrix, nodes_geoposition, cap_matrix) -> float:
     nodes_traffic = defaultdict(int)
     lambda_n = (333-187/39600000)   # W/Mbps
 
@@ -30,8 +30,8 @@ def total_carbon_intensity(num_nodes, num_links, position, carbon_matrix, flow_m
                 path = shortest_paths[src][dst]
 
                 if flow_matrix[src][dst] > 0:
-                    for n in path[:1]:
-                        nodes_traffic[n] += flow_matrix[src][dst]
+                    for n in path[1:]:
+                        nodes_traffic[n] += flow_matrix[src][dst] # TODO: comprobar máxima capcidad del enlace. Usar estructura auxiliar antes de sumar
 
     dynamic_power = 0.0
 
@@ -42,4 +42,4 @@ def total_carbon_intensity(num_nodes, num_links, position, carbon_matrix, flow_m
 
 
 
-obtener_carbon_intensity_nodo(33.75, -84.3833)
+#obtener_carbon_intensity_nodo(33.75, -84.3833)
