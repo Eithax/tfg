@@ -3,3 +3,6 @@
 
 # IntelliJ files
 .idea
+
+# MacOS
+.DS_Store
