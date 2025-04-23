@@ -5,6 +5,8 @@ import os
 import pathlib
 import sys
 
+api_token = 'c0b87QU6usPXG8bVavPz'
+
 """
 Obtiene la intensidad de carbono (gCO2/kwh) para una ubicación dada (latitud y longitud).
 
@@ -20,7 +22,7 @@ respuesta: Intensidad de carbono en la ubicación especificada. Devuelve 'No dat
 def obtener_carbon_intensity_nodo(latitud, longitud):
     url_carbon_intensity = f'https://api.electricitymap.org/v3/carbon-intensity/latest?lat={latitud}&lon={longitud}'
     try:
-        respuesta = requests.get(url_carbon_intensity, timeout=10)  # Agregado un timeout de 10 segundos
+        respuesta = requests.get(url_carbon_intensity, headers={"auth-token": api_token}, timeout=10)  # Agregado un timeout de 10 segundos
         if respuesta.status_code == 200:
             return respuesta.json().get('carbonIntensity', 'No data')
         print(f"Error al obtener carbon_intensity para ({latitud}, {longitud}): {respuesta.status_code}")
