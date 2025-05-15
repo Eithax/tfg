@@ -29,11 +29,6 @@ nodes_geoposition = {
 # Máximo flujo por nodo
 nodes_max_flow = {0: 20, 1: 30, 2: 20}
 
-# Función mock para obtener carbono por nodo (simplificada para la prueba)
-def obtener_carbon_intensity_nodo(lat, lon):
-    # Valores arbitrarios basados en la latitud para la prueba
-    return lat * 2  # Solo un ejemplo
-
 # Posición de prueba (matriz de adyacencia)
 position = np.array([
     [0, 1, 0],  # Enlace 0-1 activo
@@ -65,20 +60,20 @@ print("Resultado de carbono total:", result)
 #    Todos están dentro de los límites (20, 30, 20 respectivamente)
 
 # 2. Dynamic power:
-#    lambda_n = (41.625-23.375/400000) ≈ 41.625
-#    - Nodo 0: 5 * 41.625 * (40.0*2) = 5 * 41.625 * 80 = 16,650
-#    - Nodo 1: 15 * 41.625 * (41.0*2) = 15 * 41.625 * 82 = 51,198.75
-#    - Nodo 2: 10 * 41.625 * (40.5*2) = 10 * 41.625 * 81 = 33,716.25
-#    Total dynamic power ≈ 16,650 + 51,198.75 + 33,716.25 ≈ 101,565
+#    lambda_n = (41.625-23.375)/400000 ≈ 0.000045625
+#    - Nodo 0: 5 * 0.000045625 * 416 = 0.0949364
+#    - Nodo 1: 15 * 0.000045625 * 386 = 0.088090025
+#    - Nodo 2: 10 * 0.000045625 * 353 = 0.0805590125
+#    Total dynamic power ≈ 0.0949364 + 0.088090025 + 0.0805590125 ≈ 0.2635854375
 
 # 3. Power ports (beta_l = 5.5):
-#    - Enlace 0-1: 5.5 * (80 + 82) = 5.5 * 162 = 891
-#    - Enlace 1-0: 5.5 * (82 + 80) = 891 (igual que arriba)
-#    - Enlace 1-2: 5.5 * (82 + 81) = 5.5 * 163 = 896.5
-#    - Enlace 2-1: 5.5 * (81 + 82) = 896.5 (igual que arriba)
-#    Total power ports ≈ 891*2 + 896.5*2 ≈ 3,575
+#    - Enlace 0-1: 5.5 * (416 + 386) = 4411
+#    - Enlace 1-0: 5.5 * (386 + 416) = 4411 (igual que arriba)
+#    - Enlace 1-2: 5.5 * (386 + 353) = 4064.5
+#    - Enlace 2-1: 5.5 * (353 + 386) = 4064.5 (igual que arriba)
+#    Total power ports ≈ 4411*2 + 4064.5*2 ≈ 16951
 
-# Total esperado ≈ 101,565 + 3,575 ≈ 105,140
+# Total esperado ≈ (0.2635854375 + 16951) / 3600000 ≈ 0.00470868432
 
 # Nota: Los valores exactos pueden variar ligeramente según los cálculos intermedios
 # y la precisión de lambda_n, pero debería estar en ese rango.
@@ -92,4 +87,4 @@ kwargs_invalid['nodes_max_flow'] = nodes_max_flow_invalid
 # Ejecutar la función
 result_invalid = total_carbon_intensity(position, **kwargs_invalid)
 
-print("\nResultado con solución inválida (debería ser 99999):", result_invalid)
+print("\nResultado con solución inválida (debería ser inf):", result_invalid)
