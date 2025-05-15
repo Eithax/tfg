@@ -9,7 +9,6 @@ Parameters
 - position: np.array                    -> np array (matrix) with a possible solution
 - kwargs: dictionary                    -> dictionary containing the following parameters
 - num_nodes: int                        -> number of nodes the topology has
-- num_links: int                        -> number of links the topology has
 - carbon_matrix: np.array               -> np array (matrix) with the carbon intensity for each link of the topology
 - flow_matrix: np.array                 -> np array (matrix) with the flow intensity for each link of the topology
 - nodes_geoposition: dictionary         -> dictionary of dictionaries containing the nodes and their positions (latitude, longitude)
