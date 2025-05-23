@@ -1,5 +1,8 @@
+import random
+from pyswarms.discrete.binary import BinaryPSO
 import numpy as np
 import json
+
 
 def main():
     # PSO variables
@@ -18,8 +21,34 @@ def main():
     }
 
     # total_carbon_intensity variables
-    abilene_topology = np.genfromtxt('./resources/AbileneTopology.csv', delimiter=',')
+    abilene_topology = np.genfromtxt('./resources/topologies/AbileneTopology.csv', delimiter=',')
+    abilene_carbon_matrix = abilene_topology.copy()
     carbon_intensity_nodes = json.load(open('./resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
+    lambda_j = (41.625 - 23.375) / 400000  # 0.000045625 W/Mbps
+    num_nodes = abilene_topology.shape[0]
+
+    for i in range(num_nodes):
+        for j in range(num_nodes):
+            if abilene_topology[i][j] == 1:
+                abilene_carbon_matrix[i][j] = 1 + carbon_intensity_nodes['emisiones'][j] * lambda_j
+
+    random_tm = random.randint(1, 5)
+    path_abilene_tm = 'resources/topologies/Matrices_trafico/Abilene/AbileneTM' + str(random_tm) + '.csv'
+    abilene_traffic_matrix = np.genfromtxt(path_abilene_tm, delimiter=',')
+    abilene_coordinates = [{'lon': lon, 'lat': lat} for lon, lat in json.load(open('resources/topologies/Coordenadas/AbileneUbications.json'))]
+    abilene_cap_matrix = np.genfromtxt('resources/topologies/Capacidades/Abilene/AbileneCapMatrix.csv', delimiter=',')
+
+    kwargs = {
+        'num_nodes': num_nodes,
+        'carbon_matrix': abilene_carbon_matrix,
+        'flow_matrix': abilene_traffic_matrix,
+        'nodes_geoposition': abilene_coordinates,
+        'nodes_max_flow': abilene_cap_matrix
+    }
+
+
+    # Init PySwarms BinaryPSO
+    pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, **kwargs)
 
 
 
