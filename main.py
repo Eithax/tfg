@@ -3,6 +3,8 @@ from pyswarms.discrete.binary import BinaryPSO
 import numpy as np
 import json
 
+from pso_libs.optimization_functions import total_carbon_intensity
+
 
 def main():
     # PSO variables
@@ -48,7 +50,9 @@ def main():
 
 
     # Init PySwarms BinaryPSO
-    pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, **kwargs)
+    pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options)
+    result = pso.optimize(objective_func=total_carbon_intensity, iters=100, **kwargs)
+    print(result)
 
 
 
