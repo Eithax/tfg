@@ -45,7 +45,7 @@ def total_carbon_intensity(position, **kwargs) -> float:
                         nodes_traffic[n] += kwargs['flow_matrix'][src][dst]
 
     nodes_carbon_intensity = json.load(open(
-        '../resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
+        './resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
 
     for node in range(kwargs['num_nodes']):
         node_carbon = nodes_carbon_intensity['emisiones'][node]
@@ -62,10 +62,3 @@ def total_carbon_intensity(position, **kwargs) -> float:
                 power_ports += beta_l * (node_x_carbon + node_y_carbon)
 
     return (dynamic_power + power_ports)/3600000
-
-
-
-
-
-print(obtener_carbon_intensity_nodo(40.7833, -73.9667)) # New York node coordinates
-# print(obtener_carbon_intensity_nodo(38.897303, -77.026842)) # Washington node coordinates
