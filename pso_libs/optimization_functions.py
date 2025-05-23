@@ -1,5 +1,5 @@
 from collections import defaultdict
-from carbon_api import obtener_carbon_intensity_nodo
+from api.carbon_api import obtener_carbon_intensity_nodo
 import numpy as np
 import networkx as nx
 import json
@@ -44,7 +44,8 @@ def total_carbon_intensity(position, **kwargs) -> float:
                     else:
                         nodes_traffic[n] += kwargs['flow_matrix'][src][dst]
 
-    nodes_carbon_intensity = json.load(open('./resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
+    nodes_carbon_intensity = json.load(open(
+        '../resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
 
     for node in range(kwargs['num_nodes']):
         node_carbon = nodes_carbon_intensity['emisiones'][node]

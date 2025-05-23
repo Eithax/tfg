@@ -1,5 +1,5 @@
 import numpy as np
-from optimization_functions import total_carbon_intensity
+from pso_libs.optimization_functions import total_carbon_intensity
 
 # Datos de prueba
 num_nodes = 3
