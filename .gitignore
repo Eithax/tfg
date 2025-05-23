@@ -4,5 +4,8 @@
 # IntelliJ files
 .idea
 
+# Log files
+*.log
+
 # MacOS
 .DS_Store
