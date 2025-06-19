@@ -13,6 +13,7 @@ Parameters
 - flow_matrix: np.array                 -> np array (matrix) with the flow intensity for each link of the topology
 - nodes_geoposition: dictionary         -> dictionary of dictionaries containing the nodes and their positions (latitude, longitude)
 - nodes_max_flow: dictionary            -> dictionary containing the maximum flow intensity for each node of the topology
+- possible_links: list                  -> list of tuples that define the links available in the network
 
 Local variables:
 - nodes_carbon_intensity: dictionary    -> dictionary containing the carbon intensity for each node of the topology. Acts as a substitute for the API
@@ -20,6 +21,7 @@ Local variables:
 
 def total_carbon_intensity(position, **kwargs) -> float:
     nodes_traffic = defaultdict(int)
+    links_traffic = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=float)
     lambda_n = (41.625-23.375)/400000   # 0.000045625 W/Mbps
     beta_l = 5.5    # Watts
     dynamic_power = 0.0
@@ -33,16 +35,20 @@ def total_carbon_intensity(position, **kwargs) -> float:
     if not nx.is_strongly_connected(carbon_digraph):
         return float('inf')
 
+
     for src in list(shortest_paths.keys()):
         for dst in list(shortest_paths.keys()):
             if src != dst:
                 path = shortest_paths[src][dst]
+                prev_n = path[0]
 
                 for n in path[1:]:
-                    if kwargs['nodes_max_flow'][n] < kwargs['flow_matrix'][src][dst]+nodes_traffic[n]:
+                    if kwargs['nodes_max_flow'][prev_n][n] < kwargs['flow_matrix'][prev_n][n]+links_traffic[prev_n][n]:
                         return float('inf')
                     else:
                         nodes_traffic[n] += kwargs['flow_matrix'][src][dst]
+                        links_traffic[prev_n][n] += kwargs['flow_matrix'][prev_n][n]
+                        prev_n = n
 
     nodes_carbon_intensity = json.load(open(
         './resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
@@ -61,4 +67,33 @@ def total_carbon_intensity(position, **kwargs) -> float:
                 node_y_carbon = nodes_carbon_intensity['emisiones'][node_y]
                 power_ports += beta_l * (node_x_carbon + node_y_carbon)
 
-    return (dynamic_power + power_ports)/3600000
+    return (dynamic_power + power_ports)/1000
+
+"""
+Wrapper function to apply total_carbon_intensity to every particle in the swarm
+"""
+def carbon_intensity_wrapper(positions, **kwargs):
+    n_particles = positions.shape[0]
+    results = np.zeros(n_particles)
+
+    for i in range(n_particles):
+        adj_matrix = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=int)
+        for k, (x, y) in enumerate(kwargs['possible_links']):
+            adj_matrix[x][y] = positions[i][k]
+        results[i] = total_carbon_intensity(adj_matrix, **kwargs)
+
+    return results
+
+
+def load_possible_links_from_csv(path):
+    adjacency_mask = np.genfromtxt(path, delimiter=',')
+    num_nodes = adjacency_mask.shape[0]
+
+    possible_links = []
+
+    for i in range(num_nodes):
+        for j in range(num_nodes):
+            if adjacency_mask[i, j] == 1:
+                possible_links.append((i, j))
+
+    return possible_links
