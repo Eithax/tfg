@@ -1,15 +1,14 @@
 import random
-from pyswarms.discrete.binary import BinaryPSO
 import numpy as np
 import json
-
-from pso_libs.optimization_functions import total_carbon_intensity
+from pyswarms.discrete.binary import BinaryPSO
+from pso_libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv
 
 
 def main():
     # PSO variables
     n_particles = 200
-    dimensions = 12     # Number of dimensions in the space. In this case, number of nodes
+    dimensions = 30     # Number of dimensions in the space. In this case, number of links
     c1 = 2.0            # Cognitive constant. Usually set between 1.5 and 2.5
     c2 = 2.0            # Social constant. Usually set between 1.5 and 2.5
     w = 0.7             # Inertia weight. Usually set between 0.4 and 0.9
@@ -39,19 +38,21 @@ def main():
     abilene_traffic_matrix = np.genfromtxt(path_abilene_tm, delimiter=',')
     abilene_coordinates = [{'lon': lon, 'lat': lat} for lon, lat in json.load(open('resources/topologies/Coordenadas/AbileneUbications.json'))]
     abilene_cap_matrix = np.genfromtxt('resources/topologies/Capacidades/Abilene/AbileneCapMatrix.csv', delimiter=',')
+    possible_links = load_possible_links_from_csv('./resources/topologies/AbileneTopology.csv')
 
     kwargs = {
         'num_nodes': num_nodes,
         'carbon_matrix': abilene_carbon_matrix,
         'flow_matrix': abilene_traffic_matrix,
         'nodes_geoposition': abilene_coordinates,
-        'nodes_max_flow': abilene_cap_matrix
+        'nodes_max_flow': abilene_cap_matrix,
+        'possible_links': possible_links
     }
 
 
     # Init PySwarms BinaryPSO
     pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options)
-    result = pso.optimize(objective_func=total_carbon_intensity, iters=100, **kwargs)
+    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=1000, **kwargs)
     print(result)
 
 
