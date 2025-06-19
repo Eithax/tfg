@@ -73,7 +73,7 @@ print("Resultado de carbono total:", result)
 #    - Enlace 2-1: 5.5 * (353 + 386) = 4064.5 (igual que arriba)
 #    Total power ports ≈ 4411*2 + 4064.5*2 ≈ 16951
 
-# Total esperado ≈ (0.2635854375 + 16951) / 3600000 ≈ 0.00470868432
+# Total esperado ≈ (0.2635854375 + 16951) / 1000 ≈ 0.00470868432
 
 # Nota: Los valores exactos pueden variar ligeramente según los cálculos intermedios
 # y la precisión de lambda_n, pero debería estar en ese rango.
