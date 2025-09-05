@@ -31,10 +31,11 @@ def main():
     for i in range(num_nodes):
         for j in range(num_nodes):
             if abilene_topology[i][j] == 1:
-                abilene_carbon_matrix[i][j] = 1 + carbon_intensity_nodes['emisiones'][j] * lambda_j
+                abilene_carbon_matrix[i][j] = 1 + (carbon_intensity_nodes['emisiones'][j] / 1000) * lambda_j
 
     random_tm = random.randint(1, 5)
-    path_abilene_tm = 'resources/topologies/Matrices_trafico/Abilene/AbileneTM' + str(random_tm) + '.csv'
+    path_abilene_tm = 'resources/topologies/Matrices_trafico/Abilene/AbileneTM2.csv'
+    #path_abilene_tm = 'resources/topologies/Matrices_trafico/Abilene/AbileneTM' + str(random_tm) + '.csv'
     abilene_traffic_matrix = np.genfromtxt(path_abilene_tm, delimiter=',')
     abilene_coordinates = [{'lon': lon, 'lat': lat} for lon, lat in json.load(open('resources/topologies/Coordenadas/AbileneUbications.json'))]
     abilene_cap_matrix = np.genfromtxt('resources/topologies/Capacidades/Abilene/AbileneCapMatrix.csv', delimiter=',')
