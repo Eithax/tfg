@@ -1,5 +1,9 @@
 import numpy as np
 from pso_libs.optimization_functions import total_carbon_intensity
+from api.ember_carbon_api import get_carbon_intensity_node
+
+# Prueba de la API
+print(get_carbon_intensity_node(48.8566, 2.3522))
 
 # Datos de prueba
 num_nodes = 3
