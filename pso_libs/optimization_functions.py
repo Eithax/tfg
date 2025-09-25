@@ -54,12 +54,6 @@ def total_carbon_intensity(position, **kwargs) -> float:
     nodes_carbon_intensity = json.load(open(
         './resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
 
-    """
-    for node in range(kwargs['num_nodes']):
-        node_carbon = nodes_carbon_intensity['emisiones'][node] / 1000
-        #node_carbon = obtener_carbon_intensity_nodo(kwargs['nodes_geoposition'][node]['lat'], kwargs['nodes_geoposition'][node]['lon'])
-        dynamic_power += nodes_traffic[node]*lambda_n*node_carbon
-    """
 
     for node_x in range(kwargs['num_nodes']):
         node_carbon = nodes_carbon_intensity['emisiones'][node_x] / 1000
