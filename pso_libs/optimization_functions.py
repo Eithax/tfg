@@ -14,6 +14,7 @@ Parameters
 - nodes_geoposition: dictionary         -> dictionary of dictionaries containing the nodes and their positions (latitude, longitude)
 - nodes_max_flow: dictionary            -> dictionary containing the maximum flow intensity for each node of the topology
 - possible_links: list                  -> list of tuples that define the links available in the network
+- filepath: string                      -> string with the relative path for the historic carbon intensity file for a specific network
 
 Local variables:
 - nodes_carbon_intensity: dictionary    -> dictionary containing the carbon intensity for each node of the topology. Acts as a substitute for the API
@@ -52,11 +53,11 @@ def total_carbon_intensity(position, **kwargs) -> float:
                         prev_n = n
 
     nodes_carbon_intensity = json.load(open(
-        './resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
+        './resources/topologies/Historic_Carbon_Intensity/' + kwargs['filepath'] + '.json'))
 
 
     for node_x in range(kwargs['num_nodes']):
-        node_carbon = nodes_carbon_intensity['emisiones'][node_x] / 1000
+        node_carbon = nodes_carbon_intensity['carbon_intensity'][node_x] / 1000
         # node_carbon = obtener_carbon_intensity_nodo(kwargs['nodes_geoposition'][node]['lat'], kwargs['nodes_geoposition'][node]['lon'])
         dynamic_power += nodes_traffic[node_x] * lambda_n * node_carbon
 
@@ -64,8 +65,8 @@ def total_carbon_intensity(position, **kwargs) -> float:
             if node_x != node_y and position[node_x][node_y] != 0:
                 # node_x_carbon = obtener_carbon_intensity_nodo(kwargs['nodes_geoposition'][node_x]['lat'], kwargs['nodes_geoposition'][node_x]['lon'])
                 # node_y_carbon = obtener_carbon_intensity_nodo(kwargs['nodes_geoposition'][node_y]['lat'], kwargs['nodes_geoposition'][node_y]['lon'])
-                node_x_carbon = nodes_carbon_intensity['emisiones'][node_x] / 1000
-                node_y_carbon = nodes_carbon_intensity['emisiones'][node_y] / 1000
+                node_x_carbon = nodes_carbon_intensity['carbon_intensity'][node_x] / 1000
+                node_y_carbon = nodes_carbon_intensity['carbon_intensity'][node_y] / 1000
                 power_ports += beta_l * (node_x_carbon + node_y_carbon)
 
     return dynamic_power + power_ports
