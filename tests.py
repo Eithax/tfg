@@ -1,5 +1,5 @@
-import numpy as np
-from pso_libs.optimization_functions import total_carbon_intensity
+"""import numpy as np
+from libs.optimization_functions import total_carbon_intensity
 from api.ember_carbon_api import get_carbon_intensity_node
 
 # Prueba de la API
@@ -91,4 +91,22 @@ kwargs_invalid['nodes_max_flow'] = nodes_max_flow_invalid
 # Ejecutar la función
 result_invalid = total_carbon_intensity(position, **kwargs_invalid)
 
-print("\nResultado con solución inválida (debería ser inf):", result_invalid)
+print("\nResultado con solución inválida (debería ser inf):", result_invalid)"""
+
+
+from libs.result_analysis import (
+    plot_cost_vs_iterations,
+    plot_cost_vs_particles
+)
+
+files = [
+    "results/Abilene/Abilene_TM1_1threads_20251010_183001.json",
+    "results/Abilene_TM1_2threads_20251010_183030.json",
+    "results/Abilene_TM1_1threads_20251010_184000.json",
+]
+
+# Evolución del coste a lo largo de las iteraciones (misma TM)
+plot_cost_vs_iterations(files, tm_target=1, group_by="config")
+
+# Coste final según número de partículas
+plot_cost_vs_particles(files, tm_target=1, group_by="threads")
