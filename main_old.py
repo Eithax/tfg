@@ -2,7 +2,7 @@ import random
 import numpy as np
 import json
 from pyswarms.discrete.binary import BinaryPSO
-from pso_libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv
+from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv
 
 
 def main():
