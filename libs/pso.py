@@ -1,6 +1,6 @@
 import numpy as np
 import networkx as nx
-from pso_libs.particle import Particle
+from libs.particle import Particle
 from optimization_functions import total_carbon_intensity
 
 
