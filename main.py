@@ -257,24 +257,30 @@ def main():
     else:
         iter_values = [args.iters]
 
+    if args.particle_range and args.particle_range > args.particles:
+        particle_values = list(range(args.particles, args.particle_range + 1, args.particles))
+    else:
+        particle_values = [args.particles]
+
     for network in args.network:
         for threads in thread_values:
             for iters in iter_values:
-                run_pso(
-                    network,
-                    args.runs,
-                    iters,
-                    args.tm,
-                    threads,
-                    args.particles,
-                    args.c1,
-                    args.c2,
-                    args.w,
-                    args.k,
-                    history_step=args.history_step,
-                    history_compress=args.history_compress,
-                    history_inf=args.history_inf
-                )
+                for n_particles in particle_values:
+                    run_pso(
+                        network,
+                        args.runs,
+                        iters,
+                        args.tm,
+                        threads,
+                        n_particles,
+                        args.c1,
+                        args.c2,
+                        args.w,
+                        args.k,
+                        history_step=args.history_step,
+                        history_compress=args.history_compress,
+                        history_inf=args.history_inf
+                    )
 
 
 if __name__ == "__main__":
