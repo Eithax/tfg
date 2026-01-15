@@ -95,18 +95,15 @@ print("\nResultado con solución inválida (debería ser inf):", result_invalid)
 
 
 from libs.result_analysis import (
-    plot_cost_vs_iterations,
-    plot_cost_vs_particles
+    procesar_resultados_particles_fijas_y_pintar,
+    procesar_resultados_particles_fijas_min_max_y_pintar,
+    procesar_resultados_iter_fijas_y_pintar,
+    procesar_resultados_iter_fijas_min_max_y_pintar
 )
 
-files = [
-    "results/Abilene/Abilene_TM1_1threads_20251010_183001.json",
-    "results/Abilene_TM1_2threads_20251010_183030.json",
-    "results/Abilene_TM1_1threads_20251010_184000.json",
-]
+procesar_resultados_particles_fijas_y_pintar(directorio='/Users/santi/Documents/universidad/tfg/results/Abilene/TM5')
+procesar_resultados_particles_fijas_min_max_y_pintar(directorio='/Users/santi/Documents/universidad/tfg/results/Abilene/TM5')
+procesar_resultados_iter_fijas_y_pintar(directorio='/Users/santi/Documents/universidad/tfg/results/Abilene/TM5')
+procesar_resultados_iter_fijas_min_max_y_pintar(directorio='/Users/santi/Documents/universidad/tfg/results/Abilene/TM5')
 
-# Evolución del coste a lo largo de las iteraciones (misma TM)
-plot_cost_vs_iterations(files, tm_target=1, group_by="config")
 
-# Coste final según número de partículas
-plot_cost_vs_particles(files, tm_target=1, group_by="threads")

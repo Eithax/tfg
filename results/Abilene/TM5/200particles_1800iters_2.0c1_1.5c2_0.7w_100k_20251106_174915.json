@@ -1,0 +1,1180 @@
+{
+    "network": "Abilene",
+    "traffic_matrix": 5,
+    "config": {
+        "n_particles": 200,
+        "dimensions": 30,
+        "options": {
+            "c1": 2.0,
+            "c2": 1.5,
+            "w": 0.7,
+            "k": 100,
+            "p": 1
+        },
+        "iterations": 1800,
+        "runs": 10,
+        "threads": 6
+    },
+    "results": [
+        {
+            "run": 1,
+            "best_cost": 91.82615279062178,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": 110.86335285919651
+                    },
+                    {
+                        "iter": 501,
+                        "cost": 110.86335285919651
+                    },
+                    {
+                        "iter": 601,
+                        "cost": 110.86335285919651
+                    },
+                    {
+                        "iter": 701,
+                        "cost": 101.27867822421302
+                    },
+                    {
+                        "iter": 801,
+                        "cost": 99.5606211398765
+                    },
+                    {
+                        "iter": 901,
+                        "cost": 99.5606211398765
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": 94.41135407889851
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": 94.41135407889851
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": 94.41135407889851
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": 91.82615279062178
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 91.82615279062178
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 91.82615279062178
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 91.82615279062178
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 91.82615279062178
+                    }
+                ]
+            }
+        },
+        {
+            "run": 2,
+            "best_cost": 105.2042470795715,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 701,
+                        "cost": null
+                    },
+                    {
+                        "iter": 801,
+                        "cost": null
+                    },
+                    {
+                        "iter": 901,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": null
+                    }
+                ]
+            }
+        },
+        {
+            "run": 3,
+            "best_cost": 85.27642868637679,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": 108.9959294376665
+                    },
+                    {
+                        "iter": 401,
+                        "cost": 108.9959294376665
+                    },
+                    {
+                        "iter": 501,
+                        "cost": 108.9959294376665
+                    },
+                    {
+                        "iter": 601,
+                        "cost": 107.04797853589722
+                    },
+                    {
+                        "iter": 701,
+                        "cost": 107.04797853589722
+                    },
+                    {
+                        "iter": 801,
+                        "cost": 107.04797853589722
+                    },
+                    {
+                        "iter": 901,
+                        "cost": 106.38232411818804
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": 95.98697192434449
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": 95.3658762965218
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": 95.3658762965218
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": 92.61635062049925
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 91.93462235776211
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 91.93462235776211
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 91.93462235776211
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 85.27642868637679
+                    }
+                ]
+            }
+        },
+        {
+            "run": 4,
+            "best_cost": 85.27642868637679,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": 96.28119237771361
+                    },
+                    {
+                        "iter": 401,
+                        "cost": 96.28119237771361
+                    },
+                    {
+                        "iter": 501,
+                        "cost": 96.28119237771361
+                    },
+                    {
+                        "iter": 601,
+                        "cost": 95.67427212711367
+                    },
+                    {
+                        "iter": 701,
+                        "cost": 95.01705591973248
+                    },
+                    {
+                        "iter": 801,
+                        "cost": 95.01705591973248
+                    },
+                    {
+                        "iter": 901,
+                        "cost": 95.01705591973248
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": 95.01705591973248
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": 95.01705591973248
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": 92.63576470919189
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": 91.77162689330609
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 91.77162689330609
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 91.77162689330609
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 91.77162689330609
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 90.31965557081786
+                    }
+                ]
+            }
+        },
+        {
+            "run": 5,
+            "best_cost": 106.88416306532922,
+            "best_pos": [
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 701,
+                        "cost": null
+                    },
+                    {
+                        "iter": 801,
+                        "cost": null
+                    },
+                    {
+                        "iter": 901,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 111.82510445683727
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 111.82510445683727
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 111.82510445683727
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 107.78916973346251
+                    }
+                ]
+            }
+        },
+        {
+            "run": 6,
+            "best_cost": null,
+            "best_pos": [
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 701,
+                        "cost": null
+                    },
+                    {
+                        "iter": 801,
+                        "cost": null
+                    },
+                    {
+                        "iter": 901,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": null
+                    }
+                ]
+            }
+        },
+        {
+            "run": 7,
+            "best_cost": 95.05540470603275,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": 105.14315297987079
+                    },
+                    {
+                        "iter": 401,
+                        "cost": 105.14315297987079
+                    },
+                    {
+                        "iter": 501,
+                        "cost": 102.47521555311546
+                    },
+                    {
+                        "iter": 601,
+                        "cost": 102.47521555311546
+                    },
+                    {
+                        "iter": 701,
+                        "cost": 102.47521555311546
+                    },
+                    {
+                        "iter": 801,
+                        "cost": 98.5293023980912
+                    },
+                    {
+                        "iter": 901,
+                        "cost": 98.5293023980912
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": 98.5293023980912
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": 95.21770291137275
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": 95.21770291137275
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": 95.21770291137275
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 95.21770291137275
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 95.21770291137275
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 95.21770291137275
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 95.05540470603275
+                    }
+                ]
+            }
+        },
+        {
+            "run": 8,
+            "best_cost": 89.01932105430478,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": 97.6923314739258
+                    },
+                    {
+                        "iter": 701,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 801,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 901,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": 94.79042077364123
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 89.01932105430478
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 89.01932105430478
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 89.01932105430478
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 89.01932105430478
+                    }
+                ]
+            }
+        },
+        {
+            "run": 9,
+            "best_cost": null,
+            "best_pos": [
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 701,
+                        "cost": null
+                    },
+                    {
+                        "iter": 801,
+                        "cost": null
+                    },
+                    {
+                        "iter": 901,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": null
+                    }
+                ]
+            }
+        },
+        {
+            "run": 10,
+            "best_cost": 92.46415727312215,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 301,
+                        "cost": null
+                    },
+                    {
+                        "iter": 401,
+                        "cost": null
+                    },
+                    {
+                        "iter": 501,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": null
+                    },
+                    {
+                        "iter": 701,
+                        "cost": null
+                    },
+                    {
+                        "iter": 801,
+                        "cost": null
+                    },
+                    {
+                        "iter": 901,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1001,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1101,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1201,
+                        "cost": null
+                    },
+                    {
+                        "iter": 1301,
+                        "cost": 92.46415727312215
+                    },
+                    {
+                        "iter": 1401,
+                        "cost": 92.46415727312215
+                    },
+                    {
+                        "iter": 1501,
+                        "cost": 92.46415727312215
+                    },
+                    {
+                        "iter": 1601,
+                        "cost": 92.46415727312215
+                    },
+                    {
+                        "iter": 1701,
+                        "cost": 92.46415727312215
+                    }
+                ]
+            }
+        }
+    ]
+}

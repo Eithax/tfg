@@ -1,0 +1,124 @@
+{
+    "network": "Abilene",
+    "traffic_matrix": 5,
+    "config": {
+        "n_particles": 200,
+        "dimensions": 30,
+        "options": {
+            "c1": 2.0,
+            "c2": 2.0,
+            "w": 0.7,
+            "k": 20,
+            "p": 1
+        },
+        "iterations": 700,
+        "runs": 2,
+        "threads": 6
+    },
+    "results": [
+        {
+            "run": 1,
+            "best_cost": Infinity,
+            "best_pos": [
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                1,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 50,
+                "remove_consecutive_duplicates": true,
+                "inf_strategy": "prev",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    }
+                ]
+            }
+        },
+        {
+            "run": 2,
+            "best_cost": 102.50136331844057,
+            "best_pos": [
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 50,
+                "remove_consecutive_duplicates": true,
+                "inf_strategy": "prev",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": null
+                    },
+                    {
+                        "iter": 601,
+                        "cost": 110.68312162046885
+                    },
+                    {
+                        "iter": 651,
+                        "cost": 109.24986871618884
+                    }
+                ]
+            }
+        }
+    ]
+}

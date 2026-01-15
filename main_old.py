@@ -9,10 +9,10 @@ def main():
     # PSO variables
     n_particles = 200
     dimensions = 30     # Number of dimensions in the space. In this case, number of links
-    c1 = 2.0            # Cognitive constant. Usually set between 1.5 and 2.5
-    c2 = 2.0            # Social constant. Usually set between 1.5 and 2.5
+    c1 = 1.75           # Cognitive constant. Usually set between 1.5 and 2.5
+    c2 = 2.25           # Social constant. Usually set between 1.5 and 2.5
     w = 0.7             # Inertia weight. Usually set between 0.4 and 0.9
-    k = 20              # Number of neighbors to be considered
+    k = 100             # Number of neighbors to be considered
     options = {
         'c1': c1,
         'c2': c2,
@@ -54,6 +54,42 @@ def main():
         'filepath': 'Abilene'
     }
 
+    init_pos = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos[0] = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+
+    init_pos_2 = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos_2[0] = [1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1]
+
 
 
 
@@ -91,9 +127,10 @@ def main():
 
 
     # Init PySwarms BinaryPSO
-    pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options)
-    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=1500, n_processes=12, **kwargs)
+    pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, init_pos=init_pos)
+    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=1500, n_processes=6, **kwargs)
     print(result)
+    # [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
 
 
 

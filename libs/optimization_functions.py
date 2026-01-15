@@ -28,30 +28,49 @@ def total_carbon_intensity(position, **kwargs) -> float:
     dynamic_power = 0.0
     power_ports = 0.0
 
-    #result_carbon_matrix = np.bitwise_and(kwargs['carbon_matrix'], position)
-    result_carbon_matrix = np.where(position == 1, kwargs['carbon_matrix'], 0)
-    carbon_digraph = nx.from_numpy_array(result_carbon_matrix, create_using=nx.DiGraph)
-    shortest_paths = dict(nx.all_pairs_dijkstra_path(carbon_digraph))
+    # A partir de la matriz de carbono, generar el grafo dirigido y los caminos más cortos con Dijkstra
+    # result_carbon_matrix = np.where(position == 1, kwargs['carbon_matrix'], 0)
+    # carbon_digraph = nx.from_numpy_array(result_carbon_matrix, create_using=nx.DiGraph)
 
+    carbon_digraph = nx.DiGraph()
+
+    for i in range(kwargs['num_nodes']):
+        for j in range(kwargs['num_nodes']):
+            if position[i][j] == 1:
+                carbon_digraph.add_edge(
+                    i, j,
+                    weight=kwargs['carbon_matrix'][i][j]
+                )
+
+    shortest_paths = dict(nx.all_pairs_dijkstra_path(carbon_digraph, weight='weight'))
+
+    # Si no es fuertemente conexo, solución no válida
     if not nx.is_strongly_connected(carbon_digraph):
         return float('inf')
 
-
-    for src in list(shortest_paths.keys()):
-        for dst in list(shortest_paths.keys()):
+    # Lista de flujos con sus rutas
+    flow_list = []
+    for src in shortest_paths:
+        for dst in shortest_paths:
             if src != dst:
+                demand = kwargs['flow_matrix'][src][dst]
                 path = shortest_paths[src][dst]
-                prev_n = path[0]
-                flow = kwargs['flow_matrix'][src][dst]
+                flow_list.append((src, dst, demand, path))
 
-                for n in path[1:]:
-                    if kwargs['nodes_max_flow'][prev_n][n] < kwargs['flow_matrix'][prev_n][n]+links_traffic[prev_n][n]:
-                        return float('inf')
-                    else:
-                        nodes_traffic[n] += flow
-                        links_traffic[prev_n][n] += kwargs['flow_matrix'][prev_n][n]
-                        prev_n = n
+    # Ordenar flujos por demanda (en orden descendente)
+    flow_list.sort(key=lambda x: x[2], reverse=True)
 
+    # Comprobar que los flujos no superan la capacidad de los enlaces
+    for (src, dst, demand, path) in flow_list:
+        prev = path[0]
+        for n in path[1:]:
+            if links_traffic[prev][n] + demand > kwargs['nodes_max_flow'][prev][n]:
+                return float('inf')
+            links_traffic[prev][n] += demand
+            nodes_traffic[n] += demand
+            prev = n
+
+    # Cargar la información histórica de carbono de esa red
     nodes_carbon_intensity = json.load(open(
         './resources/topologies/Historic_Carbon_Intensity/' + kwargs['filepath'] + '.json'))
 

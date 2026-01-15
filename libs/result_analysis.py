@@ -1,8 +1,10 @@
+import os
+import re
 import json
-from pathlib import Path
-
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
+from collections import defaultdict
 
 def plot_from_json(files, title="Evolución del coste por iteración"):
     """Dibuja las curvas de coste de uno o varios ficheros de resultados JSON."""
@@ -117,7 +119,7 @@ def plot_cost_vs_iterations(files, tm_target=None, group_by="config"):
         elif group_by == "threads":
             label += f" | {cfg.get('threads')} threads"
 
-        # tomar coste promedio por iteración (por si hay varias runs)
+        # Calcular coste promedio por iteración (por si hay varias runs)
         all_histories = []
         for run in data.get("results", []):
             hist = run.get("cost_history", {})
@@ -199,3 +201,284 @@ def plot_cost_vs_particles(files, tm_target=None, metric="best_cost", group_by="
     plt.grid(True)
     plt.tight_layout()
     plt.show()
+
+
+"""
+Lee los archivos JSON de resultados generados el día 7 (20251107),
+calcula el coste medio (ignorando valores nulos),
+y pinta la gráfica de coste medio vs iteraciones.
+"""
+def procesar_resultados_particles_fijas_y_pintar(directorio="."):
+    # Regex para extraer iteraciones, c1 y c2
+
+    # pattern = re.compile(
+    #     r"^200particles_(?P<iters>1[0-4]00|1500)iters_"
+    #     r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
+    #     r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
+    #     r"0\.7w_100k_20251107_\d{6}\.json$"
+    # )
+
+
+    pattern = re.compile(
+        r"^20251205_\d{6}_"
+        r"200particles_(?P<iters>1[0-4]00|1500)iters_"
+        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
+        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
+        r"0\.7w_100k\.json$"
+    )
+
+    # Estructura: {(c1, c2): {iters: media_coste}}
+    resultados = defaultdict(dict)
+
+    for f in os.listdir(directorio):
+        match = pattern.match(f)
+        if not match:
+            continue
+
+        iters = int(match.group("iters"))
+        c1 = float(match.group("c1"))
+        c2 = float(match.group("c2"))
+
+        with open(os.path.join(directorio, f)) as file:
+            data = json.load(file)
+
+        # Extraer best_cost válidos
+        best_costs = [
+            run["best_cost"] for run in data.get("results", [])
+            if run["best_cost"] is not None
+        ]
+
+        if best_costs:  # si hay al menos un valor válido
+            media_coste = sum(best_costs) / len(best_costs)
+            resultados[(c1, c2)][iters] = media_coste
+
+    # --- Pintar ---
+    plt.figure(figsize=(8, 6))
+    for (c1, c2), valores in sorted(resultados.items()):
+        xs = sorted(valores.keys())
+        ys = [valores[x] for x in xs]
+        plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
+
+    plt.title("Coste medio vs número de iteraciones (partículas fijas en 200)")
+    plt.xlabel("Iteraciones")
+    plt.ylabel("Coste medio (gCO2/kWh)")
+    plt.legend(title="Parámetros")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    return resultados
+
+
+"""
+Procesa archivos generados con el script donde las iteraciones varían (1000–1500),
+c1 aumenta y c2 disminuye. Calcula media, mínimo y máximo de best_cost
+(ignorando nulos) y genera una gráfica con banda de variabilidad.
+"""
+def procesar_resultados_particles_fijas_min_max_y_pintar(directorio="."):
+    # Regex: timestamp al final, fecha fija 20251107
+
+    # pattern = re.compile(
+    #     r"^200particles_(?P<iters>1[0-4]00|1500)iters_"
+    #     r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
+    #     r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
+    #     r"0\.7w_100k_20251107_\d{6}\.json$"
+    # )
+
+    pattern = re.compile(
+        r"^20251205_\d{6}_"
+        r"200particles_(?P<iters>1[0-4]00|1500)iters_"
+        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
+        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
+        r"0\.7w_100k\.json$"
+    )
+
+    # Estructura: {(c1, c2): {iters: {"mean": x, "min": y, "max": z}}}
+    resultados = defaultdict(dict)
+
+    for f in os.listdir(directorio):
+        match = pattern.match(f)
+        if not match:
+            continue
+
+        iters = int(match.group("iters"))
+        c1 = float(match.group("c1"))
+        c2 = float(match.group("c2"))
+
+        with open(os.path.join(directorio, f)) as file:
+            data = json.load(file)
+
+        # Extraer best_cost válidos
+        best_costs = [
+            run["best_cost"] for run in data.get("results", [])
+            if run["best_cost"] is not None
+        ]
+
+        if best_costs:
+            mean_cost = sum(best_costs) / len(best_costs)
+            min_cost = min(best_costs)
+            max_cost = max(best_costs)
+            resultados[(c1, c2)][iters] = {
+                "mean": mean_cost,
+                "min": min_cost,
+                "max": max_cost
+            }
+
+    # --- Pintar ---
+    plt.figure(figsize=(9, 6))
+
+    for (c1, c2), valores in sorted(resultados.items()):
+        xs = sorted(valores.keys())
+        ys_mean = [valores[x]["mean"] for x in xs]
+        ys_min = [valores[x]["min"] for x in xs]
+        ys_max = [valores[x]["max"] for x in xs]
+
+        # Dibujar línea de la media
+        plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
+
+        # Dibujar rango [min, max] como banda
+        plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
+
+    plt.title("Coste medio (± rango) vs Iteraciones\nc1–c2 variables, 200 partículas")
+    plt.xlabel("Iteraciones")
+    plt.ylabel("Coste medio (ignorando nulos)")
+    plt.legend(title="Parámetros c1–c2")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    return resultados
+
+
+"""
+Procesa archivos generados con el script de iteraciones fijas (1500),
+donde c1 aumenta, c2 disminuye y particles varía de 100 a 500.
+Calcula la media de best_cost (ignorando nulos) y genera una gráfica
+de coste medio vs número de partículas para cada combinación c1–c2.
+"""
+def procesar_resultados_iter_fijas_y_pintar(directorio="."):
+    # Regex: timestamp al inicio, fecha fija 20251107
+    pattern = re.compile(
+        r"^20251205_\d{6}_"                  # timestamp del día de hoy
+        r"(?P<particles>[1-5]00)particles_"
+        r"1500iters_"
+        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
+        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
+        r"0\.7w_100k\.json$"
+    )
+
+    # Estructura: {(c1, c2): {particles: mean_cost}}
+    resultados = defaultdict(dict)
+
+    for f in os.listdir(directorio):
+        match = pattern.match(f)
+        if not match:
+            continue
+
+        particles = int(match.group("particles"))
+        c1 = float(match.group("c1"))
+        c2 = float(match.group("c2"))
+
+        with open(os.path.join(directorio, f)) as file:
+            data = json.load(file)
+
+        # Extraer los best_cost válidos
+        best_costs = [
+            run["best_cost"] for run in data.get("results", [])
+            if run["best_cost"] is not None
+        ]
+
+        if best_costs:
+            mean_cost = sum(best_costs) / len(best_costs)
+            resultados[(c1, c2)][particles] = mean_cost
+
+    # --- Pintar ---
+    plt.figure(figsize=(8, 6))
+    for (c1, c2), valores in sorted(resultados.items()):
+        xs = sorted(valores.keys())
+        ys = [valores[x] for x in xs]
+        plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
+
+    plt.title("Coste medio vs número de partículas (iteraciones fijas en 1500)")
+    plt.xlabel("Número de partículas")
+    plt.ylabel("Coste medio (gCO2/kWh)")
+    plt.legend(title="Parámetros c1–c2")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    return resultados
+
+
+"""
+Procesa archivos generados con el script de iteraciones fijas (1500),
+donde c1 aumenta, c2 disminuye y particles varía de 100 a 500.
+Calcula media, mínimo y máximo de best_cost (ignorando nulos),
+y pinta una gráfica de coste medio vs número de partículas.
+"""
+def procesar_resultados_iter_fijas_min_max_y_pintar(directorio="."):
+    # Regex: timestamp al inicio, fecha fija 20251107
+    pattern = re.compile(
+        r"^20251205_\d{6}_"                  # timestamp del día actual
+        r"(?P<particles>[1-5]00)particles_"
+        r"1500iters_"
+        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
+        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
+        r"0\.7w_100k\.json$"
+    )
+
+    # Estructura: {(c1, c2): {particles: {"mean": x, "min": y, "max": z}}}
+    resultados = defaultdict(dict)
+
+    for f in os.listdir(directorio):
+        match = pattern.match(f)
+        if not match:
+            continue
+
+        particles = int(match.group("particles"))
+        c1 = float(match.group("c1"))
+        c2 = float(match.group("c2"))
+
+        with open(os.path.join(directorio, f)) as file:
+            data = json.load(file)
+
+        # Extraer best_cost válidos
+        best_costs = [
+            run["best_cost"] for run in data.get("results", [])
+            if run["best_cost"] is not None
+        ]
+
+        if best_costs:
+            mean_cost = sum(best_costs) / len(best_costs)
+            min_cost = min(best_costs)
+            max_cost = max(best_costs)
+            resultados[(c1, c2)][particles] = {
+                "mean": mean_cost,
+                "min": min_cost,
+                "max": max_cost
+            }
+
+    # --- Pintar ---
+    plt.figure(figsize=(9, 6))
+
+    for (c1, c2), valores in sorted(resultados.items()):
+        xs = sorted(valores.keys())
+        ys_mean = [valores[x]["mean"] for x in xs]
+        ys_min = [valores[x]["min"] for x in xs]
+        ys_max = [valores[x]["max"] for x in xs]
+
+        # Dibujar línea media
+        plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
+
+        # Sombrear rango [min, max]
+        plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
+
+    plt.title("Coste medio (± rango) vs número de partículas\n(Iteraciones fijas en 1500)")
+    plt.xlabel("Número de partículas")
+    plt.ylabel("Coste medio (ignorando nulos)")
+    plt.legend(title="Parámetros c1–c2")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
+    return resultados

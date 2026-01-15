@@ -46,7 +46,7 @@ def sanitize_history(history, replace_inf_with='prev'):
 
 
 """
-history: lista (ya sanitizada) con un valor por iteración (index 0 = iter 1)
+history: lista (ya saneada) con un valor por iteración (index 0 = iter 1)
 step: tomar cada 'step' iteración (1 = todo)
 remove_consecutive_duplicates: si True elimina entradas que repiten el mismo valor
 Devuelve lista de dicts: [{"iter": iteration_index (1-based), "cost": value_or_null}, ...]
@@ -121,8 +121,8 @@ def load_topology(network_name, tm_index):
 def save_results_grouped(network, tm_index, runs_results, config):
     """Guarda en un solo JSON los resultados de todas las ejecuciones de una misma TM"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    Path(f"results/{network}").mkdir(parents=True, exist_ok=True)
-    filename = f"results/{network}/{network}_TM{tm_index}_{timestamp}.json"
+    Path(f"results/{network}/TM{tm_index}").mkdir(parents=True, exist_ok=True)
+    filename = f"results/{network}/TM{tm_index}/{timestamp}_{config['n_particles']}particles_{config['iterations']}iters_{config['options']['c1']}c1_{config['options']['c2']}c2_{config['options']['w']}w_{config['options']['k']}k.json"
 
     data = {
         "network": network,
@@ -191,7 +191,7 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
 
             runs_results.append({
                 "run": run + 1,
-                "best_cost": float(best_cost),
+                "best_cost": None if float(best_cost) == float('inf') else float(best_cost),
                 "best_pos": best_pos.tolist(),
                 "cost_history": {
                     "mode": "compressed",
