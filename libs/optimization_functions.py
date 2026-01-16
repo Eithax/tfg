@@ -12,7 +12,7 @@ Parameters
 - carbon_matrix: np.array               -> np array (matrix) with the carbon intensity for each link of the topology
 - flow_matrix: np.array                 -> np array (matrix) with the flow intensity for each link of the topology
 - nodes_geoposition: dictionary         -> dictionary of dictionaries containing the nodes and their positions (latitude, longitude)
-- nodes_max_flow: dictionary            -> dictionary containing the maximum flow intensity for each node of the topology
+- nodes_max_flow: dictionary            -> np array (matrix) containing the maximum flow intensity for each link of the topology
 - possible_links: list                  -> list of tuples that define the links available in the network
 - filepath: string                      -> string with the relative path for the historic carbon intensity file for a specific network
 
@@ -21,6 +21,23 @@ Local variables:
 """
 
 def total_carbon_intensity(position, **kwargs) -> float:
+
+    # DEBUG
+    # print(f"\n=== total_carbon_intensity called ===")
+    # print(f"position shape: {position.shape}")
+    # print(f"position non-zero count: {np.count_nonzero(position)}")
+    # print(f"position:\n{position}")
+
+    # edges_count = 0
+
+    # for i in range(kwargs['num_nodes']):
+    #     for j in range(kwargs['num_nodes']):
+    #         if position[i][j] == 1:
+    #             edges_count += 1
+
+    # if edges_count < kwargs['num_nodes']:
+    #     return float('inf')
+
     nodes_traffic = defaultdict(int)
     links_traffic = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=float)
     lambda_n = (41.625-23.375)/400000   # 0.000045625 W/Mbps
@@ -34,19 +51,47 @@ def total_carbon_intensity(position, **kwargs) -> float:
 
     carbon_digraph = nx.DiGraph()
 
+    # for i in range(kwargs['num_nodes']):
+    #     for j in range(kwargs['num_nodes']):
+    #         if position[i][j] == 1:
+    #             carbon_digraph.add_edge(
+    #                 i, j,
+    #                 weight=kwargs['carbon_matrix'][i][j]
+    #             )
+
+    for i in range(kwargs['num_nodes']):
+        carbon_digraph.add_node(i)
+
+    # PRUEBA
+    # Construir el grafo SOLO con los enlaces posibles
     for i in range(kwargs['num_nodes']):
         for j in range(kwargs['num_nodes']):
             if position[i][j] == 1:
-                carbon_digraph.add_edge(
-                    i, j,
-                    weight=kwargs['carbon_matrix'][i][j]
-                )
+                # Verificar que este enlace esté en possible_links
+                if (i, j) in kwargs['possible_links']:
+                    carbon_digraph.add_edge(i, j, weight=kwargs['carbon_matrix'][i][j])
+
+    # DEBUG: Mostrar qué enlaces se añadieron
+    # print(f"\nEdges added to graph:")
+    # for edge in carbon_digraph.edges():
+    #     print(f"  {edge}")
 
     shortest_paths = dict(nx.all_pairs_dijkstra_path(carbon_digraph, weight='weight'))
 
+    # DEBUG
+    # print(f"Graph has {carbon_digraph.number_of_nodes()} nodes and {carbon_digraph.number_of_edges()} edges")
+    # print(f"Is strongly connected: {nx.is_strongly_connected(carbon_digraph)}")
+    # for src in shortest_paths:
+    #     print(f"From node {src}, can reach {len(shortest_paths[src])} nodes")
+
     # Si no es fuertemente conexo, solución no válida
     if not nx.is_strongly_connected(carbon_digraph):
+        #     print(
+        #     f"⚠️  Graph NOT strongly connected! Nodes: {carbon_digraph.number_of_nodes()}, Edges: {carbon_digraph.number_of_edges()}")
         return float('inf')
+        # else:
+        # print(
+        #     f"✓ Graph is strongly connected. Nodes: {carbon_digraph.number_of_nodes()}, Edges: {carbon_digraph.number_of_edges()}")
 
     # Lista de flujos con sus rutas
     flow_list = []
@@ -98,8 +143,13 @@ def carbon_intensity_wrapper(positions, **kwargs):
     results = np.zeros(n_particles)
 
     for i in range(n_particles):
+        # Crear matriz de adyacencia con ceros
         adj_matrix = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=int)
+
+        # Enumerar los pares de posibles links (nodo_src, nodo_dst) y por cada uno de ellos
+        # almacenar el valor (0 o 1, encendido o apagado) en la matriz de adyacencia
         for k, (x, y) in enumerate(kwargs['possible_links']):
+            # El índice i
             adj_matrix[x][y] = positions[i][k]
         results[i] = total_carbon_intensity(adj_matrix, **kwargs)
 
