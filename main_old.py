@@ -2,7 +2,7 @@ import random
 import numpy as np
 import json
 from pyswarms.discrete.binary import BinaryPSO
-from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv
+from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv, total_carbon_intensity
 
 
 def main():
@@ -43,6 +43,11 @@ def main():
     abilene_coordinates = [{'lon': lon, 'lat': lat} for lon, lat in json.load(open('resources/topologies/Coordenadas/AbileneUbications.json'))]
     abilene_cap_matrix = np.genfromtxt('resources/topologies/Capacidades/Abilene/AbileneCapMatrix.csv', delimiter=',')
     possible_links = load_possible_links_from_csv('./resources/topologies/AbileneTopology.csv')
+
+    print("possible_links:")
+    for i, (x, y) in enumerate(possible_links):
+        print(f"{i}: ({x}, {y})")
+    print(f"\nTotal: {len(possible_links)} enlaces")
 
     kwargs = {
         'num_nodes': num_nodes,
@@ -128,10 +133,26 @@ def main():
 
     # Init PySwarms BinaryPSO
     pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, init_pos=init_pos)
-    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=1500, n_processes=6, **kwargs)
-    print(result)
-    # [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
+    #pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, init_pos=init_pos_2)
+    #pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options)
+    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=1500, **kwargs)
 
+    print("\n=== RESULTADO FINAL ===")
+    print(f"Best position: {result[1]}")
+    print(f"Best cost: {result[0]}")
+
+    # Verificar manualmente la mejor solución
+    adj_matrix_final = np.zeros((num_nodes, num_nodes), dtype=int)
+    for k, (x, y) in enumerate(possible_links):
+        adj_matrix_final[x][y] = result[1][k]
+
+    print(f"\nEnlaces activos en mejor solución: {np.count_nonzero(adj_matrix_final)}")
+    final_cost = total_carbon_intensity(adj_matrix_final, **kwargs)
+    print(f"Cost verificado manualmente: {final_cost}")
+
+    # [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
+    # [1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 1 0 0 1 0 0 1 0 1 0 0 1 1 1]
+    # [1 1 1 1 1 1 0 0 0 1 1 0 1 1 0 1 1 1 0 1 0 1 1 0 1 0 0 1 1 1]
 
 
 if __name__ == "__main__":
