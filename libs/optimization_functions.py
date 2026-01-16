@@ -146,6 +146,9 @@ def carbon_intensity_wrapper(positions, **kwargs):
         # Crear matriz de adyacencia con ceros
         adj_matrix = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=int)
 
+        # TODO comprobar si la posición (posible solución) tiene al menos num_nodes enlaces activos
+        # TODO comprobar si la posición (posible solución) tiene encendidos algunos enlaces necesarios
+
         # Enumerar los pares de posibles links (nodo_src, nodo_dst) y por cada uno de ellos
         # almacenar el valor (0 o 1, encendido o apagado) en la matriz de adyacencia
         for k, (x, y) in enumerate(kwargs['possible_links']):
