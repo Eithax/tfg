@@ -59,11 +59,11 @@ def total_carbon_intensity(position, **kwargs) -> float:
     #                 weight=kwargs['carbon_matrix'][i][j]
     #             )
 
+    # Construir primero el grafo con los nodos
     for i in range(kwargs['num_nodes']):
         carbon_digraph.add_node(i)
 
-    # PRUEBA
-    # Construir el grafo SOLO con los enlaces posibles
+    # Incluir los arcos (enlaces)
     for i in range(kwargs['num_nodes']):
         for j in range(kwargs['num_nodes']):
             if position[i][j] == 1:
