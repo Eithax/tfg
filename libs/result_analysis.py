@@ -220,7 +220,7 @@ def procesar_resultados_particles_fijas_y_pintar(directorio="."):
 
 
     pattern = re.compile(
-        r"^20251205_\d{6}_"
+        r"^20260123_\d{6}_"
         r"200particles_(?P<iters>1[0-4]00|1500)iters_"
         r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
         r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
@@ -286,7 +286,7 @@ def procesar_resultados_particles_fijas_min_max_y_pintar(directorio="."):
     # )
 
     pattern = re.compile(
-        r"^20251205_\d{6}_"
+        r"^20260123_\d{6}_"
         r"200particles_(?P<iters>1[0-4]00|1500)iters_"
         r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
         r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
@@ -359,7 +359,7 @@ de coste medio vs número de partículas para cada combinación c1–c2.
 def procesar_resultados_iter_fijas_y_pintar(directorio="."):
     # Regex: timestamp al inicio, fecha fija 20251107
     pattern = re.compile(
-        r"^20251205_\d{6}_"                  # timestamp del día de hoy
+        r"^20260123_\d{6}_"                  # timestamp del día de hoy
         r"(?P<particles>[1-5]00)particles_"
         r"1500iters_"
         r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
@@ -419,7 +419,7 @@ y pinta una gráfica de coste medio vs número de partículas.
 def procesar_resultados_iter_fijas_min_max_y_pintar(directorio="."):
     # Regex: timestamp al inicio, fecha fija 20251107
     pattern = re.compile(
-        r"^20251205_\d{6}_"                  # timestamp del día actual
+        r"^20260123_\d{6}_"                  # timestamp del día actual
         r"(?P<particles>[1-5]00)particles_"
         r"1500iters_"
         r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
