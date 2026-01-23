@@ -1,8 +1,11 @@
 import random
+import pickle
+import networkx as nx
 import numpy as np
 import json
 from pyswarms.discrete.binary import BinaryPSO
 from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv, total_carbon_intensity
+from libs.shortest_paths import all_pairs_k_shortest_paths
 
 
 def main():
@@ -44,6 +47,21 @@ def main():
     abilene_cap_matrix = np.genfromtxt('resources/topologies/Capacidades/Abilene/AbileneCapMatrix.csv', delimiter=',')
     possible_links = load_possible_links_from_csv('./resources/topologies/AbileneTopology.csv')
 
+    carbon_digraph = nx.DiGraph()
+
+    # Construir primero el grafo con los nodos
+    for i in range(num_nodes):
+        carbon_digraph.add_node(i)
+
+    # Incluir los arcos (enlaces)
+    for (i, j) in possible_links:
+        carbon_digraph.add_edge(i, j, weight=abilene_carbon_matrix[i][j])
+
+    all_k_paths = all_pairs_k_shortest_paths(carbon_digraph, 10)
+
+    with open('abilene_k10_paths.pkl', 'wb') as f:
+        pickle.dump(all_k_paths, f)
+
     print("possible_links:")
     for i, (x, y) in enumerate(possible_links):
         print(f"{i}: ({x}, {y})")
@@ -56,7 +74,8 @@ def main():
         'nodes_geoposition': abilene_coordinates,
         'nodes_max_flow': abilene_cap_matrix,
         'possible_links': possible_links,
-        'filepath': 'Abilene'
+        'filepath': 'Abilene',
+        'all_k_paths': all_k_paths
     }
 
     init_pos = np.random.randint(0, 2, size=(n_particles, dimensions))
@@ -151,8 +170,7 @@ def main():
     print(f"Cost verificado manualmente: {final_cost}")
 
     # [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
-    # [1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 1 0 0 1 0 0 1 0 1 0 0 1 1 1]
-    # [1 1 1 1 1 1 0 0 0 1 1 0 1 1 0 1 1 1 0 1 0 1 1 0 1 0 0 1 1 1]
+    # [1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 1 0 0 1 0 1 1 0 1 0 0 1 1 1]
 
 
 if __name__ == "__main__":

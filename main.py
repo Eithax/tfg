@@ -1,5 +1,8 @@
 import os
+import pickle
 import random
+
+import networkx as nx
 import numpy as np
 import json
 import argparse
@@ -8,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from pyswarms.discrete.binary import BinaryPSO
 from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv
-
+from libs.shortest_paths import all_pairs_k_shortest_paths
 
 """
 Convierte valores a float y maneja inf/nan.
@@ -67,7 +70,7 @@ def compress_history(history, step=1, remove_consecutive_duplicates=True):
     return compressed
 
 
-def load_topology(network_name, tm_index):
+def load_topology(network_name, tm_index, abilene_carbon_matrix=None):
     """Carga topología, emisiones, matrices de tráfico y capacidades de la red elegida"""
 
     base_path = "./resources/topologies/"
@@ -105,6 +108,35 @@ def load_topology(network_name, tm_index):
     cap_matrix = np.genfromtxt(cap_file, delimiter=',')
     possible_links = load_possible_links_from_csv(topo_file)
 
+    # Pre-calcular los k caminos más cortos de la topología
+    pkl_str = f"./resources/cache/shortest_paths/{network_name}/{network_name.lower()}_k10_paths.pkl"
+    pkl_path = Path(pkl_str)
+
+    if pkl_path.exists():
+        print('Cargando all_k_paths desde archivo...')
+        with open(pkl_str, "rb") as f:
+            all_k_paths = pickle.load(f)
+    else:
+        carbon_digraph = nx.DiGraph()
+
+        # Construir primero el grafo con los nodos
+        for i in range(num_nodes):
+            carbon_digraph.add_node(i)
+
+        # Incluir los arcos (enlaces)
+        for (i, j) in possible_links:
+            carbon_digraph.add_edge(i, j, weight=carbon_matrix[i][j])
+
+        all_k_paths = all_pairs_k_shortest_paths(carbon_digraph, 10)
+
+        print('Guardando all_k_paths en archivo...')
+        with open(pkl_str, 'wb') as f:
+            pickle.dump(all_k_paths, f)
+
+
+    # Cargar los enlaces que deben estar encendidos de manera obligatoria
+
+
     kwargs = {
         'num_nodes': num_nodes,
         'carbon_matrix': carbon_matrix,
@@ -112,7 +144,8 @@ def load_topology(network_name, tm_index):
         'nodes_geoposition': coordinates,
         'nodes_max_flow': cap_matrix,
         'possible_links': possible_links,
-        'filepath': f"{network_name}"
+        'filepath': f"{network_name}",
+        'all_k_paths': all_k_paths
     }
 
     return num_nodes, num_links, kwargs
@@ -160,6 +193,11 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
         runs_results = []
         dimensions = num_links
 
+        # Definir la posición inicial con todos los enlaces encendidos para tener siempre resultados asegurados
+        init_pos = np.random.randint(0, 2, size=(particles, dimensions))
+        init_pos[0].fill(1)
+        print(init_pos[0])
+
         config = {
             "n_particles": particles,
             "dimensions": dimensions,
@@ -173,7 +211,7 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
 
         for run in range(n_runs):
             print(f"\n>>> Ejecutando PSO {run + 1}/{n_runs} en {network} con TM{tm_index} y {n_iters} iteraciones...")
-            pso = BinaryPSO(n_particles=particles, dimensions=dimensions, options=options)
+            pso = BinaryPSO(n_particles=particles, dimensions=dimensions, options=options, init_pos=init_pos)
             if n_threads is None:
                 result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=n_iters, **kwargs)
             else:
