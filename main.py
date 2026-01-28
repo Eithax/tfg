@@ -152,10 +152,30 @@ def load_topology(network_name, tm_index, abilene_carbon_matrix=None):
 
 
 def save_results_grouped(network, tm_index, runs_results, config):
-    """Guarda en un solo JSON los resultados de todas las ejecuciones de una misma TM"""
+    """
+    Guarda en un solo JSON los resultados de todas las ejecuciones de una misma TM
+
+    - Siempre sobrescribe results.json con los últimos resultados
+    - Siempre crea un nuevo results_TIMESTAMP.json
+    - La primera vez crea ambos
+    """
+
+    config_dir = (
+        f"p{config['n_particles']}_"
+        f"i{config['iterations']}_"
+        f"c1-{config['options']['c1']}_"
+        f"c2-{config['options']['c2']}_"
+        f"w{config['options']['w']}_"
+        f"k{config['options']['k']}"
+    )
+
+    base_dir = Path(f"results/{network}/PSO/{config_dir}/TM{tm_index}")
+    base_dir.mkdir(parents=True, exist_ok=True)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    Path(f"results/{network}/TM{tm_index}").mkdir(parents=True, exist_ok=True)
-    filename = f"results/{network}/TM{tm_index}/{timestamp}_{config['n_particles']}particles_{config['iterations']}iters_{config['options']['c1']}c1_{config['options']['c2']}c2_{config['options']['w']}w_{config['options']['k']}k.json"
+
+    results_file = base_dir / "results.json"
+    timestamped_file = base_dir / f"results_{timestamp}.json"
 
     data = {
         "network": network,
@@ -164,9 +184,19 @@ def save_results_grouped(network, tm_index, runs_results, config):
         "results": runs_results
     }
 
-    with open(filename, "w") as f:
+    # Guardar siempre el archivo con timestamp
+    with open(timestamped_file, "w") as f:
         json.dump(data, f, indent=4)
-    print(f"Resultados de TM{tm_index} guardados en {filename}")
+
+    # Sobrescribir (o crear) results.json
+    with open(results_file, "w") as f:
+        json.dump(data, f, indent=4)
+
+    print(
+        f"Resultados de TM{tm_index} guardados en:\n"
+        f"  - {results_file}\n"
+        f"  - {timestamped_file}"
+    )
 
 
 def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w, k, history_step=1, history_compress=False, history_inf="prev"):
