@@ -3,3 +3,4 @@ numpy
 pyswarms
 matplotlib
 networkx
+scipy
