@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import defaultdict
+from libs.utils import confidence_interval
 
 def plot_from_json(files, title="Evolución del coste por iteración"):
     """Dibuja las curvas de coste de uno o varios ficheros de resultados JSON."""
@@ -482,3 +483,63 @@ def procesar_resultados_iter_fijas_min_max_y_pintar(directorio="."):
     plt.show()
 
     return resultados
+
+
+def plot_tm_bars_with_confidence(
+    network,
+    config_dir,
+    tm_indices,
+    confidence=0.95
+):
+    """
+    Dibuja un gráfico de barras (una por TM) con intervalo de confianza adaptativo.
+    """
+
+    means = []
+    ci_errors = []
+    labels = []
+
+    for tm in tm_indices:
+        results_path = Path(
+            f"results/{network}/PSO/{config_dir}/TM{tm}/results.json"
+        )
+
+        if not results_path.exists():
+            raise FileNotFoundError(f"No existe {results_path}")
+
+        with open(results_path) as f:
+            data = json.load(f)
+
+        # Extraer best_cost válidos
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
+        ]
+
+        if len(costs) < 2:
+            raise ValueError(f"TM{tm}: no hay suficientes valores válidos")
+
+        mean, ci = confidence_interval(costs, confidence)
+
+        means.append(mean)
+        ci_errors.append(ci)
+        labels.append(f"TM{tm}")
+
+    # ---- Gráfica ----
+    plt.figure(figsize=(8, 6))
+    plt.bar(
+        labels,
+        means,
+        yerr=ci_errors,
+        capsize=6
+    )
+
+    plt.ylabel("Coste medio (gCO2/kWh)")
+    plt.title(
+        f"Coste medio por TM con IC {int(confidence*100)}%\n"
+        f"{network} – {config_dir}"
+    )
+    plt.grid(axis="y", linestyle="--", alpha=0.6)
+    plt.tight_layout()
+    plt.show()
