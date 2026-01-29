@@ -109,12 +109,13 @@ def load_topology(network_name, tm_index, abilene_carbon_matrix=None):
     possible_links = load_possible_links_from_csv(topo_file)
 
     # Pre-calcular los k caminos más cortos de la topología
-    pkl_str = f"./resources/cache/shortest_paths/{network_name}/{network_name.lower()}_k10_paths.pkl"
-    pkl_path = Path(pkl_str)
+    pkl_path = Path(f"resources/cache/shortest_paths/{network_name}")
+    pkl_path.mkdir(parents=True, exist_ok=True)
+    pkl_file = pkl_path / f"{network_name.lower()}_k10_paths.pkl"
 
-    if pkl_path.exists():
+    if pkl_file.exists():
         print('Cargando all_k_paths desde archivo...')
-        with open(pkl_str, "rb") as f:
+        with open(pkl_file, "rb") as f:
             all_k_paths = pickle.load(f)
     else:
         carbon_digraph = nx.DiGraph()
@@ -130,7 +131,7 @@ def load_topology(network_name, tm_index, abilene_carbon_matrix=None):
         all_k_paths = all_pairs_k_shortest_paths(carbon_digraph, 10)
 
         print('Guardando all_k_paths en archivo...')
-        with open(pkl_str, 'wb') as f:
+        with open(pkl_file, 'wb') as f:
             pickle.dump(all_k_paths, f)
 
 
