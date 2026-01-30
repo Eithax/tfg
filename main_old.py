@@ -163,7 +163,7 @@ def main():
     # Verificar manualmente la mejor solución
     adj_matrix_final = np.zeros((num_nodes, num_nodes), dtype=int)
     for k, (x, y) in enumerate(possible_links):
-        adj_matrix_final[x][y] = result[1][k]
+        adj_matrix_final[x][y] = init_pos_2[0][k]
 
     print(f"\nEnlaces activos en mejor solución: {np.count_nonzero(adj_matrix_final)}")
     final_cost = total_carbon_intensity(adj_matrix_final, **kwargs)

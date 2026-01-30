@@ -107,7 +107,7 @@ from libs.result_analysis import (
 # procesar_resultados_iter_fijas_y_pintar(directorio='/Users/santi/Documents/universidad/tfg/results/Abilene/TM5')
 # procesar_resultados_iter_fijas_min_max_y_pintar(directorio='/Users/santi/Documents/universidad/tfg/results/Abilene/TM5')
 
-network="Geant"
+network="Nobel"
 config_dir="p200_i1200_c1-1.75_c2-2.25_w0.7_k100"
 tm_indices=[1, 2, 3, 4, 5]
 confidence=0.95
