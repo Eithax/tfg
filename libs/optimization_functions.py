@@ -73,9 +73,6 @@ def total_carbon_intensity(position, **kwargs) -> float:
             if position[i][j] == 1:
                 active_links.add((i, j))
 
-    if len(active_links) < kwargs['num_nodes']:
-        return float('inf')
-
     # shortest_paths = dict(nx.all_pairs_dijkstra_path(carbon_digraph, weight='weight'))
 
     # DEBUG
