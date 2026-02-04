@@ -21,13 +21,6 @@ Local variables:
 """
 
 def total_carbon_intensity(position, **kwargs) -> float:
-
-    # DEBUG
-    # print(f"\n=== total_carbon_intensity called ===")
-    # print(f"position shape: {position.shape}")
-    # print(f"position non-zero count: {np.count_nonzero(position)}")
-    # print(f"position:\n{position}")
-
     nodes_traffic = defaultdict(int)
     links_traffic = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=float)
     lambda_n = (41.625-23.375)/400000   # 0.000045625 W/Mbps
@@ -35,82 +28,12 @@ def total_carbon_intensity(position, **kwargs) -> float:
     dynamic_power = 0.0
     power_ports = 0.0
 
-    # A partir de la matriz de carbono, generar el grafo dirigido y los caminos más cortos con Dijkstra
-    # result_carbon_matrix = np.where(position == 1, kwargs['carbon_matrix'], 0)
-    # carbon_digraph = nx.from_numpy_array(result_carbon_matrix, create_using=nx.DiGraph)
-
-    # carbon_digraph = nx.DiGraph()
-
-    # for i in range(kwargs['num_nodes']):
-    #     for j in range(kwargs['num_nodes']):
-    #         if position[i][j] == 1:
-    #             carbon_digraph.add_edge(
-    #                 i, j,
-    #                 weight=kwargs['carbon_matrix'][i][j]
-    #             )
-
-    # Construir primero el grafo con los nodos
-    # for i in range(kwargs['num_nodes']):
-    #     carbon_digraph.add_node(i)
-
-    # Incluir los arcos (enlaces)
-    # for i in range(kwargs['num_nodes']):
-    #     for j in range(kwargs['num_nodes']):
-    #         if position[i][j] == 1:
-    #             # Verificar que este enlace esté en possible_links
-    #             if (i, j) in kwargs['possible_links']:
-    #                 carbon_digraph.add_edge(i, j, weight=kwargs['carbon_matrix'][i][j])
-
-    # DEBUG: Mostrar qué enlaces se añadieron
-    # print(f"\nEdges added to graph:")
-    # for edge in carbon_digraph.edges():
-    #     print(f"  {edge}")
-
     # Crear conjunto de enlaces activos
     active_links = set()
     for i in range(kwargs['num_nodes']):
         for j in range(kwargs['num_nodes']):
             if position[i][j] == 1:
                 active_links.add((i, j))
-
-    # shortest_paths = dict(nx.all_pairs_dijkstra_path(carbon_digraph, weight='weight'))
-
-    # DEBUG
-    # print(f"Graph has {carbon_digraph.number_of_nodes()} nodes and {carbon_digraph.number_of_edges()} edges")
-    # print(f"Is strongly connected: {nx.is_strongly_connected(carbon_digraph)}")
-    # for src in shortest_paths:
-    #     print(f"From node {src}, can reach {len(shortest_paths[src])} nodes")
-
-    # Si no es fuertemente conexo, solución no válida
-    # if not nx.is_strongly_connected(carbon_digraph):
-        #     print(
-        #     f"⚠️  Graph NOT strongly connected! Nodes: {carbon_digraph.number_of_nodes()}, Edges: {carbon_digraph.number_of_edges()}")
-    #     return float('inf')
-        # else:
-        # print(
-        #     f"✓ Graph is strongly connected. Nodes: {carbon_digraph.number_of_nodes()}, Edges: {carbon_digraph.number_of_edges()}")
-
-    # Lista de flujos con sus rutas
-    # flow_list = []
-    # for src in shortest_paths:
-    #     for dst in shortest_paths:
-    #         if src != dst:
-    #             demand = kwargs['flow_matrix'][src][dst]
-    #             path = shortest_paths[src][dst]
-    #             flow_list.append((src, dst, demand, path))
-
-    # Ordenar flujos por demanda (en orden descendente)
-    # flow_list.sort(key=lambda x: x[2], reverse=True)
-
-    # Comprobar que los flujos no superan la capacidad de los enlaces
-    # for (src, dst, demand, path) in flow_list:
-    #     prev = path[0]
-    #     for n in path[1:]:
-    #         if links_traffic[prev][n] + demand > kwargs['nodes_max_flow'][prev][n]:
-    #             return float('inf')
-    #         links_traffic[prev][n] += demand
-    #         nodes_traffic[n] += demand
-    #         prev = n
 
     # Función auxiliar para verificar si un camino usa solo enlaces activos
     def path_is_valid(v_path):
