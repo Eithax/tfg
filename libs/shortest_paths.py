@@ -1,4 +1,5 @@
 import heapq
+import itertools
 import networkx as nx
 
 def dijkstra_path_length(graph, source, target):
@@ -72,5 +73,27 @@ def all_pairs_k_shortest_paths(graph, k):
                 paths = yen_k_shortest_paths(graph, source, target, k)
                 if paths:
                     all_paths[(source, target)] = paths
+
+    return all_paths
+
+def all_pairs_k_shortest_paths_nx(graph, k):
+    all_paths = {}
+    nodes = list(graph.nodes())
+
+    for src in nodes:
+        for dst in nodes:
+            if src == dst:
+                continue
+
+            try:
+                k_paths = list(itertools.islice(
+                    nx.shortest_simple_paths(graph, src, dst, weight='weight'),
+                    k
+                ))
+                if k_paths:
+                    all_paths[(src, dst)] = k_paths
+
+            except nx.NetworkXNoPath:
+                continue
 
     return all_paths
