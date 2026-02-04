@@ -124,7 +124,7 @@ def carbon_intensity_wrapper(positions, **kwargs):
     for i in range(n_particles):
         # Crear matriz de adyacencia con ceros
         adj_matrix = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=int)
-        links = 0
+        links = np.count_nonzero(positions[i])
         # TODO comprobar si la posición (posible solución) tiene encendidos algunos enlaces necesarios
 
         # Enumerar los pares de posibles links (nodo_src, nodo_dst) y por cada uno de ellos
@@ -132,7 +132,6 @@ def carbon_intensity_wrapper(positions, **kwargs):
         for k, (x, y) in enumerate(kwargs['possible_links']):
             # El índice i representa la partícula que se está procesando
             adj_matrix[x][y] = positions[i][k]
-            links += 1
 
         # Comprobar si la posición (posible solución) tiene al menos num_nodes enlaces activos
         if links < kwargs['num_nodes']:
