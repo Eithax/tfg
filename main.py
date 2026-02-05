@@ -10,8 +10,9 @@ import math
 from datetime import datetime
 from pathlib import Path
 from pyswarms.discrete.binary import BinaryPSO
-from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv
-from libs.shortest_paths import all_pairs_k_shortest_paths
+from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv, \
+    carbon_intensity_wrapper_vch
+from libs.shortest_paths import all_pairs_k_shortest_paths_nx
 
 """
 Convierte valores a float y maneja inf/nan.
@@ -109,9 +110,10 @@ def load_topology(network_name, tm_index, abilene_carbon_matrix=None):
     possible_links = load_possible_links_from_csv(topo_file)
 
     # Pre-calcular los k caminos más cortos de la topología
+    k = 15
     pkl_path = Path(f"resources/cache/shortest_paths/{network_name}")
     pkl_path.mkdir(parents=True, exist_ok=True)
-    pkl_file = pkl_path / f"{network_name.lower()}_k10_paths.pkl"
+    pkl_file = pkl_path / f"{network_name.lower()}_k{k}_paths.pkl"
 
     if pkl_file.exists():
         print('Cargando all_k_paths desde archivo...')
@@ -128,7 +130,7 @@ def load_topology(network_name, tm_index, abilene_carbon_matrix=None):
         for (i, j) in possible_links:
             carbon_digraph.add_edge(i, j, weight=carbon_matrix[i][j])
 
-        all_k_paths = all_pairs_k_shortest_paths(carbon_digraph, 10)
+        all_k_paths = all_pairs_k_shortest_paths_nx(carbon_digraph, k)
 
         print('Guardando all_k_paths en archivo...')
         with open(pkl_file, 'wb') as f:
@@ -170,7 +172,10 @@ def save_results_grouped(network, tm_index, runs_results, config):
         f"k{config['options']['k']}"
     )
 
-    base_dir = Path(f"results/{network}/PSO/{config_dir}/TM{tm_index}")
+    if config['vch']:
+        base_dir = Path(f"results/{network}/PSO_VCH/{config_dir}/TM{tm_index}")
+    else:
+        base_dir = Path(f"results/{network}/PSO/{config_dir}/TM{tm_index}")
     base_dir.mkdir(parents=True, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -200,7 +205,7 @@ def save_results_grouped(network, tm_index, runs_results, config):
     )
 
 
-def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w, k, history_step=1, history_compress=False, history_inf="prev"):
+def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w, k, history_step=1, history_compress=False, history_inf="prev", vch=False):
     # Parámetros de PSO
     options = {
         'c1': c1,
@@ -235,7 +240,8 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
             "options": options,
             "iterations": n_iters,
             "runs": n_runs,
-            "threads": n_threads
+            "threads": n_threads,
+            "vch": vch
         }
 
         print(config)
@@ -244,9 +250,16 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
             print(f"\n>>> Ejecutando PSO {run + 1}/{n_runs} en {network} con TM{tm_index} y {n_iters} iteraciones...")
             pso = BinaryPSO(n_particles=particles, dimensions=dimensions, options=options, init_pos=init_pos)
             if n_threads is None:
-                result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=n_iters, **kwargs)
+                if vch:
+                    result = pso.optimize(objective_func=carbon_intensity_wrapper_vch, iters=n_iters, **kwargs)
+                else:
+                    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=n_iters, **kwargs)
             else:
-                result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=n_iters, n_processes=n_threads, **kwargs)
+                if vch:
+                    result = pso.optimize(objective_func=carbon_intensity_wrapper_vch, iters=n_iters, n_processes=n_threads,
+                                          **kwargs)
+                else:
+                    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=n_iters, n_processes=n_threads, **kwargs)
             best_cost, best_pos = result
             print(f"Resultado ejecución {run + 1} (TM{tm_index}): Coste={best_cost}, Posicion={best_pos}")
 
@@ -312,6 +325,7 @@ def main():
              "'null' = los deja como null, "
              "'zero' = los reemplaza por 0.0."
     )
+    parser.add_argument("--vch", action="store_true")
 
 
     args = parser.parse_args()
@@ -348,7 +362,8 @@ def main():
                         args.k,
                         history_step=args.history_step,
                         history_compress=args.history_compress,
-                        history_inf=args.history_inf
+                        history_inf=args.history_inf,
+                        vch=args.vch
                     )
 
 
