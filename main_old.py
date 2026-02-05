@@ -1,11 +1,10 @@
-import random
 import pickle
 import networkx as nx
 import numpy as np
 import json
 from pyswarms.discrete.binary import BinaryPSO
 from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv, total_carbon_intensity
-from libs.shortest_paths import all_pairs_k_shortest_paths
+from libs.shortest_paths import all_pairs_k_shortest_paths, all_pairs_k_shortest_paths_nx
 
 
 def main():
@@ -30,18 +29,16 @@ def main():
 
     abilene_topology = np.genfromtxt('./resources/topologies/AbileneTopology.csv', delimiter=',')
     abilene_carbon_matrix = abilene_topology.copy()
-    carbon_intensity_nodes = json.load(open('./resources/topologies/Emissions/Abilene/emisiones_Abilene_20250421_2131.json'))
+    carbon_intensity_nodes = json.load(open('./resources/topologies/Historic_Carbon_Intensity/Abilene.json'))
     lambda_j = (41.625 - 23.375) / 400000  # 0.000045625 W/Mbps
     num_nodes = abilene_topology.shape[0]
 
     for i in range(num_nodes):
         for j in range(num_nodes):
             if abilene_topology[i][j] == 1:
-                abilene_carbon_matrix[i][j] = 1 + (carbon_intensity_nodes['emisiones'][j] / 1000) * lambda_j
+                abilene_carbon_matrix[i][j] = 1 + (carbon_intensity_nodes['carbon_intensity'][j] / 1000) * lambda_j
 
-    random_tm = random.randint(1, 5)
     path_abilene_tm = 'resources/topologies/Matrices_trafico/Abilene/AbileneTM5.csv'
-    #path_abilene_tm = 'resources/topologies/Matrices_trafico/Abilene/AbileneTM' + str(random_tm) + '.csv'
     abilene_traffic_matrix = np.genfromtxt(path_abilene_tm, delimiter=',')
     abilene_coordinates = [{'lon': lon, 'lat': lat} for lon, lat in json.load(open('resources/topologies/Coordenadas/AbileneUbications.json'))]
     abilene_cap_matrix = np.genfromtxt('resources/topologies/Capacidades/Abilene/AbileneCapMatrix.csv', delimiter=',')
@@ -56,6 +53,8 @@ def main():
     # Incluir los arcos (enlaces)
     for (i, j) in possible_links:
         carbon_digraph.add_edge(i, j, weight=abilene_carbon_matrix[i][j])
+
+    paths = all_pairs_k_shortest_paths_nx(carbon_digraph, 15)
 
     all_k_paths = all_pairs_k_shortest_paths(carbon_digraph, 10)
 
@@ -75,18 +74,36 @@ def main():
         'nodes_max_flow': abilene_cap_matrix,
         'possible_links': possible_links,
         'filepath': 'Abilene',
-        'all_k_paths': all_k_paths
+        'all_k_paths': paths
     }
 
     init_pos = np.random.randint(0, 2, size=(n_particles, dimensions))
     init_pos[0] = np.array([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
 
+    init_pos_TM1 = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos_TM1[0] = [1, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1]
 
-    init_pos_2 = np.random.randint(0, 2, size=(n_particles, dimensions))
-    init_pos_2[0] = [1,
+    init_pos_TM2 = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos_TM2[0] = [1,
             1,
             1,
+            0,
             1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
             1,
             1,
             0,
@@ -95,10 +112,58 @@ def main():
             1,
             1,
             0,
+            0,
+            1]
+
+    init_pos_TM3 = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos_TM3[0] = [1,
             1,
             1,
             0,
             1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1]
+
+    init_pos_TM4 = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos_TM4[0] = [ 1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
             1,
             0,
             0,
@@ -113,6 +178,9 @@ def main():
             1,
             1,
             1]
+
+    init_pos_TM5 = np.random.randint(0, 2, size=(n_particles, dimensions))
+    init_pos_TM5[0] = [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
 
 
 
@@ -153,8 +221,7 @@ def main():
     # Init PySwarms BinaryPSO
     pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, init_pos=init_pos)
     #pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options, init_pos=init_pos_2)
-    #pso = BinaryPSO(n_particles=n_particles, dimensions=dimensions, options=options)
-    result = pso.optimize(objective_func=carbon_intensity_wrapper, iters=1500, **kwargs)
+    result = pso.optimize(objective_func=carbon_intensity_wrapper, n_processes=6, iters=1200, **kwargs)
 
     print("\n=== RESULTADO FINAL ===")
     print(f"Best position: {result[1]}")
@@ -163,11 +230,13 @@ def main():
     # Verificar manualmente la mejor solución
     adj_matrix_final = np.zeros((num_nodes, num_nodes), dtype=int)
     for k, (x, y) in enumerate(possible_links):
-        adj_matrix_final[x][y] = init_pos_2[0][k]
+        adj_matrix_final[x][y] = init_pos_TM5[0][k]
 
-    print(f"\nEnlaces activos en mejor solución: {np.count_nonzero(adj_matrix_final)}")
+    print("\n=== RESULTADOS DE JOSE ===")
+    print(f"Solución proporcionada: {init_pos_TM5[0]}")
+    print(f"Enlaces activos: {np.count_nonzero(adj_matrix_final)}")
     final_cost = total_carbon_intensity(adj_matrix_final, **kwargs)
-    print(f"Cost verificado manualmente: {final_cost}")
+    print(f"Coste verificado manualmente: {final_cost}")
 
     # [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
     # [1 1 1 1 1 1 0 0 0 1 1 0 1 1 1 1 1 0 0 1 0 1 1 0 1 0 0 1 1 1]
