@@ -7,6 +7,8 @@ from pathlib import Path
 from collections import defaultdict
 from libs.utils import confidence_interval
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
 def plot_from_json(files, title="Evolución del coste por iteración"):
     """Dibuja las curvas de coste de uno o varios ficheros de resultados JSON."""
     plt.figure(figsize=(10, 6))
@@ -489,7 +491,8 @@ def plot_tm_bars_with_confidence(
     network,
     config_dir,
     tm_indices,
-    confidence=0.95
+    confidence=0.95,
+    pso_type="PSO"
 ):
     """
     Dibuja un gráfico de barras (una por TM) con intervalo de confianza adaptativo.
@@ -500,8 +503,14 @@ def plot_tm_bars_with_confidence(
     labels = []
 
     for tm in tm_indices:
-        results_path = Path(
-            f"results/{network}/PSO/{config_dir}/TM{tm}/results.json"
+        results_path = (
+                PROJECT_ROOT /
+                "results" /
+                network /
+                pso_type /
+                config_dir /
+                f"TM{tm}" /
+                "results.json"
         )
 
         if not results_path.exists():
@@ -538,7 +547,7 @@ def plot_tm_bars_with_confidence(
     plt.ylabel("Coste medio (gCO2/kWh)")
     plt.title(
         f"Coste medio por TM con IC {int(confidence*100)}%\n"
-        f"{network} – {config_dir}"
+        f"{network} – {pso_type} – {config_dir}"
     )
     plt.grid(axis="y", linestyle="--", alpha=0.6)
     plt.tight_layout()
