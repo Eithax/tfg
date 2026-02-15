@@ -10,7 +10,7 @@ from pyswarms.discrete.binary import BinaryPSO
 from libs.optimization_functions import (
     carbon_intensity_wrapper,
     load_possible_links_from_csv,
-    total_carbon_intensity
+    total_carbon_intensity, carbon_intensity_wrapper_vch
 )
 from libs.shortest_paths import (
     all_pairs_k_shortest_paths,
@@ -22,7 +22,7 @@ from libs.shortest_paths import (
 # ============================================================
 
 PSO_CONFIG = {
-    "n_particles": 200,
+    "n_particles": 100,
     "iters": 1200,
     "n_processes": 6,
     "options": {
@@ -111,6 +111,7 @@ def load_k_paths(network, carbon_matrix, possible_links, k=10):
 
     for i, j in possible_links:
         G.add_edge(i, j, weight=carbon_matrix[i][j])
+        #G.add_edge(i, j, weight=1)
 
     paths = all_pairs_k_shortest_paths_nx(G, k)
 
@@ -124,7 +125,7 @@ def load_k_paths(network, carbon_matrix, possible_links, k=10):
 # PSO
 # ============================================================
 
-def run_pso(kwargs, init_pos):
+def run_pso(kwargs, init_pos, vch):
     dimensions = init_pos.shape[1]
     print(dimensions)
 
@@ -135,19 +136,27 @@ def run_pso(kwargs, init_pos):
         init_pos=init_pos
     )
 
-    return pso.optimize(
-        carbon_intensity_wrapper,
-        iters=PSO_CONFIG["iters"],
-        n_processes=PSO_CONFIG["n_processes"],
-        **kwargs
-    )
+    if vch:
+        return pso.optimize(
+            carbon_intensity_wrapper_vch,
+            iters=PSO_CONFIG["iters"],
+            n_processes=PSO_CONFIG["n_processes"],
+            **kwargs
+        )
+    else:
+        return pso.optimize(
+            carbon_intensity_wrapper,
+            iters=PSO_CONFIG["iters"],
+            n_processes=PSO_CONFIG["n_processes"],
+            **kwargs
+        )
 
 
 # ============================================================
 # MAIN EXPERIMENTO
 # ============================================================
 
-def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10):
+def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10, vch=False):
     print(f"\nEjecutando {network} | TM{tm}")
 
     kwargs = load_network(network, tm)
@@ -165,7 +174,7 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10)
     )
     init_pos[0].fill(1)
 
-    best_cost, best_pos = run_pso(kwargs, init_pos)
+    best_cost, best_pos = run_pso(kwargs, init_pos, vch)
 
     print("\n=== RESULTADO FINAL ===")
     print("Best cost:", best_cost)
@@ -191,6 +200,7 @@ if __name__ == "__main__":
     parser.add_argument("--network", default="Abilene")
     parser.add_argument("--tm", type=int, default=1)
     parser.add_argument("--comprobar_jose", action="store_true")
+    parser.add_argument("--vch", action="store_true")
     parser.add_argument("--k", type=int, default=10)
 
     args = parser.parse_args()
@@ -199,5 +209,6 @@ if __name__ == "__main__":
         network=args.network,
         tm=args.tm,
         comprobar_solucion_jose=args.comprobar_jose,
-        k=args.k
+        k=args.k,
+        vch=args.vch
     )
