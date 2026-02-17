@@ -7,10 +7,10 @@ for ($i = 0; $i -lt $c1_values.Length; $i++) {
 
     Write-Host "# 1000 - 1500 iter / 200 particles / c1 $c1 / c2 $c2"
 
-    for ($iters = 1000; $iters -le 1500; $iters += 100) {
-        python main.py --network Abilene --runs 5 --tm 5 --threads 6 `
+    for ($iters = 100; $iters -le 1500; $iters += 100) {
+        python main.py --network Abilene --runs 20 --tm 5 --threads 6 `
         --iters $iters --particles 200 --history-step 100 `
-        --c1 $c1 --c2 $c2 --k 100 --history-inf null
+        --c1 $c1 --c2 $c2 --k 100 --history-inf null --vch
     }
 
     Write-Host ""
