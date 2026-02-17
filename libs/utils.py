@@ -15,3 +15,15 @@ def confidence_interval(values, confidence=0.95):
 
     ci = factor * std / math.sqrt(n)
     return mean, ci
+
+def parse_config_dir(config_dir):
+    parts = config_dir.split("_")
+
+    particles = int(parts[0][1:])
+    iterations = int(parts[1][1:])
+    c1 = float(parts[2].split("-")[1])
+    c2 = float(parts[3].split("-")[1])
+    w = float(parts[4][1:])
+    k = int(parts[5][1:])
+
+    return particles, iterations, c1, c2, w, k
