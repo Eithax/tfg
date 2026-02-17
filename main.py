@@ -13,6 +13,7 @@ from pyswarms.discrete.binary import BinaryPSO
 from libs.optimization_functions import carbon_intensity_wrapper, load_possible_links_from_csv, \
     carbon_intensity_wrapper_vch
 from libs.shortest_paths import all_pairs_k_shortest_paths_nx
+from libs.utils import generate_initial_positions
 
 """
 Convierte valores a float y maneja inf/nan.
@@ -229,10 +230,8 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
         runs_results = []
         dimensions = num_links
 
-        # Definir la posición inicial con todos los enlaces encendidos para tener siempre resultados asegurados
-        init_pos = np.random.randint(0, 2, size=(particles, dimensions))
-        init_pos[0].fill(1)
-        print(init_pos[0])
+        # Inicializar posiciones
+        init_pos = generate_initial_positions(particles, dimensions)
 
         config = {
             "n_particles": particles,
