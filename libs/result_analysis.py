@@ -272,7 +272,7 @@ def procesar_barrido_iteraciones(
         ys = [valores[x] for x in xs]
         plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
 
-    plt.title(f"{network} - {pso_type}\nCoste medio vs Iteraciones (particulas={particles_fixed})")
+    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio vs Iteraciones (particulas={particles_fixed})")
     plt.xlabel("Iteraciones")
     plt.ylabel("Coste medio (gCO₂/kWh)")
     plt.legend()
@@ -379,7 +379,7 @@ def procesar_barrido_iteraciones_min_max(
         plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
         plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
 
-    plt.title(f"{network} - {pso_type}\nCoste medio ± rango vs Iteraciones (particulas={particles_fixed})")
+    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio ± rango vs Iteraciones (particulas={particles_fixed})")
     plt.xlabel("Iteraciones")
     plt.ylabel("Coste medio (gCO₂/kWh)")
     plt.legend(title="c1–c2")
@@ -472,7 +472,7 @@ def procesar_barrido_particulas(
         ys = [valores[x] for x in xs]
         plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
 
-    plt.title(f"{network} - {pso_type}\nCoste medio vs Partículas (iter={iterations_fixed})")
+    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio vs Partículas (iter={iterations_fixed})")
     plt.xlabel("Número de partículas")
     plt.ylabel("Coste medio (gCO₂/kWh)")
     plt.legend()
@@ -579,7 +579,7 @@ def procesar_barrido_particulas_min_max(
         plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
         plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
 
-    plt.title(f"{network} - {pso_type}\nCoste medio ± rango vs Partículas (iter={iterations_fixed})")
+    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio ± rango vs Partículas (iter={iterations_fixed})")
     plt.xlabel("Número de partículas")
     plt.ylabel("Coste medio (gCO₂/kWh)")
     plt.legend(title="c1–c2")
