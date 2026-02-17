@@ -228,7 +228,6 @@ def carbon_intensity_wrapper(positions, **kwargs):
         # Crear matriz de adyacencia con ceros
         adj_matrix = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=int)
         links = np.count_nonzero(positions[i])
-        # TODO comprobar si la posición (posible solución) tiene encendidos algunos enlaces necesarios
 
         # Enumerar los pares de posibles links (nodo_src, nodo_dst) y por cada uno de ellos
         # almacenar el valor (0 o 1, encendido o apagado) en la matriz de adyacencia
@@ -236,8 +235,11 @@ def carbon_intensity_wrapper(positions, **kwargs):
             # El índice i representa la partícula que se está procesando
             adj_matrix[x][y] = positions[i][k]
 
-        # Comprobar si la posición (posible solución) tiene al menos num_nodes enlaces activos
-        if links < kwargs['num_nodes']:
+        G = nx.from_numpy_array(adj_matrix, create_using=nx.DiGraph)
+
+        if not nx.is_strongly_connected(G): # Comprobar que la posición genera un grafo fuertemente conexo
+            results[i] = float('inf')
+        elif links < kwargs['num_nodes']: # Comprobar si la posición tiene al menos num_nodes enlaces activos
             results[i] = float('inf')
         else:
             results[i] = total_carbon_intensity(adj_matrix, **kwargs)
@@ -256,7 +258,6 @@ def carbon_intensity_wrapper_vch(positions, **kwargs):
         # Crear matriz de adyacencia con ceros
         adj_matrix = np.zeros((kwargs['num_nodes'], kwargs['num_nodes']), dtype=int)
         links = np.count_nonzero(positions[i])
-        # TODO comprobar si la posición (posible solución) tiene encendidos algunos enlaces necesarios
 
         # Enumerar los pares de posibles links (nodo_src, nodo_dst) y por cada uno de ellos
         # almacenar el valor (0 o 1, encendido o apagado) en la matriz de adyacencia
@@ -264,8 +265,11 @@ def carbon_intensity_wrapper_vch(positions, **kwargs):
             # El índice i representa la partícula que se está procesando
             adj_matrix[x][y] = positions[i][k]
 
-        # Comprobar si la posición (posible solución) tiene al menos num_nodes enlaces activos
-        if links < kwargs['num_nodes']:
+        G = nx.from_numpy_array(adj_matrix, create_using=nx.DiGraph)
+
+        if not nx.is_strongly_connected(G): # Comprobar que la posición genera un grafo fuertemente conexo
+            results[i] = big_m
+        elif links < kwargs['num_nodes']: # Comprobar si la posición tiene al menos num_nodes enlaces activos
             results[i] = (kwargs['num_nodes'] - links) * big_m
         else:
             results[i] = total_carbon_intensity_vch(adj_matrix, **kwargs)
