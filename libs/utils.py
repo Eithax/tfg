@@ -1,4 +1,6 @@
 import math
+
+import numpy as np
 from scipy.stats import t, norm
 
 def confidence_interval(values, confidence=0.95):
@@ -27,3 +29,25 @@ def parse_config_dir(config_dir):
     k = int(parts[5][1:])
 
     return particles, iterations, c1, c2, w, k
+
+def generate_initial_positions(particles, dimensions):
+    init_pos = np.zeros((particles, dimensions), dtype=int)
+
+    # Definir la posición inicial con todos los enlaces encendidos para tener siempre resultados asegurados
+    init_pos[0].fill(1)
+
+    # Definir el resto de partículas con un 50-90% de los enlaces encendidos para filtrar soluciones inviables
+    for i in range(1, particles):
+        # Elegir porcentaje entre 50% y 90%
+        activation_ratio = np.random.uniform(0.5, 0.9)
+
+        # Número de enlaces activos
+        num_active = int(dimensions * activation_ratio)
+
+        # Elegir índices aleatorios sin repetición
+        active_indices = np.random.choice(dimensions, num_active, replace=False)
+
+        # Activarlos
+        init_pos[i, active_indices] = 1
+
+    return init_pos
