@@ -5,9 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import defaultdict
-from libs.utils import confidence_interval
+from libs.utils import confidence_interval, parse_config_dir
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+fuente = 14
+fuente_eje = 11
+fuente_leyenda = fuente-5
+fs = (6, 4)
 
 def plot_from_json(files, title="Evolución del coste por iteración"):
     """Dibuja las curvas de coste de uno o varios ficheros de resultados JSON."""
@@ -207,128 +211,164 @@ def plot_cost_vs_particles(files, tm_target=None, metric="best_cost", group_by="
 
 
 """
-Lee los archivos JSON de resultados generados el día 7 (20251107),
-calcula el coste medio (ignorando valores nulos),
-y pinta la gráfica de coste medio vs iteraciones.
+Calcula la media de best_cost y genera una gráfica
+de coste medio vs número de iteraciones para cada combinación c1–c2.
 """
-def procesar_resultados_particles_fijas_y_pintar(directorio="."):
-    # Regex para extraer iteraciones, c1 y c2
+def procesar_barrido_iteraciones(
+    network,
+    pso_type,
+    iter_start,
+    iter_end,
+    iter_step,
+    particles_fixed,
+    tm_index=1
+):
+    base_path = PROJECT_ROOT / "results" / network / pso_type
 
-    # pattern = re.compile(
-    #     r"^200particles_(?P<iters>1[0-4]00|1500)iters_"
-    #     r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
-    #     r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
-    #     r"0\.7w_100k_20251107_\d{6}\.json$"
-    # )
-
-
-    pattern = re.compile(
-        r"^20260123_\d{6}_"
-        r"200particles_(?P<iters>1[0-4]00|1500)iters_"
-        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
-        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
-        r"0\.7w_100k\.json$"
-    )
-
-    # Estructura: {(c1, c2): {iters: media_coste}}
     resultados = defaultdict(dict)
 
-    for f in os.listdir(directorio):
-        match = pattern.match(f)
-        if not match:
+    for config_dir in base_path.iterdir():
+        if not config_dir.is_dir():
             continue
 
-        iters = int(match.group("iters"))
-        c1 = float(match.group("c1"))
-        c2 = float(match.group("c2"))
+        particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
 
-        with open(os.path.join(directorio, f)) as file:
-            data = json.load(file)
+        if particles != particles_fixed:
+            continue
 
-        # Extraer best_cost válidos
-        best_costs = [
-            run["best_cost"] for run in data.get("results", [])
-            if run["best_cost"] is not None
+        if iterations < iter_start or iterations > iter_end:
+            continue
+
+        if (iterations - iter_start) % iter_step != 0:
+            continue
+
+        results_path = config_dir / f"TM{tm_index}" / "results.json"
+        if not results_path.exists():
+            continue
+
+        with open(results_path) as f:
+            data = json.load(f)
+
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
         ]
 
-        if best_costs:  # si hay al menos un valor válido
-            media_coste = sum(best_costs) / len(best_costs)
-            resultados[(c1, c2)][iters] = media_coste
+        if costs:
+            mean_cost = sum(costs) / len(costs)
+            resultados[(c1, c2)][iterations] = mean_cost
 
-    # --- Pintar ---
-    plt.figure(figsize=(8, 6))
+    # ---- Pintar ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
+
     for (c1, c2), valores in sorted(resultados.items()):
         xs = sorted(valores.keys())
         ys = [valores[x] for x in xs]
         plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
 
-    plt.title("Coste medio vs número de iteraciones (partículas fijas en 200)")
+    plt.title(f"{network} - {pso_type}\nCoste medio vs Iteraciones (particulas={particles_fixed})")
     plt.xlabel("Iteraciones")
-    plt.ylabel("Coste medio (gCO2/kWh)")
-    plt.legend(title="Parámetros")
+    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.legend()
     plt.grid(True)
     plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results" /
+            network /
+            pso_type /
+            "sweep_figures"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"iteraciones_{iter_start}-{iter_end}_"
+        f"p{particles_fixed}.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
     plt.show()
 
     return resultados
 
 
 """
-Procesa archivos generados con el script donde las iteraciones varían (1000–1500),
-c1 aumenta y c2 disminuye. Calcula media, mínimo y máximo de best_cost
-(ignorando nulos) y genera una gráfica con banda de variabilidad.
+Calcula la media de best_cost y genera una gráfica
+de coste medio vs número de iteraciones para cada combinación c1–c2.
+Añade un sombreado a cada gráfica que representa el valor mínimo y máximo que
+ha alcanzado a lo largo del barrido
 """
-def procesar_resultados_particles_fijas_min_max_y_pintar(directorio="."):
-    # Regex: timestamp al final, fecha fija 20251107
+def procesar_barrido_iteraciones_min_max(
+    network,
+    pso_type,
+    iter_start,
+    iter_end,
+    iter_step,
+    particles_fixed,
+    tm_index=1
+):
+    from pathlib import Path
+    import json
+    import matplotlib.pyplot as plt
+    from collections import defaultdict
 
-    # pattern = re.compile(
-    #     r"^200particles_(?P<iters>1[0-4]00|1500)iters_"
-    #     r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
-    #     r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
-    #     r"0\.7w_100k_20251107_\d{6}\.json$"
-    # )
-
-    pattern = re.compile(
-        r"^20260123_\d{6}_"
-        r"200particles_(?P<iters>1[0-4]00|1500)iters_"
-        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
-        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
-        r"0\.7w_100k\.json$"
-    )
-
-    # Estructura: {(c1, c2): {iters: {"mean": x, "min": y, "max": z}}}
+    base_path = PROJECT_ROOT / "results" / network / pso_type
     resultados = defaultdict(dict)
 
-    for f in os.listdir(directorio):
-        match = pattern.match(f)
-        if not match:
+    for config_dir in base_path.iterdir():
+        if not config_dir.is_dir():
             continue
 
-        iters = int(match.group("iters"))
-        c1 = float(match.group("c1"))
-        c2 = float(match.group("c2"))
+        particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
 
-        with open(os.path.join(directorio, f)) as file:
-            data = json.load(file)
+        if particles != particles_fixed:
+            continue
 
-        # Extraer best_cost válidos
-        best_costs = [
-            run["best_cost"] for run in data.get("results", [])
-            if run["best_cost"] is not None
+        if iterations < iter_start or iterations > iter_end:
+            continue
+
+        if (iterations - iter_start) % iter_step != 0:
+            continue
+
+        results_path = config_dir / f"TM{tm_index}" / "results.json"
+        if not results_path.exists():
+            continue
+
+        with open(results_path) as f:
+            data = json.load(f)
+
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
         ]
 
-        if best_costs:
-            mean_cost = sum(best_costs) / len(best_costs)
-            min_cost = min(best_costs)
-            max_cost = max(best_costs)
-            resultados[(c1, c2)][iters] = {
+        if costs:
+            mean_cost = sum(costs) / len(costs)
+            resultados[(c1, c2)][iterations] = {
                 "mean": mean_cost,
-                "min": min_cost,
-                "max": max_cost
+                "min": min(costs),
+                "max": max(costs)
             }
 
-    # --- Pintar ---
-    plt.figure(figsize=(9, 6))
+    # ---- Pintar ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
 
     for (c1, c2), valores in sorted(resultados.items()):
         xs = sorted(valores.keys())
@@ -336,133 +376,199 @@ def procesar_resultados_particles_fijas_min_max_y_pintar(directorio="."):
         ys_min = [valores[x]["min"] for x in xs]
         ys_max = [valores[x]["max"] for x in xs]
 
-        # Dibujar línea de la media
         plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
-
-        # Dibujar rango [min, max] como banda
         plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
 
-    plt.title("Coste medio (± rango) vs Iteraciones\nc1–c2 variables, 200 partículas")
+    plt.title(f"{network} - {pso_type}\nCoste medio ± rango vs Iteraciones (particulas={particles_fixed})")
     plt.xlabel("Iteraciones")
-    plt.ylabel("Coste medio (ignorando nulos)")
-    plt.legend(title="Parámetros c1–c2")
+    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.legend(title="c1–c2")
     plt.grid(True)
     plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results" /
+            network /
+            pso_type /
+            "sweep_figures"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"iteraciones_{iter_start}-{iter_end}_"
+        f"p{particles_fixed}_minmax.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
     plt.show()
 
     return resultados
 
 
 """
-Procesa archivos generados con el script de iteraciones fijas (1500),
-donde c1 aumenta, c2 disminuye y particles varía de 100 a 500.
-Calcula la media de best_cost (ignorando nulos) y genera una gráfica
+Calcula la media de best_cost y genera una gráfica
 de coste medio vs número de partículas para cada combinación c1–c2.
 """
-def procesar_resultados_iter_fijas_y_pintar(directorio="."):
-    # Regex: timestamp al inicio, fecha fija 20251107
-    pattern = re.compile(
-        r"^20260123_\d{6}_"                  # timestamp del día de hoy
-        r"(?P<particles>[1-5]00)particles_"
-        r"1500iters_"
-        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
-        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
-        r"0\.7w_100k\.json$"
-    )
+def procesar_barrido_particulas(
+    network,
+    pso_type,
+    particles_start,
+    particles_end,
+    particles_step,
+    iterations_fixed,
+    tm_index=1
+):
+    base_path = PROJECT_ROOT / "results" / network / pso_type
 
-    # Estructura: {(c1, c2): {particles: mean_cost}}
     resultados = defaultdict(dict)
 
-    for f in os.listdir(directorio):
-        match = pattern.match(f)
-        if not match:
+    for config_dir in base_path.iterdir():
+        if not config_dir.is_dir():
             continue
 
-        particles = int(match.group("particles"))
-        c1 = float(match.group("c1"))
-        c2 = float(match.group("c2"))
+        particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
 
-        with open(os.path.join(directorio, f)) as file:
-            data = json.load(file)
+        if iterations != iterations_fixed:
+            continue
 
-        # Extraer los best_cost válidos
-        best_costs = [
-            run["best_cost"] for run in data.get("results", [])
-            if run["best_cost"] is not None
+        if particles < particles_start or particles > particles_end:
+            continue
+
+        if (particles - particles_start) % particles_step != 0:
+            continue
+
+        results_path = config_dir / f"TM{tm_index}" / "results.json"
+        if not results_path.exists():
+            continue
+
+        with open(results_path) as f:
+            data = json.load(f)
+
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
         ]
 
-        if best_costs:
-            mean_cost = sum(best_costs) / len(best_costs)
+        if costs:
+            mean_cost = sum(costs) / len(costs)
             resultados[(c1, c2)][particles] = mean_cost
 
-    # --- Pintar ---
-    plt.figure(figsize=(8, 6))
+    # ---- Pintar ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
+
     for (c1, c2), valores in sorted(resultados.items()):
         xs = sorted(valores.keys())
         ys = [valores[x] for x in xs]
         plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
 
-    plt.title("Coste medio vs número de partículas (iteraciones fijas en 1500)")
+    plt.title(f"{network} - {pso_type}\nCoste medio vs Partículas (iter={iterations_fixed})")
     plt.xlabel("Número de partículas")
-    plt.ylabel("Coste medio (gCO2/kWh)")
-    plt.legend(title="Parámetros c1–c2")
+    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.legend()
     plt.grid(True)
     plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results" /
+            network /
+            pso_type /
+            "sweep_figures"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"particulas_{particles_start}-{particles_end}_"
+        f"i{iterations_fixed}.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
     plt.show()
 
     return resultados
 
 
 """
-Procesa archivos generados con el script de iteraciones fijas (1500),
-donde c1 aumenta, c2 disminuye y particles varía de 100 a 500.
-Calcula media, mínimo y máximo de best_cost (ignorando nulos),
-y pinta una gráfica de coste medio vs número de partículas.
+Calcula la media de best_cost y genera una gráfica
+de coste medio vs número de partículas para cada combinación c1–c2.
+Añade un sombreado a cada gráfica que representa el valor mínimo y máximo que
+ha alcanzado a lo largo del barrido
 """
-def procesar_resultados_iter_fijas_min_max_y_pintar(directorio="."):
-    # Regex: timestamp al inicio, fecha fija 20251107
-    pattern = re.compile(
-        r"^20260123_\d{6}_"                  # timestamp del día actual
-        r"(?P<particles>[1-5]00)particles_"
-        r"1500iters_"
-        r"(?P<c1>1\.5|1\.75|2\.0|2\.25|2\.5)c1_"
-        r"(?P<c2>2\.5|2\.25|2\.0|1\.75|1\.5)c2_"
-        r"0\.7w_100k\.json$"
-    )
+def procesar_barrido_particulas_min_max(
+    network,
+    pso_type,
+    particles_start,
+    particles_end,
+    particles_step,
+    iterations_fixed,
+    tm_index=1
+):
+    from pathlib import Path
+    import json
+    import matplotlib.pyplot as plt
+    from collections import defaultdict
 
-    # Estructura: {(c1, c2): {particles: {"mean": x, "min": y, "max": z}}}
+    base_path = PROJECT_ROOT / "results" / network / pso_type
     resultados = defaultdict(dict)
 
-    for f in os.listdir(directorio):
-        match = pattern.match(f)
-        if not match:
+    for config_dir in base_path.iterdir():
+        if not config_dir.is_dir():
             continue
 
-        particles = int(match.group("particles"))
-        c1 = float(match.group("c1"))
-        c2 = float(match.group("c2"))
+        particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
 
-        with open(os.path.join(directorio, f)) as file:
-            data = json.load(file)
+        if iterations != iterations_fixed:
+            continue
 
-        # Extraer best_cost válidos
-        best_costs = [
-            run["best_cost"] for run in data.get("results", [])
-            if run["best_cost"] is not None
+        if particles < particles_start or particles > particles_end:
+            continue
+
+        if (particles - particles_start) % particles_step != 0:
+            continue
+
+        results_path = config_dir / f"TM{tm_index}" / "results.json"
+        if not results_path.exists():
+            continue
+
+        with open(results_path) as f:
+            data = json.load(f)
+
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
         ]
 
-        if best_costs:
-            mean_cost = sum(best_costs) / len(best_costs)
-            min_cost = min(best_costs)
-            max_cost = max(best_costs)
+        if costs:
+            mean_cost = sum(costs) / len(costs)
             resultados[(c1, c2)][particles] = {
                 "mean": mean_cost,
-                "min": min_cost,
-                "max": max_cost
+                "min": min(costs),
+                "max": max(costs)
             }
 
-    # --- Pintar ---
-    plt.figure(figsize=(9, 6))
+    # ---- Pintar ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
 
     for (c1, c2), valores in sorted(resultados.items()):
         xs = sorted(valores.keys())
@@ -470,18 +576,35 @@ def procesar_resultados_iter_fijas_min_max_y_pintar(directorio="."):
         ys_min = [valores[x]["min"] for x in xs]
         ys_max = [valores[x]["max"] for x in xs]
 
-        # Dibujar línea media
         plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
-
-        # Sombrear rango [min, max]
         plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
 
-    plt.title("Coste medio (± rango) vs número de partículas\n(Iteraciones fijas en 1500)")
+    plt.title(f"{network} - {pso_type}\nCoste medio ± rango vs Partículas (iter={iterations_fixed})")
     plt.xlabel("Número de partículas")
-    plt.ylabel("Coste medio (ignorando nulos)")
-    plt.legend(title="Parámetros c1–c2")
+    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.legend(title="c1–c2")
     plt.grid(True)
     plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results" /
+            network /
+            pso_type /
+            "sweep_figures"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"particulas_{particles_start}-{particles_end}_"
+        f"i{iterations_fixed}_minmax.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
     plt.show()
 
     return resultados
@@ -544,7 +667,7 @@ def plot_tm_bars_with_confidence(
         capsize=6
     )
 
-    plt.ylabel("Coste medio (gCO2/kWh)")
+    plt.ylabel("Coste medio (gCO₂/kWh)")
     plt.title(
         f"Coste medio por TM con IC {int(confidence*100)}%\n"
         f"{network} – {pso_type} – {config_dir}"
