@@ -14,12 +14,12 @@ pso_type="PSO_VCH"
 
 #plot_tm_bars_with_confidence(network, config_dir, tm_indices, confidence, pso_type)
 
-procesar_barrido_iteraciones(
+procesar_barrido_particulas(
     network,
     pso_type,
-    iter_start=100,
-    iter_end=1500,
-    iter_step=100,
-    particles_fixed=100,
+    particles_start=100,
+    particles_end=500,
+    particles_step=100,
+    iterations_fixed=1500,
     tm_index=5
 )
