@@ -231,6 +231,10 @@ def procesar_barrido_iteraciones(
         if not config_dir.is_dir():
             continue
 
+        # Ignorar sweep_figures u otros directorios
+        if not config_dir.name.startswith("p"):
+            continue
+
         particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
 
         if particles != particles_fixed:
@@ -328,6 +332,10 @@ def procesar_barrido_iteraciones_min_max(
 
     for config_dir in base_path.iterdir():
         if not config_dir.is_dir():
+            continue
+
+        # Ignorar sweep_figures u otros directorios
+        if not config_dir.name.startswith("p"):
             continue
 
         particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
@@ -431,6 +439,10 @@ def procesar_barrido_particulas(
         if not config_dir.is_dir():
             continue
 
+        # Ignorar sweep_figures u otros directorios
+        if not config_dir.name.startswith("p"):
+            continue
+
         particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
 
         if iterations != iterations_fixed:
@@ -528,6 +540,10 @@ def procesar_barrido_particulas_min_max(
 
     for config_dir in base_path.iterdir():
         if not config_dir.is_dir():
+            continue
+
+        # Ignorar sweep_figures u otros directorios
+        if not config_dir.name.startswith("p"):
             continue
 
         particles, iterations, c1, c2, _, _ = parse_config_dir(config_dir.name)
