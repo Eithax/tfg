@@ -691,3 +691,100 @@ def plot_tm_bars_with_confidence(
     plt.grid(axis="y", linestyle="--", alpha=0.6)
     plt.tight_layout()
     plt.show()
+
+def plot_all_runs_iteraciones(
+    network,
+    pso_type,
+    iter_start,
+    iter_end,
+    iter_step,
+    particles_fixed,
+    tm_index=1
+):
+    base_path = PROJECT_ROOT / "results" / network / pso_type
+
+    resultados = defaultdict(list)
+
+    for config_dir in base_path.iterdir():
+        if not config_dir.is_dir():
+            continue
+
+        if not config_dir.name.startswith("p"):
+            continue
+
+        try:
+            particles, iterations, c1, c2, _, k = parse_config_dir(config_dir.name)
+        except:
+            continue
+
+        if particles != particles_fixed:
+            continue
+
+        if iterations < iter_start or iterations > iter_end:
+            continue
+
+        if (iterations - iter_start) % iter_step != 0:
+            continue
+
+        results_path = config_dir / f"TM{tm_index}" / "results.json"
+        if not results_path.exists():
+            continue
+
+        with open(results_path) as f:
+            data = json.load(f)
+
+        for run in data["results"]:
+            cost = run["best_cost"]
+            if cost is not None:
+                resultados[iterations].append(cost)
+
+    # ---- PINTAR ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
+
+    # Scatter de todos los runs
+    for iteration, costs in resultados.items():
+        xs = [iteration] * len(costs)
+        plt.scatter(xs, costs, alpha=0.5)
+
+    # Media superpuesta
+    xs_mean = sorted(resultados.keys())
+    ys_mean = [sum(resultados[i]) / len(resultados[i]) for i in xs_mean]
+
+    plt.plot(xs_mean, ys_mean, marker="o", linewidth=2)
+
+    plt.title(
+        f"{network} - {pso_type} - TM{tm_index}\n"
+        f"Todas las ejecuciones (particles={particles_fixed})"
+    )
+    plt.xlabel("Iteraciones")
+    plt.ylabel("Coste (gCO₂/kWh)")
+    plt.grid(True)
+    plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results" /
+            network /
+            pso_type /
+            "figures"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"p{particles_fixed}_"
+        f"iterations_{iter_start}-{iter_end}.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
+    plt.show()
+
+    return resultados
