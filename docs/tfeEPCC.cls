@@ -9,15 +9,15 @@
 \RequirePackage{hyperref}
 
 %% Add automatic toc to every chapter
-\DeclareOption{minitoc}{%
-    \dominitoc%
-    \patchcmd{\@makechapterhead}% <cmd>
-    {40\p@}% <search>
-    {40\p@\minitoc}% <replace>
-    {}{}% <success><failure>
-    \let\oldappendix\appendix%
-    \renewcommand{\appendix}{\oldappendix\adjustmtc}%
-}
+%\DeclareOption{minitoc}{%
+%    \dominitoc%
+%    \patchcmd{\@makechapterhead}% <cmd>
+%    {40\p@}% <search>
+%    {40\p@\minitoc}% <replace>
+%    {}{}% <success><failure>
+%    \let\oldappendix\appendix%
+%    \renewcommand{\appendix}{\oldappendix\adjustmtc}%
+%}
 
 % Remove link boxes and write URLs in blue
 \DeclareOption{hidelinks}{%
