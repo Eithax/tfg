@@ -1,6 +1,10 @@
 # venv files
 .venv
 
+# Python cache files
+__pycache__/
+*.pyc
+
 # IntelliJ files
 .idea
 
