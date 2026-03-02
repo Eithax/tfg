@@ -230,9 +230,6 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
         runs_results = []
         dimensions = num_links
 
-        # Inicializar posiciones
-        init_pos = generate_initial_positions(particles, dimensions)
-
         config = {
             "n_particles": particles,
             "dimensions": dimensions,
@@ -246,6 +243,9 @@ def run_pso(network, n_runs, n_iters, tm_option, n_threads, particles, c1, c2, w
         print(config)
 
         for run in range(n_runs):
+            # Inicializar posiciones
+            init_pos = generate_initial_positions(particles, dimensions)
+
             print(f"\n>>> Ejecutando PSO {run + 1}/{n_runs} en {network} con TM{tm_index} y {n_iters} iteraciones...")
             pso = BinaryPSO(n_particles=particles, dimensions=dimensions, options=options, init_pos=init_pos)
             if n_threads is None:
