@@ -1,2 +1,83 @@
 \chapter{\implementationdevelopmentname}
-\lipsum[1][1-4]
+En esta sección se presenta detalladamente la implementación del algoritmo desarrollado para abordar el objetivo de este trabajo. A partir del estudio realizado en la sección del estado del arte, se ha diseñado una solución basada en el uso de algoritmos bioinspirados, concretamente el algoritmo de optimización por enjambre de partículas (PSO).
+\par
+Primero se explica el entorno de desarrollo utilizado, incluyendo herramientas, lenguajes de programación y librerías. A continuación, se detalla la estructura de una partícula de PSO y cómo se ha modelado la función de optimización.
+
+Posteriormente, se describen las diferentes estrategias que se han utilizado para la implementación del algoritmo, explicando la lógica interna y las decisiones de diseño tomadas. Además, se presentan los beneficios e inconvenientes de cada estrategia.
+
+Por último, se explica la integración de las diferentes librerías, así como las diferentes configuraciones del optimizador que se han usado para mejorar el rendimiento del algoritmo.
+\pagebreak
+
+\section{Entorno de desarrollo}
+
+Para la realización de este trabajo se ha utilizado el lenguaje de programación Python, debido a su versatilidad y a la gran cantidad de librerías disponibles para el desarrollo de algoritmos de optimización. Además, es el mismo lenguaje que se ha utilizado por parte del co-tutor, José Antonio Gómez de la Hiz, en sus investigaciones en el mismo ámbito, lo que ha sido de gran ayuda para la realización de este trabajo.
+\par
+Inicialmente se valoraron dos herramientas para el desarrollo del algoritmo: Visual Studio Code y PyCharm. Finalmente se optó por PyCharm, puesto que ofrece diferentes funcionalidades que facilitan en gran medida el desarrollo de código, como pueden ser la integración de sistemas de control de versiones, la depuración de código o la gestión de entornos virtuales.
+
+En cuanto a las librerías, se han utilizado principalmente las siguientes:
+\begin{itemize}
+    \item \textbf{NumPy}: para el manejo de arrays y matrices, así como carga de datos desde archivos de texto o csv.
+    \item \textbf{NetworkX}: para la creación y manipulación de grafos, fundamental para poder modelar las topologías de red usadas.
+    \item \textbf{Matplotlib}: para la visualización de resultados y gráficos.
+    \item \textbf{PySwarms}: para el uso de algoritmos de PSO en espacios dicretos.
+    \item \textbf{SciPy}: para cálculos estadísticos adicionales, como los intervalos de confianza.
+\end{itemize}
+
+\subsection{Módulo discreto de PySwarms}
+En el ámbito de las redes, el espacio de búsqueda por lo general es discreto, ya que las configuraciones de red suelen estar formadas por un conjunto finito de opciones, como pueden ser las rutas que se pueden usar para enrutar el tráfico o los enlaces que se pueden activar o desactivar. Esto hace que sea necesario adaptar el algoritmo de PSO para que pueda trabajar en un espacio de búsqueda discreto.
+
+Por suerte, PySwarms---que es una librería de optimización por enjambre de partículas en Python---, ofrece un módulo específico para trabajar con espacios de búsqueda discretos. Esto ha facilitado enormemente la implementación de la función de optimización, puesto que PySwarms se encarga de gestionar las operaciones de PSO, como la actualización de las posiciones y velocidades de las partículas.
+
+\section{Representación de partículas}
+En PSO, cada partícula representa una posible solución al problema de optimización. En este caso, cada partícula representa una configuración de red, la cual está formada por el conjunto de enlaces que están activos y apagados. Por tanto, cada partícula se representa como un vector binario, donde cada posición del array representa un enlace de la red, siendo uno (1) la representación de un enlace activo y cero (0) la representación de un enlace apagado.
+
+\subsection{Variables de decisión} \label{decision_var}
+
+El encendido y apagado de enlaces es la principal variable de decisión en este problema, ya que el objetivo es encontrar la configuración de red que minimice las emisiones de $CO_2$ y es la manera más directa de disminuir el consumo y las emisiones. Pero no es la única variable de decisión, ya que también se priorizan las rutas más cortas y eficientes para enrutar el tráfico.
+
+Para ello, se aplica la estrategia \textit{K-Shortest Paths} (KSP), que consiste en encontrar las K rutas más cortas entre cada par de nodos de la red. Al definir las emisiones de cada enlace como el peso de ese enlace, se consigue que las rutas más cortas sean también las rutas que menos emisiones generan. De esta manera, el algoritmo de PSO no solo busca apagar enlaces para reducir las emisiones, sino que también busca enrutar el tráfico por las rutas más eficientes en términos de emisiones.
+
+También se barajó la posibilidad de apagar nodos enteros, pero se terminó descartando esta opción, pues apagar un nodo implica apagar todos los enlaces asociados a ese nodo, lo que puede dejar zonas totalmente desconectadas. Es por este motivo que se optó por apagar enlaces individuales, lo que ofrece mayor flexibilidad a la hora de buscar configuraciones de red que reduzcan las emisiones sin comprometer la conectividad de la red.
+
+\subsection{Relación entre las partículas y la red}
+
+Para poder evaluar la red en estudio y calcular la mejor configuración de red, es necesario establecer una relación entre las partículas y la red, concretamente, entre la matriz de adyacencia de la red y el vector binario que representa cada partícula. Para ello, se ha creado una función que toma como entrada la matriz de adyacencia de la red y devuelve una lista de enlaces, donde cada enlace se representa como una tupla de nodos \textit{(src, dst)}. De esta manera, cada posición del vector binario de la partícula corresponde a un enlace específico de la red, y el valor de esa posición indica si ese enlace está activo o apagado. De esta manera, cuando PSO devuelve la mejor posición global, se puede traducir ese vector binario a una configuración de red concreta.
+
+Definir esta relación entre las partículas y la red es fundamental por dos motivos principales. El primer motivo es que permite usar la función de optimización para evaluar las configuraciones de red de las partículas, ya que se necesita saber qué enlaces son los que están activos para evaluar si es una solución factible y calcular las emisiones asociadas. El segundo motivo es que permite interpretar los resultados e implementar la solución encontrada en la red real. Sin esta relación, sería difícil entender qué configuración de red corresponde a cada partícula y cómo aplicar la solución encontrada en la práctica.
+
+\section{Función objetivo y enrutado}
+
+La función objetivo es la función que se usa en PSO para evaluar cada partícula y determinar qué configuración de red es la mejor. En este caso, la función se ha modelado en base a la fórmula de emisiones de $CO_2$ que se presenta en el artículo \textit{Exploring the Benefits of Carbon-Aware Routing} \cite{ElZahr2023}:
+
+\begin{equation}
+    C_{tot}(G, X, \lambda, c, \beta) = \sum_{n=1}^{V} (x_n * \lambda_n * c_n) + \sum_{l=1}^{E} \beta_l (c_{l_{n_1}} + c_{l_{n_2}})
+\end{equation}
+
+Donde:
+
+\begin{itemize}
+    \item $G$ es la topología de la red, representada como un grafo.
+    \item $V$ y $E$ son el número de nodos y enlaces de la red, respectivamente.
+    \item $x_n$ es la intensidad de flujo en el nodo $n$.
+    \item $c_n$ es la tasa de emisiones de $CO_2$ asociada al nodo $n$.
+    \item $\lambda_n$ es la potencia dinámica incremental por tasa de datos del nodo $n$.
+    \item $\beta_l$ es el incremento del consumo de energía al habilitar un puerto.
+    \item $c_{l_{n_1}}$ y $c_{l_{n_2}}$ son las emisiones de $CO_2$ asociadas a los nodos $n_1$ y $n_2$ que están conectados por el enlace $l$.
+\end{itemize}
+
+El primer sumatorio representa el consumo dinámico de energía asociado al tráfico que pasa por cada nodo. Es decir, cuanto más tráfico pase por un nodo, más energía consumirá ese nodo, y por tanto, más emisiones de $CO_2$ generará. El segundo sumatorio se corresponde con el consumo estático de energía asociado a los enlaces que están activos. Un enlace activo implica que hay un puerto habilitado en cada uno de los nodos que conecta, lo que genera un consumo de energía adicional. Este segundo sumatorio es el que permite mayor optimización, pues al apagar enlaces---y por tanto, apagar puertos---se puede reducir significativamente el consumo de energía y las emisiones de $CO_2$.
+
+Pero para poder evaluar una configuración de red concreta, no basta con calcular las emisiones asociadas a esa configuración, sino que también es necesario asegurarse que esa configuración permite enrutar todo el tráfico de la red sin generar congestión. Para ello, y como se ha mencionado con anterioridad en \ref{decision_var}, se hace uso de la estrategia KSP para enrutar el tráfico a través de las rutas más cortas y eficientes. Al tener varias rutas disponibles para cada par de nodos, en caso de que una ruta no pueda seguir enrutando tráfico, se pasa a la siguiente ruta más corta.
+
+
+\section{Manejo de restricciones}
+Hablar sobre las restricciones para que una solución sea factible.
+
+\subsection{PSO normal}
+Definir el algoritmo para PSO normal. Pros y contras.
+
+\subsection{PSO VCH}
+Definir el algoritmo para PSO VCH. Pros y contras.
+
+\section{Integración con librerías}
+Hablar sobre la integración con PySwarms y las diferentes opciones de configuración de PSO (número de partículas, iteraciones y paralelización).
