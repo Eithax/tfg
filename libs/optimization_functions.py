@@ -1,5 +1,4 @@
 from collections import defaultdict
-from api.carbon_api import obtener_carbon_intensity_nodo
 import numpy as np
 import networkx as nx
 import json

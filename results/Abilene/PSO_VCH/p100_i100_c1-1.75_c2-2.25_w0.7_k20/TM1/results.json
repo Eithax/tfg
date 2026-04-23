@@ -1,0 +1,69 @@
+{
+    "network": "Abilene",
+    "traffic_matrix": 1,
+    "config": {
+        "n_particles": 100,
+        "dimensions": 30,
+        "options": {
+            "c1": 1.75,
+            "c2": 2.25,
+            "w": 0.7,
+            "k": 20,
+            "p": 1
+        },
+        "iterations": 100,
+        "runs": 1,
+        "threads": 6,
+        "vch": true
+    },
+    "results": [
+        {
+            "run": 1,
+            "best_cost": 70.62750309001808,
+            "best_pos": [
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                1,
+                0,
+                0,
+                1,
+                1,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                1,
+                0,
+                1,
+                0,
+                1,
+                0,
+                1,
+                0,
+                1
+            ],
+            "cost_history": {
+                "mode": "compressed",
+                "step": 100,
+                "remove_consecutive_duplicates": false,
+                "inf_strategy": "null",
+                "data": [
+                    {
+                        "iter": 1,
+                        "cost": 91.07739428696033
+                    }
+                ]
+            }
+        }
+    ]
+}

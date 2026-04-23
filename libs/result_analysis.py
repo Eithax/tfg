@@ -4,6 +4,7 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+from datetime import datetime
 from collections import defaultdict
 from libs.utils import confidence_interval, parse_config_dir
 
@@ -276,9 +277,9 @@ def procesar_barrido_iteraciones(
         ys = [valores[x] for x in xs]
         plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
 
-    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio vs Iteraciones (particulas={particles_fixed})")
+    #plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio vs Iteraciones (particulas={particles_fixed})")
     plt.xlabel("Iteraciones")
-    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.ylabel("Emisiones (gCO₂)")
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -387,9 +388,9 @@ def procesar_barrido_iteraciones_min_max(
         plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
         plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
 
-    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio ± rango vs Iteraciones (particulas={particles_fixed})")
+    #plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio ± rango vs Iteraciones (particulas={particles_fixed})")
     plt.xlabel("Iteraciones")
-    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.ylabel("Emisiones (gCO₂)")
     plt.legend(title="c1–c2")
     plt.grid(True)
     plt.tight_layout()
@@ -484,9 +485,9 @@ def procesar_barrido_particulas(
         ys = [valores[x] for x in xs]
         plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
 
-    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio vs Partículas (iter={iterations_fixed})")
+    #plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio vs Partículas (iter={iterations_fixed})")
     plt.xlabel("Número de partículas")
-    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.ylabel("Emisiones(gCO₂)")
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -595,9 +596,9 @@ def procesar_barrido_particulas_min_max(
         plt.plot(xs, ys_mean, marker="o", label=f"c1={c1}, c2={c2}")
         plt.fill_between(xs, ys_min, ys_max, alpha=0.2)
 
-    plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio ± rango vs Partículas (iter={iterations_fixed})")
+    #plt.title(f"{network} - {pso_type} - TM{tm_index}\nCoste medio ± rango vs Partículas (iter={iterations_fixed})")
     plt.xlabel("Número de partículas")
-    plt.ylabel("Coste medio (gCO₂/kWh)")
+    plt.ylabel("Emisiones (gCO₂)")
     plt.legend(title="c1–c2")
     plt.grid(True)
     plt.tight_layout()
@@ -683,11 +684,7 @@ def plot_tm_bars_with_confidence(
         capsize=6
     )
 
-    plt.ylabel("Coste medio (gCO₂/kWh)")
-    plt.title(
-        f"Coste medio por TM con IC {int(confidence*100)}%\n"
-        f"{network} – {pso_type} – {config_dir}"
-    )
+    plt.ylabel("Emisiones (gCO₂)")
     plt.grid(axis="y", linestyle="--", alpha=0.6)
     plt.tight_layout()
     plt.show()
@@ -757,12 +754,8 @@ def plot_all_runs_iteraciones(
 
     plt.plot(xs_mean, ys_mean, marker="o", linewidth=2)
 
-    plt.title(
-        f"{network} - {pso_type} - TM{tm_index}\n"
-        f"Todas las ejecuciones (particles={particles_fixed})"
-    )
     plt.xlabel("Iteraciones")
-    plt.ylabel("Coste (gCO₂/kWh)")
+    plt.ylabel("Emisiones (gCO₂)")
     plt.grid(True)
     plt.tight_layout()
 
@@ -777,6 +770,232 @@ def plot_all_runs_iteraciones(
     filename = (
         f"p{particles_fixed}_"
         f"iterations_{iter_start}-{iter_end}.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
+    plt.show()
+
+    return resultados
+
+
+
+
+
+
+
+
+def procesar_barrido_iteraciones_regex(
+    directory,
+    regex_pattern,
+    iter_start,
+    iter_end,
+    iter_step,
+    particles_fixed,
+    start_datetime=None,
+    end_datetime=None
+):
+    resultados = defaultdict(dict)
+
+    pattern = re.compile(regex_pattern, re.VERBOSE)
+
+    for file in directory.iterdir():
+        if not file.is_file():
+            continue
+
+        match = pattern.match(file.name)
+        if not match:
+            continue
+
+        # --- Extraer parámetros ---
+        particles = int(match.group("particles"))
+        iterations = int(match.group("iters"))
+        c1 = float(match.group("c1"))
+        c2 = float(match.group("c2"))
+        date = match.group("date")
+        time = match.group("time")
+
+        # --- Filtrar partículas ---
+        if particles != particles_fixed:
+            continue
+
+        # --- Filtrar rango de iteraciones ---
+        if iterations < iter_start or iterations > iter_end:
+            continue
+
+        if (iterations - iter_start) % iter_step != 0:
+            continue
+
+        # --- Filtrar por fecha/hora ---
+        if start_datetime or end_datetime:
+            dt = datetime.strptime(date + time, "%Y%m%d%H%M%S")
+
+            if start_datetime and dt < start_datetime:
+                continue
+            if end_datetime and dt > end_datetime:
+                continue
+
+        # --- Leer JSON ---
+        try:
+            with open(file) as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"Error en {file}: {e}")
+            continue
+
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
+        ]
+
+        if costs:
+            mean_cost = sum(costs) / len(costs)
+            resultados[(c1, c2)][iterations] = mean_cost
+
+    # ---- Pintar ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
+
+    for (c1, c2), valores in sorted(resultados.items()):
+        xs = sorted(valores.keys())
+        ys = [valores[x] for x in xs]
+        plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
+
+    plt.xlabel("Iteraciones")
+    plt.ylabel("Emisiones (gCO₂)")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results/Abilene/sweeps/figures/sweeps_with_init"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"p{particles_fixed}_"
+        f"iterations_{iter_start}-{iter_end}.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
+    plt.show()
+
+    return resultados
+
+
+
+
+
+def procesar_barrido_particulas_regex(
+    directory,
+    regex_pattern,
+    particles_start,
+    particles_end,
+    particles_step,
+    iterations_fixed=1500,
+    start_datetime=None,
+    end_datetime=None
+):
+    resultados = defaultdict(dict)
+
+    pattern = re.compile(regex_pattern, re.VERBOSE)
+
+    for file in directory.iterdir():
+        if not file.is_file():
+            continue
+
+        match = pattern.match(file.name)
+        if not match:
+            continue
+
+        # --- Extraer parámetros ---
+        particles = int(match.group("particles"))
+        iterations = int(match.group("iters"))
+        c1 = float(match.group("c1"))
+        c2 = float(match.group("c2"))
+        date = match.group("date")
+        time = match.group("time")
+
+        # --- Filtrar tipo de experimento ---
+        # (solo barrido de partículas)
+        if iterations != iterations_fixed:
+            continue
+
+        # --- Filtrar rango de partículas ---
+        if particles < particles_start or particles > particles_end:
+            continue
+
+        if (particles - particles_start) % particles_step != 0:
+            continue
+
+        # --- Filtrar por fecha/hora ---
+        if start_datetime or end_datetime:
+            dt = datetime.strptime(date + time, "%Y%m%d%H%M%S")
+
+            if start_datetime and dt < start_datetime:
+                continue
+            if end_datetime and dt > end_datetime:
+                continue
+
+        # --- Leer JSON ---
+        try:
+            with open(file) as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"Error en {file}: {e}")
+            continue
+
+        costs = [
+            r["best_cost"]
+            for r in data["results"]
+            if r["best_cost"] is not None
+        ]
+
+        if costs:
+            mean_cost = sum(costs) / len(costs)
+            resultados[(c1, c2)][particles] = mean_cost
+
+    # ---- Pintar ----
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
+
+    for (c1, c2), valores in sorted(resultados.items()):
+        xs = sorted(valores.keys())  # partículas
+        ys = [valores[x] for x in xs]
+        plt.plot(xs, ys, marker="o", label=f"c1={c1}, c2={c2}")
+
+    plt.xlabel("Partículas")
+    plt.ylabel("Emisiones (gCO₂)")
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results/Abilene/sweeps/figures/sweeps_with_init"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"p{iterations_fixed}_"
+        f"iterations_{particles_start}-{particles_end}.pdf"
     )
     plt.savefig(
         output_dir / filename,

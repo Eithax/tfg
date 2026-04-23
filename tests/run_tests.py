@@ -16,6 +16,7 @@ from libs.shortest_paths import (
     all_pairs_k_shortest_paths,
     all_pairs_k_shortest_paths_nx
 )
+from libs.utils import generate_initial_positions
 
 # ============================================================
 # CONFIGURACIÓN GLOBAL
@@ -23,13 +24,13 @@ from libs.shortest_paths import (
 
 PSO_CONFIG = {
     "n_particles": 100,
-    "iters": 1200,
+    "iters": 10,
     "n_processes": 6,
     "options": {
         "c1": 1.75,
         "c2": 2.25,
         "w": 0.7,
-        "k": 100,
+        "k": 30,
         "p": 1
     }
 }
@@ -168,11 +169,7 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10,
         k
     )
 
-    init_pos = np.random.randint(
-        0, 2,
-        size=(PSO_CONFIG["n_particles"], dimensions)
-    )
-    init_pos[0].fill(1)
+    init_pos = generate_initial_positions(PSO_CONFIG["n_particles"], dimensions)
 
     best_cost, best_pos = run_pso(kwargs, init_pos, vch)
 

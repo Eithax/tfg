@@ -322,12 +322,12 @@
         \renewcommand{\appendixautorefname}{Anexo}%
         \renewcommand{\mtctitle}{Contenidos}%
         \def\introductionname{Introducción}%
-        \def\objectivesname{Objetivos}%
+        \def\objectivesname{Objetivos y Contribuciones}%
         \def\stateoftheartname{Estado del Arte}%
         \def\methodologyname{Metodología}%
-        \def\implementationdevelopmentname{Implementación y desarrollo}%
-        \def\resultsname{Resultados}%
-        \def\conclusionsname{Conclusiones y trabajos futuros}%
+        \def\implementationdevelopmentname{Descripción del Algoritmo Propuesto}%
+        \def\resultsname{Pruebas y Resultados}%
+        \def\conclusionsname{Conclusiones y Trabajos Futuros}%
         \def\bibliographyname{Bibliografía}%
     }%
     {%

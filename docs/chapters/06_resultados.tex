@@ -1,2 +1,63 @@
-\chapter{\resultsname}
-\lipsum[1][1-4]
+\chapter{\resultsname}\label{chp:results}
+
+A lo largo de este capítulo se presentan los pruebas realizadas para evaluar el rendimiento del algoritmo, así como los resultados obtenidos y su análisis. Además, se detalla la configuración final del algoritmo, donde se explican las librerías utilizadas y otros aspectos relevantes como las especificaciones del ordenador en el que se han realizado las pruebas.
+
+\section{Detalles de la implementación}
+
+Para la implementación del algoritmo desarrollado, se ha hecho uso del lenguaje de programación Python, debido a su versatilidad y a la gran cantidad de librerías disponibles para el desarrollo de algoritmos de optimización y análisis de datos. Además, es el mismo lenguaje que se ha utilizado por parte del co-tutor, José Antonio Gómez de la Hiz, en sus investigaciones en el mismo ámbito, lo que ha sido de gran ayuda.
+
+Inicialmente se valoraron dos herramientas para el desarrollo del algoritmo: Visual Studio Code y PyCharm. Finalmente se optó por PyCharm, puesto que ofrece diferentes funcionalidades que facilitan en gran medida el desarrollo de código, como pueden ser la integración de sistemas de control de versiones, la depuración de código o la gestión de entornos virtuales.
+
+En cuanto a las librerías, se han utilizado principalmente las siguientes:
+\begin{itemize}
+    \item NumPy: para el manejo de arrays y matrices, así como carga de datos desde archivos de texto o \textit{csv}.
+    \item NetworkX: para la creación y manipulación de grafos, fundamental para poder modelar las topologías de red usadas.
+    \item Matplotlib: para la visualización de resultados y gráficos.
+    \item PySwarms: para el uso de algoritmos de PSO en espacios dicretos.
+    \item SciPy: para cálculos estadísticos adicionales, como los intervalos de confianza.
+\end{itemize}
+
+PySwarms permite usar paralelización para acelerar el proceso de evaluación de las partículas, lo que ha sido de gran ayuda para reducir el tiempo de ejecución del algoritmo. Python, por su parte, solo hace uso de núcleos de CPU, independientemente de la capacidad de \textit{hyper-threading} de esta, es decir, aunque el ordenador tenga un procesador con 6 núcleos y 12 hilos, Python solo hará uso de 6 núcleos. Aún así, la paralelización de PySwarms ha permitido aprovechar al máximo la capacidad de la CPU y reducir significativamente los tiempos de ejecución.
+
+Todas las pruebas y experimentos realizados se han llevado a cabo en un ordenador con las siguientes especificaciones:
+\begin{itemize}
+    \item CPU: AMD Ryzen 5 3600x (6 núcleos, 12 hilos, frecuencia base de 3.8 GHz y frecuencia turbo de 4.4 GHz).
+    \item GPU: AMD Radeon RX 7900 GRE (16GB GDDR6)
+    \item RAM: 32GB DDR4 a 3200MT/s CL16
+\end{itemize}
+
+\section{Topologías utilizadas}
+
+Para poder realizar las pruebas, se han utilizado diferentes topologías de red reales, cuya información se ha obtenido a través de la API de SNDlib \cite{Orlowski2010}. Estas topologías se han seleccionado para cubrir diferentes escenarios y tamaños de red, lo que permite evaluar el rendimiento del algoritmo y su viabilidad en el mundo real. Las topologías usadas son las de Abilene, Nobel-EU, Geant y Germany-50.
+
+Abilene es la red más pequeña de las cuatro, con 12 nodos y 15 enlaces. Es la red que se ha usado en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones. El uso de esta red ha facilitado la realización de pruebas rápidas para analizar cómo se comportaba el algoritmo en las diferentes fases del desarrollo. Geant y Nobel-EU son redes de tamaño medio, con 22 nodos y 36 enlaces, y 28 nodos y 41 enlaces, respectivamente. Estas redes han servido para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene y comprobar la viabilidad de la solución, o de alguna modificación de esta, en redes del mismo tamaño o parecidas. Finalmente, Germany-50 es la red más grande de las cuatro, con 50 nodos y 88 enlaces. Al duplicar el tamaño de la red con respecto a las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta, lo cual permite evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
+
+\section{Definición de las pruebas}
+
+Con las topologías seleccionadas, se han definido diferentes pruebas para evaluar el rendimiento del algoritmo. Estas pruebas consisten en, usando KSP como técnica de enrutamiento, ejecutar el algoritmo con las diferentes configuraciones de parámetros y estrategias de manejo de restricciones que se han definido a lo largo del \autoref{chp:implementacion}. Para cada matriz de tráfico, se han realizado 20 y 100 ejecuciones del algoritmo para obtener resultados representativos. Con 20 ejecuciones se obtiene una visión general del comportamiento del algoritmo más fácilmente que con 100 ejecuciones, mientras que con esta segunda cantidad de ejecuciones se obtienen resultados, estadísticamente hablando, más exactos y con unos intervalos de confianza más ajustados, los cuales se han calculado usando la distribución normal estándar al tratarse de una muestra lo suficientemente grande. Para las pruebas de 20 ejecuciones se emplea la distribución T de Student, que es más adecuada para muestras pequeñas.
+
+\section{Resultados de Abilene}
+
+A continuación, se muestran diferentes gráficas elaboradas a partir de los resultados obtenidos de las pruebas realizadas sobre Abilene. Esta topología es una infraestructura de red situada en Estados Unidos que interconecta universidades y centros de investigación. Como se muestra en la \autoref{fig:topologia_abilene}, se compone de 12 nodos y 15 enlaces bidireccionales (o 30 enlaces unidireccionales).
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.8\textwidth]{pictures/abilene.jpg}
+\caption[Topología Abilene]{Topología de Abilene.\\Fuente: SNDlib.}
+\label{fig:topologia_abilene}
+\end{figure}
+
+\subsection{Emisiones de cada matriz de tráfico}
+
+\subsection{Tiempo de ejecución para cada matriz de tráfico}
+
+\subsection{Porcentaje de enlaces apagados}
+
+\subsection{Emisiones antes y después del apagado de enlaces}
+
+\subsection{Ocupación de los enlaces tras el apagado}
+
+\section{Resultados de Nobel-EU y Geant}
+
+\section{Análisis de Germany-50 y limitaciones encontradas}

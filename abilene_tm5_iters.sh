@@ -7,12 +7,12 @@ for i in ${!c1_values[@]}; do
   c1=${c1_values[$i]}
   c2=${c2_values[$i]}
 
-  echo "# 1000 - 1500 iter / 200 particles / c1 $c1 / c2 $c2"
+  echo "# 100 - 1500 iter / 200 particles / c1 $c1 / c2 $c2"
 
-  for iters in $(seq 1000 100 1500); do
+  for iters in $(seq 100 100 1500); do
     python main.py --network Abilene --runs 5 --tm 5 --threads 6 \
     --iters $iters --particles 200 --history-step 100 \
-    --c1 $c1 --c2 $c2 --k 100 --history-inf null
+    --c1 $c1 --c2 $c2 --k 100 --history-inf null --vch
   done
 
   echo ""

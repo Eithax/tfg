@@ -7,7 +7,7 @@
 % Rellenar con los datos del estudiante y el trabajo
 \estudiante{Santiago Rodríguez-Arias Martínez-Berná}{Grado}{Ingeniería Informática en Ingeniería del Software}
 \title{Optimización de las emisiones de CO2 en redes definidas por software mediante algoritmos bioinspirados}
-\keywords{PSO\and redes cableadas\and enrutamiento verde\and eficiencia energética}
+\keywords{SDN\and enrutamiento consciente de carbono}
 
 \begin{document}
 \sloppy 
@@ -37,11 +37,11 @@
 % Dedicatorias del trabajo, pueden ser en español o inglés dependiendo de lo que se considere más apropiado
 
 \chapter*{Resumen}
-A día de hoy, las redes de comunicaciones son un componente esencial en la vida diaria de las personas y en el funcionamiento de las empresas. El aumento del tráfico de datos ha crecido de forma exponencial, llegando a multiplicarse por 80 desde 2007 hasta 2023. Aunque el crecimiento del consumo energético no es proporcional al aumento del tráfico de datos---pues este último apenas se ha duplicado---, esto no significa que no haya un impacto ambiental significativo. Se estima que las redes de comunicaciones representan aproximadamente el 1\% del consumo eléctrico mundial y alrededor del 1,4\% de las emisiones globales de $CO_2$. Y estos datos no van a hacer más que aumentar debido al auge de las Inteligencias Artificiales y los grandes centros de procesamiento de datos. Por tanto, es fundamental buscar soluciones que permitan optimizar el uso de las redes para reducir su impacto ambiental.
+A día de hoy, las redes de comunicaciones son un componente esencial en la vida diaria de las personas y en el funcionamiento de las empresas. El aumento del tráfico de datos ha crecido de forma exponencial, llegando a multiplicarse por 80 desde 2007 hasta 2023 \cite{Paska2025}. Aunque el crecimiento del consumo energético no es proporcional al aumento del tráfico de datos, pues apenas se ha duplicado, esto no significa que no haya un impacto ambiental significativo. Se estima que las redes de comunicaciones representan aproximadamente el 1\% del consumo eléctrico mundial y alrededor del 1,4\% de las emisiones globales de $CO_2$. Y estos datos no van a hacer más que aumentar debido al auge de las Inteligencias Artificiales (IA) y los grandes centros de procesamiento de datos. Por tanto, es fundamental buscar soluciones que permitan optimizar el uso de las redes para reducir su impacto ambiental.
 
-En este trabajo se propone una solución basada en redes definidas por software y algoritmos bioinspirados para optimizar las emisiones de $CO_2$ asociadas al uso de las redes de comunicaciones. Más concretamente, se hace uso de la investigación realizada en \cite{ElZahr2023}, que proporciona una fórmula para calcular las emisiones de $CO_2$ en función del tráfico de datos y el consumo energético. Con esta fórmula en mente, se ha modelado una función de optimización que se usará en un algoritmo de optimización por enjambre de partículas (PSO, por sus siglas en inglés) para encontrar la configuración de red que minimice las emisiones de $CO_2$. Se han usado diferentes topologías de red y matrices de tráfico para evaluar la viabilidad del algoritmo en diferentes escenarios.
+En este trabajo se propone una solución basada en redes definidas por software (SDN) y algoritmos bioinspirados para optimizar las emisiones de $CO_2$ asociadas al uso de las redes de comunicaciones. Más concretamente, se parte de los avances expuestos en \cite{ElZahr2023}, donde los autores proporcionan una fórmula que permite calcular las emisiones de $CO_2$ de las redes cableadas en función del tráfico de datos y el consumo energético de los dispositivos de red. Con esta fórmula en mente, se ha modelado una función de optimización que se usará en un algoritmo de optimización por enjambre de partículas (PSO) para encontrar la configuración de red que minimice las emisiones de $CO_2$.
 
-Se presentan dos versiones diferentes del algoritmo, así como diferentes maneras de realizar el enrutado
+Específicamente, en este trabajo se presentan dos versiones del algoritmo, en una de ellas se deja de evaluar una solución si esta no cumple alguna de las restricciones, mientras que en la otra se penalizan las soluciones que no cumplen dichas restricciones. En cuanto a las pruebas, se estudian cómo diferentes técnicas de enrutamiento, el aumento del tráfico y la escalabilidad de la topología de red afectan a las emisiones de $CO_2$.
 
 \noindent\textbf{Palabras clave}: \printkeywords.
 
@@ -135,7 +135,7 @@ EL RESUMEN EN INGLÉS
 \startappendices
 
 %%%%%%%% ANEXO 1 %%%%%%%%
-\import{appendices}{01_ejemplo_de_anexo.tex}
+\import{appendices}{01_acronimos.tex}
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
