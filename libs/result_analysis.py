@@ -688,7 +688,7 @@ def plot_tm_bars_with_confidence(
         means,
         yerr=ci_errors,
         capsize=6,
-        color='#E67E22'
+        color='#27AE60'
     )
 
     plt.ylabel("Emisiones (gCO₂)")
