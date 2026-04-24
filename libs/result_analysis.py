@@ -676,17 +676,44 @@ def plot_tm_bars_with_confidence(
         labels.append(f"TM{tm}")
 
     # ---- Gráfica ----
-    plt.figure(figsize=(8, 6))
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+    plt.figure(figsize=fs)
+
     plt.bar(
         labels,
         means,
         yerr=ci_errors,
-        capsize=6
+        capsize=6,
+        color='#E67E22'
     )
 
     plt.ylabel("Emisiones (gCO₂)")
     plt.grid(axis="y", linestyle="--", alpha=0.6)
     plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results" /
+            network /
+            pso_type /
+            config_dir /
+            "figures"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"{config_dir}_runs.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
     plt.show()
 
 def plot_all_runs_iteraciones(
