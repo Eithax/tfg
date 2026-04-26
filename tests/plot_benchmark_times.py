@@ -12,12 +12,12 @@ from scipy import stats
 # CONFIGURACIÓN VISUAL  (ajusta a tu gusto)
 # ============================================================
 
-PROJECT_ROOT = Path(__file__).parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 NETWORKS        = ["Abilene", "Geant", "Nobel", "Germany"]
 STRATEGIES      = ["normal", "vch"]
-PSO_CONFIGS     = ["100p_600i", "100p_1200i", "200p_600i", "200p_1200i"]
-CONFIG_LABELS   = ["100p · 600i", "100p · 1200i", "200p · 600i", "200p · 1200i"]
+PSO_CONFIGS     = ["100p_600i",  "200p_600i",  "100p_1200i", "200p_1200i"]
+CONFIG_LABELS   = ["100p · 600i", "200p · 600i", "100p · 1200i", "200p · 1200i"]
 
 COLORS = {
     "normal": "#2980B9", # Azul
