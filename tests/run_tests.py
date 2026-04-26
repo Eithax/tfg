@@ -2,6 +2,7 @@ import os
 import json
 import pickle
 import argparse
+import time
 import numpy as np
 import networkx as nx
 
@@ -50,6 +51,18 @@ JOSE_SOLUTIONS = {
         4: [1,1,1,0,1,1,0,0,0,1,1,1,1,1,0,0,1,0,0,1,0,1,1,0,1,0,0,1,1,1],
         5: [1,1,1,1,1,1,0,0,0,1,1,0,1,1,0,1,1,0,0,1,0,1,1,0,1,0,0,1,1,1]
     }
+}
+
+
+# ============================================================
+# SOLUCIONES CON TODOS LOS ENLACES ENCENDIDOS
+# ============================================================
+
+SOLUCIONES_COMPLETAS = {
+    "Abilene": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "Geant": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "Nobel": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "Germany": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 }
 
 
@@ -160,6 +173,7 @@ def run_pso(kwargs, init_pos, vch):
 def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10, vch=False):
     print(f"\nEjecutando {network} | TM{tm}")
 
+    start_time_init = time.time()
     kwargs = load_network(network, tm)
     dimensions = len(kwargs["possible_links"])
     kwargs["all_k_paths"] = load_k_paths(
@@ -171,11 +185,23 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10,
 
     init_pos = generate_initial_positions(PSO_CONFIG["n_particles"], dimensions)
 
+    start_time = time.time()
     best_cost, best_pos = run_pso(kwargs, init_pos, vch)
+    end_time = time.time()
 
     print("\n=== RESULTADO FINAL ===")
     print("Best cost:", best_cost)
     print("Best position:", best_pos)
+    print("Tiempo con carga de entorno: ", end_time - start_time_init)
+    print("Tiempo sin carga de entorno: ", end_time - start_time)
+
+    adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
+    for k, (i, j) in enumerate(kwargs["possible_links"]):
+        adj[i][j] = SOLUCIONES_COMPLETAS[network][k]
+
+    cost = total_carbon_intensity(adj, **kwargs)
+    print("\n=== SOLUCIÓN CON TODOS LOS ENLACES ENCENDIDOS ===")
+    print("Coste:", cost)
 
     if comprobar_solucion_jose:
         adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
