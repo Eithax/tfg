@@ -1110,11 +1110,11 @@ def plot_costes_por_tm_ordenado(resultados_por_tm):
 
     output_dir = (
             PROJECT_ROOT /
-            "results/Abilene"
+            "results/Geant"
     )
     output_dir.mkdir(parents=True, exist_ok=True)
     filename = (
-        f"Abilene_comparative_emissions_all_conf.pdf"
+        f"Geant_comparative_emissions_all_conf.pdf"
     )
     plt.savefig(
         output_dir / filename,
