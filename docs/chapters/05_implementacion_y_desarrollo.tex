@@ -6,7 +6,7 @@ En esta sección se presenta detalladamente la implementación del algoritmo des
 
 Como se ha visto en el apartado del estado del arte, los problemas de optimización se pueden abordar con diferentes técnicas dependiendo de las características del problema.
 
-Una de las técnicas que mejores resultados ofrece es la programación lineal entera (ILP). El estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} hace uso de esta técnica para optimizar las emisiones de $CO_2$ en redes SDN. Sin embargo, aunque ILP es capaz de encontrar la solución óptima y llegando a reducir las emisiones de carbono en hasta un 84.5\%, su tiempo de ejecución en algunas de las pruebas realizadas llegó a alcanzar en torno a los 17 minutos, unos 1075 segundos, lo que es prohibitivo en escenarios tan cambiantes como el de las redes cableadas de comunicaciones. 
+Una de las técnicas que ofrece soluciones óptimas, a costa de un gran tiempo de cómputo, es la programación lineal entera (ILP). El estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} muestra cómo esta técnica es capaz de reducir las emisiones de carbono en hasta un 84.5\%, aunque el tiempo de ejecución llegó a alcanzar los 17 minutos, lo que es prohibitivo en escenarios tan cambiantes. 
 
 Como alternativa a soluciones basadas en ILP, se pueden usar técnicas de \textit{Deep Learning} (DL). Pero estas técnicas, además de requerir una gran cantidad de datos para entrenar el modelo, no son viables para este tipo de problemas, pues en el momento en el que se modifique la topología de red, el modelo entrenado dejará de ser válido, lo que obligará a volver a entrenar el modelo desde cero, con la consecuente pérdida de tiempo y recursos.
 
@@ -31,7 +31,15 @@ Como en la mayoría de algoritmos de optimización evolutivos, PSO se basa en la
 \label{fig:pso_flowchart}
 \end{figure}
 
-Para entender mejor el diagrama de flujo que se muestra en la \autoref{fig:pso_flowchart}, se va a usar un sencillo ejemplo: personas buscando una localización. PSO inicializa aleatoriamente el enjambre con un número determinado de partículas, que traducido al ejemplo, sería posicionar a las personas en el mapa de manera aleatoria. Luego, cada persona evalúa la calidad de su posición (cada partícula evalúa el fitness), es decir, cómo de cerca está de la localización objetivo. A continuación, cada persona analiza si su posición actual es mejor que la mejor posición que ha encontrado hasta ese momento (p\_best), y si es así, actualiza su mejor posición personal. Después, los individuos se comunican entre sí para compartir información sobre sus mejores posiciones personales, lo que les permite conocer la mejor posición global encontrada por el grupo (g\_best). Si se ha alcanzado la condición de parada, como puede ser un número máximo de intentos, el grupo comunica la mejor posición global encontrada, que sería la localización más cercana al objetivo. Si no se ha alcanzado la condición de parada, cada persona, en función de la información recabada hasta el momento, se mueve a otra posición (actualizar velocidad y actualizar posición) y se vuelve a evaluar la calidad de su nueva posición, empezando así una nueva iteración.
+Para entender mejor el diagrama de flujo que se muestra en la \autoref{fig:pso_flowchart}, se va a usar un sencillo ejemplo: personas buscando una localización en un mapa.
+
+\begin{enumerate}
+    \item PSO inicializa aleatoriamente el enjambre con un número determinado de partículas, que traducido al ejemplo, sería posicionar a las personas en el mapa de manera aleatoria.
+    \item Luego, cada persona evalúa la calidad de su posición (cada partícula evalúa el fitness), es decir, cómo de cerca está de la localización objetivo.
+    \item A continuación, cada persona compara su posición actual con la mejor posición que ha encontrado hasta ese momento (p\_best) y, en caso de ser superior, actualiza su mejor posición personal.
+    \item Después, los individuos se comunican entre sí para compartir información sobre sus mejores posiciones personales, lo que les permite conocer la mejor posición global encontrada por el grupo (g\_best).
+    \item Si se ha alcanzado la condición de parada, como puede ser un número máximo de intentos, el grupo comunica la mejor posición global encontrada, que sería la localización más cercana al objetivo. Si no se ha alcanzado la condición de parada, cada persona, en función de la información recabada hasta el momento, se mueve a otra posición (actualizar velocidad y actualizar posición) y se vuelve a evaluar la calidad de su nueva posición, empezando así una nueva iteración.
+\end{enumerate}
 
 \section{Parámetros de PSO}
 
@@ -39,7 +47,9 @@ En esta sección se detallan los parámetros que influyen en la ejecución de PS
 
 \subsection{Partícula}
 
-El concepto de partícula ya se ha comentado brevemente con anterioridad, y es que una partícula es un agente individual que representa una solución candidata al problema de optimización. Dado que PSO es un algoritmo inspirado en el comportamiento social de los animales, como las bandadas de pájaros o los bancos de peces, se puede imaginar cada partícula como un pájaro que está sobrevolando el terreno, el espacio de búsqueda, en busca de la zona con más comida, la mejor solución.
+El concepto de partícula ya se ha comentado brevemente con anterioridad, y es que una partícula es un agente individual que representa una solución candidata al problema de optimización. Como se ha comentado en el ejemplo anterior, se puede entender por partícula a una persona buscando la ubicación objetivo del mapa. De hecho, este ejemplo no se aleja mucho de la inspiración original de PSO, puesto que se basa en el comportamiento social de bandadas de pájaros o bancos de peces moviéndose en grupo hacia un objetivo común.
+
+%Dado que PSO es un algoritmo inspirado en el comportamiento social de los animales, como las bandadas de pájaros o los bancos de peces, se puede imaginar cada partícula como un pájaro que está sobrevolando el terreno, el espacio de búsqueda, en busca de la zona con más comida, la mejor solución.
 
 \subsection{Función objetivo}
 
@@ -47,11 +57,11 @@ La función objetivo es una parte fundamental de cualquier algoritmo de optimiza
 
 \subsection{Velocidad}
 
-En PSO, las partículas tienen dos atributos principales, siendo la velocidad uno de ellos. Esta determina cómo se mueve cada partícula a lo largo del espacio de búsqueda. La velocidad se actualiza en cada iteración en función de la mejor posición personal de la partícula y la mejor posición global del enjambre, lo que permite que las partículas exploren el espacio de búsqueda de manera eficiente. Una velocidad alta puede permitir que las partículas exploren el espacio de búsqueda de manera más amplia, pero también puede hacer que el algoritmo sea más propenso a saltar sobre buenas soluciones. Por otro lado, una velocidad baja puede hacer que el algoritmo sea más lento, pero también puede ayudar a que las partículas se concentren en áreas prometedoras del espacio de búsqueda.
+En PSO, las partículas tienen dos atributos principales, siendo la velocidad uno de ellos. Esta determina en qué dirección y cuánto se mueve cada partícula a lo largo del espacio de búsqueda. La velocidad se actualiza en cada iteración en función de la mejor posición personal de la partícula y la mejor posición global del enjambre, lo que permite que las partículas exploren el espacio de búsqueda de manera eficiente. Una velocidad alta puede permitir que las partículas exploren el espacio de búsqueda de manera más amplia, pero también puede hacer que el algoritmo sea más propenso a saltar sobre buenas soluciones. Por otro lado, una velocidad baja puede hacer que el algoritmo sea más lento, pero también puede ayudar a que las partículas se concentren en áreas prometedoras del espacio de búsqueda.
 
 \subsection{Posición}
 
-El segundo atributo principal de las partículas es la posición, que representa una posible solución al problema de optimización. La diferencia entre la posición y la partícula, pues las definiciones pueden ser un poco confusas, es que la posición es el valor actual de la solución representada por la partícula, mientras que la partícula es el agente que se mueve a lo largo del espacio de búsqueda. Siguiendo con el ejemplo de los pájaros, la posición sería el lugar específico donde se encuentra cada pájaro en un momento dado. La posición se actualiza en cada iteración en función de la velocidad de la partícula, lo que permite que las partículas se muevan a través del espacio de búsqueda y encuentre mejores soluciones.
+El segundo atributo principal de las partículas es la posición, que representa una posible solución al problema de optimización. La diferencia entre la posición y la partícula, pues las definiciones pueden ser un poco confusas, es que la posición es el valor actual de la solución representada por la partícula, mientras que la partícula es el agente que se mueve a lo largo del espacio de búsqueda. Siguiendo con el ejemplo de las personas y el mapa, la posición sería el lugar específico donde se encuentra un individuo en un momento dado. La posición se actualiza en cada iteración en función de la velocidad de la partícula, lo que permite que las partículas se muevan a través del espacio de búsqueda y encuentre mejores soluciones.
 
 \subsection{Coeficiente de inercia}
 
@@ -126,7 +136,7 @@ Las partículas representan uno de los parámetros más importantes de PSO, pues
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.6\textwidth]{pictures/pso_ejemplo.pdf}
-\caption[Ejemplo sencillo PSO]{Representación de una red sencilla como partícula de pso.\\Fuente: Elaboración propia.}
+\caption[Ejemplo sencillo PSO]{Representación de una red sencilla como partícula de PSO.\\Fuente: Elaboración propia.}
 \label{fig:pso_ejemplo}
 \end{figure}
 
@@ -142,7 +152,7 @@ De manera intuitiva, se podría pensar que a medida que se incrementa el número
 \label{fig:barrido_particulas_i1500}
 \end{figure}
 
-Tras estos primeros resultados, se decidió investigar el por qué de los mismos. Tras la realización de diferentes pruebas, las cuales se comentarán con detalle más adelante en el \autoref{chp:results}, se descubrió un factor que estaba afectando a los resultados de manera significativa: la aleatoriedad con la que se incializan las partículas. Dado que PSO es un algoritmo estocástico, la inicialización aleatoria de las partículas puede llevar a resultados muy diferentes en cada ejecución,lo que explica la falta de una tendencia clara en los resultados del barrido. Para abordar este problema, se decició incializar las partículas de dos maneras: una de las partículas del enjambre se inicializa con todos los enlaces encendidos y el resto de partículas se inicializan con un porcentaje de enlaces encendidos que se comprende entre el 50\% y el 90\%.
+Tras estos primeros resultados, se decidió investigar el por qué de los mismos. Tras la realización de diferentes pruebas, las cuales se comentarán con detalle más adelante en el \autoref{chp:results}, se descubrió un factor que estaba afectando a los resultados de manera significativa: la aleatoriedad con la que se incializan las partículas. Dado que PSO es un algoritmo estocástico, la inicialización aleatoria de las partículas puede llevar a resultados muy diferentes en cada ejecución, lo que explica la falta de una tendencia clara en los resultados del barrido. Para abordar este problema, se decidió inicializar las partículas de dos maneras: una de las partículas del enjambre se inicializa con todos los enlaces encendidos y el resto de partículas se inicializan con un porcentaje de enlaces encendidos que se comprende entre el 50\% y el 90\%.
 
 En la \autoref{fig:barrido_particulas_i1500_inicializacion} se pueden observar los resultados del barrido de partículas con esta nueva estrategia de inicialización. En la gráfica se aprecia una clara tendencia a mejorar los resultados a medida que se incrementa el número de partículas, lo que confirma las sospechas sobre la influencia de la aleatoriedad en los resultados anteriores. Aunque todavía hay algún que otro pico, estos son despreciables en comparación con la mejora obtenida, pues disminuyen las emisiones entre 8 y 10 $gCO_2$.
 
@@ -187,3 +197,109 @@ Estas gráficas aportan información muy interesante sobre la influencia de las 
 \subsection{Coeficientes cognitivo y social}
 
 Para determinar la configuración más adecuada de los coeficientes cognitivo y social, se aprovecharon los barridos realizados en las Subsecciones \ref{sec:conf_particulas} y \ref{sec:iteraciones}. En todos los barridos realizados, las configuraciones que ofrecían los mejores resultados eran aquellas en las que el coeficiente social era mayor que el cognitivo, es decir, aquellas en las que las partículas se centraban más en la explotación que en la exploración. Concretamente, las dos mejores configuraciones era $c_1 = 1.5$ y $c_2 = 2.5$ (gráfica azul) y $c_1 = 1.75$ y $c_2 = 2.25$ (gráfica naranja). Puesto que desde un principio se quería buscar que el algoritmo se centrase más en la explotación, se terminó optando por la gráfica naranja, es decir, por la configuración $c_1 = 1.75$ y $c_2 = 2.25$, pues ofrece un buen equilibrio entre la exploración personal y la explotación colectiva, dando cierta prioridad a esta última.
+
+\subsection{Inercia, vecinos y dimensiones del espacio de búsqueda}
+
+Un valor coherente para que el coeficiente de inercia, representado por $w$, fomente que las partículas se centren más en la explotación que en la exploración, pero sin dejar de lado esta última, es 0.7. Lo que indica este valor es que para la siguiente iteración, a la hora de actualizar la velocidad, se tendrá en cuenta en un 70\% la velocidad de la iteración anterior. Esto permite a las partículas explotar los resultados grupales a buen ritmo pero deja margen de maniobra en caso de que estos resultados no terminen de ser fructíferos.
+
+En el caso del número de vecinos, la cantidad fijada para todas las pruebas ha sido 100. Esto permite tener dos escenarios durante los experimentos: cuando el enjambre se componga de 100 partículas, cada una tendrá acceso a la información de todo el enjambre; cuando sea de 200, cada agente solo considerará la mitad. Estos dos escenarios son muy interesantes, ya que el primero favorece una rápida convergencia hacia la solución global, mientras que el segundo fomenta más la exploración.
+
+Por último, las dimensiones del espacio de búsqueda dependen por completo de la topología de red, puesto que es el número de enlaces unidireccionales de la red lo que las define. Esto se debe a que cada partícula representa una solución candidata en la que se asigna un estado a cada enlace, por lo que el número de variables de dicha solución coincide directamente con el número de enlaces de la red. Por lo tanto, redes con mayor número de enlaces darán lugar a espacios de búsqueda más grandes, incrementando así la complejidad del problema.
+
+\subsection{Función objetivo y pseudocódigo}
+
+Para modelar la función que usará el algoritmo de PSO para evaluar la calidad de las posibles soluciones, se parte de la fórmula propuesta en el artículo \textit{Exploring the Benefits of Carbon-Aware Routing} \cite{ElZahr2023}:
+
+\begin{equation}
+    C_{tot}(G, X, \lambda, c, \beta) = \sum_{n=1}^{V} (x_n * \lambda_n * c_n) + \sum_{l=1}^{E} \beta_l (c_{l_{n_1}} + c_{l_{n_2}})
+\end{equation}
+
+Donde:
+
+\begin{itemize}
+    \item $G$ es la topología de la red, representada como un grafo.
+    \item $V$ y $E$ son el número de nodos y enlaces de la red, respectivamente.
+    \item $x_n$ es la intensidad de flujo en el nodo $n$.
+    \item $c_n$ es la tasa de emisiones de $CO_2$ asociada al nodo $n$.
+    \item $\lambda_n$ es la potencia dinámica incremental por tasa de datos del nodo $n$.
+    \item $\beta_l$ es el incremento del consumo de energía al habilitar un puerto.
+    \item $c_{l_{n_1}}$ y $c_{l_{n_2}}$ son las emisiones de $CO_2$ asociadas a los nodos $n_1$ y $n_2$ que están conectados por el enlace $l$.
+\end{itemize}
+
+El primer sumatorio representa el consumo dinámico de energía asociado al tráfico que pasa por cada nodo, es decir, cuanto más tráfico pase por un nodo, más energía consumirá ese nodo. El segundo sumatorio se corresponde con el consumo estático de energía asociado a los enlaces que están activos. Un enlace activo implica que hay un puerto habilitado en cada uno de los nodos que conecta, lo que genera un consumo de energía adicional. La \autoref{fig:consumo_router} representa gráficamente lo que se acaba de explicar: la potencia estática es el consumo base de energía de un router y no se puede reducir. La potencia de los puertos es la cantidad de energía extra que se consume al habilitar un puerto. Este valor es orientativo, ya que el consumo real también depende del modo de operación en el que trabaje el router, puesto que cada modo influye en aspectos como la velocidad de los datos. Por último, la componente azul del modelo es la potencia dinámica, que depende de la carga de tráfico del router.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.7\textwidth]{pictures/consumo_router.png}
+\caption[Esquema consumo router]{Modelo de consumo de energía de un router.\\Fuente: José Antonio Gómez de la Hiz \cite{GomezdelaHiz2025}.}
+\label{fig:consumo_router}
+\end{figure}
+
+A lo largo de este trabajo, se ha mencionado en varias ocasiones la importancia de no dejar sin conexión ninguna parte de la red. Si a eso se le junta querer reducir la carga de nodos y enlaces en zonas de altas emisiones, se genera la necesidad de buscar los caminos que cumplan ambos requisitos, necesidad que puede satisfacerse con la estrategia \textit{K-Shortest Path} (KSP). Esta técnica permite encontrar los \textit{K} caminos más cortos entre dos puntos, aunque en este caso los caminos no son los más cortos sino los más eficientes, ambientalmente hablando. De esta manera, si la ruta que menos emisiones genera no tiene capacidad de enrutar todo el tráfico, se evaluaría la siguiente ruta.
+
+Una vez explicada en detalle la fórmula en la que se basa la función objetivo, se procede a presentar el psudocódigo de la versión para PSO normal. El Algoritmo \ref{alg:carbon_pso}, dada una matriz de tráfico, asigna cada flujo al mejor camino disponible, procesando primero las demandas más grandes. Un camino se considera válido si solamente utiliza enlaces activos de la red y dispone de capacidad suficiente para satisfacer la demanda. Si algún flujo no puede ser asignado, la solución se considera inválida y se devuelve $+\infty$. Una vez asignados todos los flujos, se calcula la emisión de carbono tal y como se ha explicado con anterioridad: la potencia dinámica $P_{\text{dyn}}$, proporcional al tráfico en cada nodo, y la potencia de los puertos $P_{\text{ports}}$, asociada a los enlaces activos de la topología. Las emisiones totales de carbono de la red es el resultado de sumar ambos términos.
+
+\begin{algorithm}[H]
+    \caption{Cálculo de la emisiones totales de la red para PSO normal}
+    \label{alg:carbon_pso}
+    \begin{algorithmic}[1]
+    \Require $\text{position}[N][N]$, $\text{flow\_matrix}[N][N]$, $\text{all\_k\_paths}$, $\text{nodes\_max\_flow}[N][N]$, $\text{carbon\_intensity}[N]$
+    \Ensure Emisiones totales de carbono de la red
+    
+    \State Inicializar $\text{nodes\_traffic} \leftarrow 0$, $\text{links\_traffic} \leftarrow 0$, $P_{\text{dyn}} \leftarrow 0$, $P_{\text{ports}} \leftarrow 0$
+    \State $\mathcal{A} \leftarrow \{(i,j) \mid \text{position}[i][j] = 1\}$
+    
+    \State Ordenar demandas $\mathcal{D}$ de forma descendente por $\text{flow\_matrix}[s][d]$
+    
+    \For{$(s, d, \delta) \in \mathcal{D}$}
+        \State $p^* \leftarrow$ primer camino en $\text{all\_k\_paths}[(s,d)]$ válido y con capacidad $\geq \delta$
+        \If{$p^* = \textsc{None}$} \Return $+\infty$ \EndIf
+        \State Actualizar $\text{links\_traffic}$ y $\text{nodes\_traffic}$ según $p^*$ y $\delta$
+    \EndFor
+    
+    \For{$x \leftarrow 0$ \textbf{ to } $N-1$}
+        \State $c_x \leftarrow \text{carbon\_intensity}[x] / 1000$
+        \State $P_{\text{dyn}} \mathrel{+}= \text{nodes\_traffic}[x] \cdot \lambda_n \cdot c_x$
+        \For{$y \neq x$ \textbf{ con } $\text{position}[x][y] \neq 0$}
+            \State $P_{\text{ports}} \mathrel{+}= \beta_l \cdot (c_x + c_y)$
+        \EndFor
+    \EndFor
+    
+    \State \Return $P_{\text{dyn}} + P_{\text{ports}}$
+    \end{algorithmic}
+\end{algorithm}
+
+A continuación se presenta la variante del algoritmo anterior que introduce el mecanismo de penalización VCH. Cuando un flujo no puede ser asignado por ausencia de un camino válido o falta de capacidad, el Algoritmo \ref{alg:carbon_vch} lo cuenta como una violación. Al finalizar la asignación, el número de violaciones se multiplica por un factor de penalización $M$ y se añade a las emisiones de carbono. Esto permite que el algoritmo siempre devuelva un valor finito, penalizando las soluciones que incumplen las restricciones de la red.
+
+\begin{algorithm}[H]
+\caption{Cálculo de la emisiones totales de la red para PSO VCH}
+\label{alg:carbon_vch}
+\begin{algorithmic}[1]
+\Require $\text{position}[N][N]$, $\text{flow\_matrix}[N][N]$, $\text{all\_k\_paths}$, $\text{nodes\_max\_flow}[N][N]$, $\text{carbon\_intensity}[N]$, $M$
+\Ensure Intensidad de carbono total de la red, penalizada por violaciones
+
+\State Inicializar $\text{nodes\_traffic} \leftarrow 0$, $\text{links\_traffic} \leftarrow 0$, $P_{\text{dyn}} \leftarrow 0$, $P_{\text{ports}} \leftarrow 0$, $v \leftarrow 0$
+\State $\mathcal{A} \leftarrow \{(i,j) \mid \text{position}[i][j] = 1\}$
+\State Ordenar demandas $\mathcal{D}$ de forma descendente por $\text{flow\_matrix}[s][d]$
+
+\For{$(s, d, \delta) \in \mathcal{D}$}
+    \State $p^* \leftarrow$ primer camino en $\text{all\_k\_paths}[(s,d)]$ válido y con capacidad $\geq \delta$
+    \If{$p^* = \textsc{None}$}
+        \State $v \mathrel{+}= 1$ \Comment{Contabilizar violación y continuar}
+    \Else
+        \State Actualizar $\text{links\_traffic}$ y $\text{nodes\_traffic}$ según $p^*$ y $\delta$
+    \EndIf
+\EndFor
+
+\For{$x \leftarrow 0$ \textbf{ to } $N-1$}
+    \State $c_x \leftarrow \text{carbon\_intensity}[x] / 1000$
+    \State $P_{\text{dyn}} \mathrel{+}= \text{nodes\_traffic}[x] \cdot \lambda_n \cdot c_x$
+    \For{$y \neq x$ \textbf{ con } $\text{position}[x][y] \neq 0$}
+        \State $P_{\text{ports}} \mathrel{+}= \beta_l \cdot (c_x + c_y)$
+    \EndFor
+\EndFor
+
+\State \Return $P_{\text{dyn}} + P_{\text{ports}} + v \cdot M$
+\end{algorithmic}
+\end{algorithm}
