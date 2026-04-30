@@ -5,46 +5,52 @@ from libs.result_analysis import (
     procesar_barrido_iteraciones_min_max,
     plot_tm_bars_with_confidence, plot_all_runs_iteraciones,
     procesar_barrido_iteraciones_regex,
-    procesar_barrido_particulas_regex
+    procesar_barrido_particulas_regex,
+    plot_costes_por_tm_ordenado
 )
 from pathlib import Path
 from datetime import datetime
 
 
-# ============================================================
-# EMISIONES CON TODOS LOS ENLACES ENCENDIDOS
-# ============================================================
-
-MAX_CARBON = {
-    "Abilene": {
-        1: 119.23285957325584,
-        2: 120.1275744665698,
-        3: 122.49521077433485,
-        4: 124.44984242414479,
-        5: 125.42715824904977
+resultados_por_tm = {
+    "TM1": {
+        "Topología base": 119.23285957325584,
+        "VCH-100p-600i": 64.6541,
+        "VCH-200p-1200i": 61.6078,
+        "VCH-100p-1200i": 62.774431968843,
+        "PSO-200p-1200i": 76.34725291422204
     },
-    "Geant": {
-        1: 243.43302882243873,
-        2: 244.4690691882402,
-        3: 245.2932219294174,
-        4: 246.12476584315752,
-        5: 247.10510576733463
+    "TM2": {
+        "Topología base": 120.1275744665698,
+        "VCH-100p-600i": 66.4288,
+        "VCH-200p-1200i": 62.3903,
+        "VCH-100p-1200i": 64.085814068305,
+        "PSO-200p-1200i": 74.72472120476489
     },
-    "Nobel": {
-        1: 274.5541053459976,
-        2: 275.5825264151971,
-        3: 277.1251580189963,
-        4: 279.69621069199496,
-        5: 284.83831603799234
+    "TM3": {
+        "Topología base": 122.49521077433485,
+        "VCH-100p-600i": 70.3919,
+        "VCH-200p-1200i": 68.1253,
+        "VCH-100p-1200i": 68.225574044569,
+        "PSO-200p-1200i": 77.69085871891823
     },
-    "Germany": {
-        1: 902.0110059173542,
-        2: 904.8737573966937,
-        3: 910.5992603553727,
-        4: 916.3247633140517,
-        5: 919.1875147933912
+    "TM4": {
+        "Topología base": 124.44984242414479,
+        "VCH-100p-600i": 83.7212,
+        "VCH-200p-1200i": 80.407983637171,
+        "VCH-100p-1200i": 81.5042294689255,
+        "PSO-200p-1200i": 88.91831835694208
+    },
+    "TM5": {
+        "Topología base": 125.42715824904977,
+        "VCH-100p-600i": 88.6265,
+        "VCH-200p-1200i": 87.218973686884,
+        "VCH-100p-1200i": 87.2759902693895,
+        "PSO-200p-1200i": 94.5696864778004
     }
 }
+
+plot_costes_por_tm_ordenado(resultados_por_tm)
 
 
 network="Nobel"
@@ -53,7 +59,7 @@ tm_indices=[1, 2, 3, 4, 5]
 confidence=0.95
 pso_type="PSO_VCH"
 
-plot_tm_bars_with_confidence(network, config_dir, tm_indices, confidence, pso_type)
+#plot_tm_bars_with_confidence(network, config_dir, tm_indices, confidence, pso_type)
 
 #procesar_barrido_iteraciones(
 #    network,
