@@ -3,6 +3,7 @@ import re
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 from pathlib import Path
 from datetime import datetime
 from collections import defaultdict
@@ -1034,3 +1035,92 @@ def procesar_barrido_particulas_regex(
     plt.show()
 
     return resultados
+
+
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+
+def plot_costes_por_tm_ordenado(resultados_por_tm):
+    plt.rcParams.update({
+        "font.size": fuente,
+        "axes.labelsize": fuente_eje,
+        "legend.fontsize": fuente_leyenda
+    })
+
+    tms = sorted(resultados_por_tm.keys())
+
+    cmap = LinearSegmentedColormap.from_list(
+        "verde_naranja",
+        ["#27AE60", "#F1C40F", "#E67E22"]
+    )
+
+    plt.figure(figsize=fs)
+
+    width = 0.12
+    separacion_grupos = 1.2
+
+    # Para construir la leyenda sin duplicados
+    legend_handles = {}
+
+    for i, tm in enumerate(tms):
+        datos_tm = resultados_por_tm[tm]
+
+        # Ordenar por coste
+        items_ordenados = sorted(datos_tm.items(), key=lambda x: x[1])
+
+        n = len(items_ordenados)
+        x_base = i * separacion_grupos
+
+        for j, (label, valor) in enumerate(items_ordenados):
+            color = cmap(j / (n - 1)) if n > 1 else cmap(0)
+
+            bar = plt.bar(
+                x_base + j * width,
+                valor,
+                width,
+                color=color
+            )
+
+            # Guardar handle para leyenda (solo una vez por label)
+            if label not in legend_handles:
+                legend_handles[label] = bar[0]
+
+    # Centrar etiquetas de TM
+    xticks = [
+        i * separacion_grupos + width * 2
+        for i in range(len(tms))
+    ]
+
+    plt.xticks(xticks, tms)
+
+    plt.ylabel("Emisiones (gCO₂)")
+
+    plt.legend(
+        legend_handles.values(),
+        legend_handles.keys(),
+        loc="lower center",
+        bbox_to_anchor=(0.5, 1.02),
+        ncol=3,
+        frameon=False
+    )
+
+    plt.grid(axis="y")
+    plt.tight_layout()
+
+    output_dir = (
+            PROJECT_ROOT /
+            "results/Abilene"
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = (
+        f"Abilene_comparative_emissions_all_conf.pdf"
+    )
+    plt.savefig(
+        output_dir / filename,
+        format="pdf",
+        dpi=600,
+        bbox_inches="tight"
+    )
+
+    plt.show()
