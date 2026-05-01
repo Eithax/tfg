@@ -29,9 +29,9 @@ STRATEGY_LABELS = {
 }
 
 # Tipografía / tamaño de figura
-fuente         = 12
-fuente_eje     = 13
-fuente_leyenda = 11
+fuente         = 14
+fuente_eje     = 11
+fuente_leyenda = fuente-5
 fs             = (10, 5)
 
 
