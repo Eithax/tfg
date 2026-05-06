@@ -16,8 +16,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 NETWORKS        = ["Abilene", "Geant", "Nobel", "Germany"]
 STRATEGIES      = ["normal", "vch"]
-PSO_CONFIGS     = ["100p_600i",  "200p_600i",  "100p_1200i", "200p_1200i"]
-CONFIG_LABELS   = ["100p · 600i", "200p · 600i", "100p · 1200i", "200p · 1200i"]
+PSO_CONFIGS     = ["100p_600i",  "100p_1200i",  "200p_600i", "200p_1200i"]
+#CONFIG_LABELS   = ["100p\n600i", "100p\n1200i", "200p\n600i", "200p\n1200i"]
+CONFIG_LABELS   = ["100p · 600i", "100p · 1200i", "200p · 600i", "200p · 1200i"]
 
 COLORS = {
     "normal": "#2980B9", # Azul
@@ -29,10 +30,11 @@ STRATEGY_LABELS = {
 }
 
 # Tipografía / tamaño de figura
-fuente         = 14
-fuente_eje     = 11
-fuente_leyenda = fuente-5
+fuente         = 17
+fuente_eje     = 13
+fuente_leyenda = fuente-3
 fs             = (10, 5)
+#fs             = (6, 4)
 
 
 # ============================================================
@@ -165,7 +167,7 @@ def plot_topology_time_bars(
 
         fig.tight_layout()
 
-        filename = f"times_{network}.{fmt}"
+        filename = f"tiempos_{network}.{fmt}"
         filepath = output_dir / filename
         fig.savefig(filepath, format=fmt, dpi=600, bbox_inches="tight")
         print(f"  Guardada: {filepath}")

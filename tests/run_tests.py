@@ -35,8 +35,8 @@ fs = (6, 4)
 # ============================================================
 
 PSO_CONFIG = {
-    "n_particles": 200,
-    "iters": 1200,
+    "n_particles": 100,
+    "iters": 3,
     "n_processes": 6,
     "options": {
         "c1": 1.75,
@@ -606,15 +606,15 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10,
 
     init_pos = generate_initial_positions(PSO_CONFIG["n_particles"], dimensions)
 
-    #start_time = time.time()
-    #best_cost, best_pos = run_pso(kwargs, init_pos, vch)
-    #end_time = time.time()
+    start_time = time.time()
+    best_cost, best_pos = run_pso(kwargs, init_pos, vch)
+    end_time = time.time()
 
-    #print("\n=== RESULTADO FINAL ===")
-    #print("Best cost:", best_cost)
-    #print("Best position:", best_pos)
-    #print("Tiempo con carga de entorno: ", end_time - start_time_init)
-    #print("Tiempo sin carga de entorno: ", end_time - start_time)
+    print("\n=== RESULTADO FINAL ===")
+    print("Best cost:", best_cost)
+    print("Best position:", best_pos)
+    print("Tiempo con carga de entorno: ", end_time - start_time_init)
+    print("Tiempo sin carga de entorno: ", end_time - start_time)
 
     #adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
     #for k, (i, j) in enumerate(kwargs["possible_links"]):
@@ -624,40 +624,40 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10,
     #print("\n=== SOLUCIÓN CON TODOS LOS ENLACES ENCENDIDOS ===")
     #print("Coste:", cost)
 
-    results_normal = {}
-
-    for network_v, tms in BEST_SOLUTIONS.items():
-        for tm_v, solution_vector in tms.items():
-            kwargs = load_network(network_v, tm_v)
-            kwargs["all_k_paths"] = load_k_paths(
-                network_v,
-                kwargs["carbon_matrix"],
-                kwargs["possible_links"],
-                k
-            )
-            adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
-            for idx, (i, j) in enumerate(kwargs["possible_links"]):
-                adj[i][j] = solution_vector[idx]
-
-            result_test = total_carbon_intensity(adj, **kwargs)
-            #print(result_test['link_utilization'])
-            results_normal[tm_v] = result_test
-
-        total_links = len(kwargs["possible_links"])
-
-        # Gráfica 1: % de enlaces apagados
-        plot_sleeping_links_per_tm(
-            results_per_tm=results_normal,
-            network=network_v,
-            total_links=total_links
-        )
-
-        # Gráfica 2: histograma de utilización de enlaces
-        plot_link_utilization_histogram(
-            results_per_tm=results_normal,
-            network=network_v,
-            possible_links=kwargs["possible_links"]
-        )
+    #results_normal = {}
+#
+    #for network_v, tms in BEST_SOLUTIONS.items():
+    #    for tm_v, solution_vector in tms.items():
+    #        kwargs = load_network(network_v, tm_v)
+    #        kwargs["all_k_paths"] = load_k_paths(
+    #            network_v,
+    #            kwargs["carbon_matrix"],
+    #            kwargs["possible_links"],
+    #            k
+    #        )
+    #        adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
+    #        for idx, (i, j) in enumerate(kwargs["possible_links"]):
+    #            adj[i][j] = solution_vector[idx]
+#
+    #        result_test = total_carbon_intensity(adj, **kwargs)
+    #        #print(result_test['link_utilization'])
+    #        results_normal[tm_v] = result_test
+#
+    #    total_links = len(kwargs["possible_links"])
+#
+    #    # Gráfica 1: % de enlaces apagados
+    #    plot_sleeping_links_per_tm(
+    #        results_per_tm=results_normal,
+    #        network=network_v,
+    #        total_links=total_links
+    #    )
+#
+    #    # Gráfica 2: histograma de utilización de enlaces
+    #    plot_link_utilization_histogram(
+    #        results_per_tm=results_normal,
+    #        network=network_v,
+    #        possible_links=kwargs["possible_links"]
+    #    )
 
 
     if comprobar_solucion_jose:
