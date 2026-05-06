@@ -1,2 +1,63 @@
 \chapter{\stateoftheartname} \label{chp:stateoftheart}
-\lipsum[1][1-4]
+
+Una de las tareas más importantes a la hora de desarrollar un proyecto es realizar una investigación exhaustiva y así determinar el marco teórico bajo el que se va a desarrollar el proyecto. En este capítulo se presenta un estudio en profundidad de los puntos más importantes relacionados con el proyecto, como son los algoritmos de optimización, las técnicas de enrutamiento o las métricas de evaluación.
+
+\section{Redes Cableadas y Emisiones de Carbono}
+
+La idea de esta sección es hablar sobre las principales fuentes de consumo de las redes e intensidad de carbono.
+
+\subsection{Consumo en redes}
+
+Redes y fuentes de consumo de las redes.
+
+\subsection{Modelo de emisiones}
+
+Modelo de energía, intensidad de carbono.
+
+\section{Estrategias de \textit{green networking}}
+
+Aquí se puede hablar sobre la diferencia entre redes tradicionales y redes SDN (aunque ya se ha hablado de ello en la introducción). También se puede hablar sobre diferentes técnicas de enrutado centradas en el carbono (o adaptadas al carbono) o sobre el enfoque de redes conscientes de carbono.
+
+\subsection{\textit{Software Defined Networks}}
+
+Explicar las redes SDN y su papel en todo esto.
+
+\subsection{Enrutado Basado en Criterios Ambientales}
+
+\begin{itemize}
+    \item Dijsktra usando las emisiones como peso de los enlaces
+    \item KSP usando las emisiones como peso de los enlaces
+\end{itemize}
+
+\section{Técnicas de Optimización}
+
+Creo que aquí es buena idea hablar sobre las diferentes técnicas de optimización y sus ventajas y desventajas. Pero no sé si estaría pisando el contenido de la sección 5.1
+
+\subsection{Métodos clásicos}
+
+\begin{itemize}
+    \item ILP - MILP
+    \item Heurísticas deterministas (voraces)
+\end{itemize}
+
+\subsection{Metaheurísticas}
+
+\begin{itemize}
+    \item Algoritmos genéticos
+    \item PSO
+    \item Ant Colony o Simulated Annealing
+\end{itemize}
+
+\subsection{Métodos basados en aprendizaje automático}
+
+\begin{itemize}
+    \item Deep Learning (importante dejar claro que DL no optimiza, sino que aprende y toma decisiones)
+\end{itemize}
+
+\section{\textit{Particle Swarm Optimization}}
+
+No sé si sería repetitivo tener esta sección aquí, ya se habla de PSO en la sección 5.2 y 5.3. Puede que sea mejor que la sección sea "PSO aplicado a redes SDN'' o "PSO aplicado a la reducción de emisiones''.
+
+\section{No sé qué más}
+
+Pues eso, noto que faltaría una sección para cerrar el capítulo, pero no estoy seguro sobre qué. A lo mejor es buena idea que este apartado sea como el de Amanda, que habla sobre las limitaciones existentes como la variabilidad en la generación de energía o la falta de transparencia (no se saben modelos exactos de routers para poder realizar simulaciones más exactas).
