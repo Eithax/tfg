@@ -1,3 +1,62 @@
 \chapter{\methodologyname} \label{chp:metodologia}
 
-Para el desarrollo de este trabajo, se ha seguido una metodología
+Para el desarrollo de este trabajo, se ha seguido una metodología basada en el desarrollo en espiral \cite{Boehm88}, la cual se ha complementado con una estrategia de reuniones bisemanales para evaluar el desarrollo del proyecto y resolver las dudas que a lo largo de este han surgido.
+
+\section{Desarrollo en Espiral}
+
+La metodología del desarrollo en espiral fue propuesta por Barry Boehm en 1986 y se centra en la idea de avanzar en ciclos o iteraciones, donde en cada vuelta a la espiral se aumenta el nivel de desarrollo y la complejidad. A diferencia de un modelo en cascada donde todo se hace una sola vez en orden, en el desarrollo en espiral se repiten las mismas fases varias veces, refinando y ampliando el producto en cada ciclo. Normalmente, cada ciclo pasa por cuatro fases:
+
+\begin{itemize}
+    \item Planificación: se definen los objetivos del ciclo.
+    \item Análisis de riesgos: se identifican los problemas potenciales y se toman decisiones para minimizarlos.
+    \item Ingeniería: se diseña, implementa y prueba el incremento correspondiente.
+    \item Evaluación: el cliente o tutor revisa el resultado
+\end{itemize}
+
+La gran ventaja que tiene este modelo frente a otros es el énfasis en los riesgos: antes de invertir tiempo en desarrollar algo, se analiza si tiene sentido hacerlo y cómo evitar que falle. Es especialmente útil en el caso de un TFG, pues al principio no se sabe muy bien qué hacer ni cómo. El resultado de cada ciclo suele ser un prototipo o versión funcional cada vez más completa hasta llegar al producto final en el último ciclo.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.6\textwidth]{pictures/espiral.pdf}
+\caption[Desarrollo en espiral]{Estructura del desarrollo en espiral.\\Fuente: Elaboración propia.}
+\label{fig:espiral}
+\end{figure}
+
+En la \autoref{fig:espiral} se muestra el diagrama del modelo en espiral seguido en este trabajo, donde cada vuelta representa un ciclo completo de desarrollo. Las fases por las que pasa cada ciclo se explican con más detalle a continuación:
+
+\begin{itemize}
+    \item Definición y refinamiento del problema. En el primer ciclo se define el problema inicial. En ciclos posteriores, esta fase consiste en refinar dicho problema a partir de los resultados de la iteración anterior.
+    \item Análisis y estudio. A partir del refinamiento en la fase anterior, se analizan los nuevos requisitos y se estudia cómo abordarlos.
+    \item Diseño de la solución. En esta fase se procede a diseñar cómo ajustar la solución al trabajo en base a la información recopilada en la fase de análisis y estudio.
+    \item Implementación. Una vez determinado cómo ajustar la solución al trabajo, se realiza la implementación en código.
+    \item Pruebas. Para poder evaluar la solución implementada, en esta fase se realizan diferentes pruebas que ofrezcan resultados para poder analizar.
+    \item Reunión con los tutores. Se realiza una reunión con los tutores para compartir el progreso, pruebas y resultados, de esta manera se obtienen nuevos puntos de vista, se resuelven dudas, se ponen sobre la mesa nuevas vías de trabajo y se establece la dirección de la siguiente iteración.
+    \item Actualización de la memoria. A lo largo del ciclo, y antes de pasar a la siguiente iteración, se documentan los avances para, más adelante, redactar la versión final de la memoria.
+\end{itemize}
+
+\section{Reuniones Bisemanales}
+
+Para mantener un ritmo constante en el desarrollo del trabajo y asegurar un seguimiento eficiente del proyecto, se decidió establecer reuniones con los tutores cada dos semanas. Esto ha permitido revisar tanto el estado como los avances del trabajo, además de resolver dudas y refinar el alcance. De la misma manera, las reuniones han servido para identificar problemas, explorar posibles soluciones y acordar la dirección de los siguientes pasos antes de comenzar cada nueva iteración.
+
+Esta estrategia de reuniones bisemanales ha sido muy valiosa para mantener el enfoque del trabajo, evitando desviaciones y corrigiendo el desarrollo cuando ha sido necesario. Además, la amplia experiencia de los tutores ha enriquecido el trabajo con puntos de vista que no se hubiesen tenido en cuenta en un desarrollo más independiente.
+
+\section{Diagrama de Gantt}
+
+El diagrama de Gantt es una herramienta gráfica con el objetivo de mostrar el tiempo dedicado a las diferentes tareas de un proyecto a lo largo de un tiempo total determinado. Es este el motivo por el cual se ha optado por elegir esta herramienta para representar el tiempo dedicado a cada parte del proyecto.
+
+Dado que durante el primer cuatrimestre del curso 2025-2026 se tenía previsto cursar seis asignaturas, el tiempo disponible para dedicar al TFG sería limitado. Por este motivo, se habló con el tutor, Jaime Galán, sobre la posibilidad de adelantar el inicio del trabajo a enero-febrero de 2025, una vez finalizados los exámenes, permitiendo así avanzar en las fases iniciales antes de que comenzara el período de mayor carga académica.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=\textwidth]{pictures/gantt.pdf}
+\caption[Diagrama de Gantt]{Diagrama de Gantt representando la duración de las fases.\\Fuente: Elaboración propia.}
+\label{fig:gantt}
+\end{figure}
+
+En el grado cursado, el TFG equivale 12 créditos ECTS, lo que representa a 300 horas de trabajo. Desde enero de 2025 hasta septiembre de ese mismo año se invirtieron unas 6 horas semanales, pues durante el cuatrimestre que cubre ese período se cursaban tres asignaturas. Durante la primera mitad del curso 2025-2026, que cubre de septiembre a diciembre, se redujo la dedicación a aproximadamente 3 horas semanales debido a las seis asignaturas matriculadas. Por último, desde enero de 2026, una vez finalizado el período de exámenes, se pudieron invertir unas 10 horas semanales.
+
+Teniendo en cuenta el tiempo invertido por semana, este TFG ha supuesto alrededor de 400 horas de trabajo. En la \autoref{fig:gantt} se muestran las diferentes fases del proyecto y el número de semanas que ha ocupado cada una.
+
+Las tareas en las que más tiempo se ha invertido son el análisis e investigación, la implementación y las pruebas y correcciones. El análisis e investigación es una fase extensa y necesaria para enteneder, principalmente, los fundamentos de PSO. La implementación es el núcleo del proyecto y abarca un gran volumen de horas, no solo por trabajar con \textit{frameworks} con los que no se habían trabajado anteriormente (como \textit{NetworkX} o \textit{PySwarms}), sino también por el constante refinamiento en cada iteración del desarrollo en espiral. Por último, las pruebas y correcciones requirieron una dedicación considerable, pues ayudan a garantizar la calidad de las soluciones y el correcto funcionamiento del sistema.
