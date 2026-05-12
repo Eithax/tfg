@@ -2,8 +2,6 @@
 \usepackage[spanish, es-tabla]{babel} % Comentar si se va a realizar en inglés
 %\usepackage{parskip} % Quitar comentario si se quieren distinguir los párrafos con saltos y quitar las sangrías
 
-\usepackage{lipsum} % Este paquete es para poner texto genérico en los capítulos, quitar cuando ya se hayan redactado
-
 % Rellenar con los datos del estudiante y el trabajo
 \estudiante{Santiago Rodríguez-Arias Martínez-Berná}{Grado}{Ingeniería Informática en Ingeniería del Software}
 \title{Optimización de las emisiones de CO2 en redes definidas por software mediante algoritmos bioinspirados}
@@ -33,8 +31,17 @@
 
 %%%% CAPÍTULOS INTRODUCTORIOS %%%%
 \pagenumbering{gobble}
-%\chapter*{Agradecimientos} % Apartado opcional, descomentar si se quiere añadir
-% Dedicatorias del trabajo, pueden ser en español o inglés dependiendo de lo que se considere más apropiado
+\chapter*{Agradecimientos}
+
+Creo que es injusto atribuirme todo el mérito de llegar hasta aquí. Hay quien podría decir que es gracias a mi esfuerzo y dedicación que he conseguido alcanzar la meta. Y tendría razón. Aunque solo en parte. Es gracias a otras personas que, a lo largo de mi vida y de la carrera, me han apoyado y empujado a continuar hacia adelante.
+
+En primer lugar, quiero darle las gracias a mis padres, Mariano y Mónica, por su apoyo incondicional a lo largo de los años. Cuando llevaba ya casi 5 años en Ingeniería Electrónica y Automática Industrial, les dije que me quería cambiar de carrera, y después de poner un total de 0 pegas, me dijeron que adelante. Saber que tenía todo su apoyo en un cambio tan grande, me calmó por completo y pude empezar de cero con fuerzas. A raíz de sus años de experiencia, tanto en la universidad como en sus trabajos, me han brindado consejos muy valiosos.
+
+Agradecer también a mis tutores, Jaime Galán Jiménez y José Antonio Gómez de la Hiz, por su dedicación y por permitirme realizar el TFG con ellos. Ambos me han enseñado lo interesante que pueden llegar a ser las redes, en especial en temas aparentemente aburridos como la reducción de la huella de carbono. Gracias por la paciencia, los consejos y el tiempo empleado para desarrollar este trabajo.
+
+Y por último, aunque no menos importante, darle las gracias a mi amigo Rubén Serrano Izquierdo por las píldoras de información y los datos curiosos sobre redes y temas de \textit{backend}. Fue quien abrió la puerta a mi interés por las redes y a plantearme un TFG relacionado con este tema.
+
+Muchas gracias a todos.
 
 \chapter*{Resumen}
 A día de hoy, las redes de comunicaciones son un componente esencial en la vida diaria de las personas y en el funcionamiento de las empresas. El aumento del tráfico de datos ha crecido de forma exponencial, llegando a multiplicarse por 80 desde 2007 hasta 2023 \cite{Paska2025}. Aunque el crecimiento del consumo energético no es proporcional al aumento del tráfico de datos, pues apenas se ha duplicado, esto no significa que no haya un impacto ambiental significativo. Se estima que las redes de comunicaciones representan aproximadamente el 1\% del consumo eléctrico mundial y alrededor del 1,4\% de las emisiones globales de $CO_2$. Y estos datos no van a hacer más que aumentar debido al auge de las Inteligencias Artificiales (IA) y los grandes centros de procesamiento de datos. Por tanto, es fundamental buscar soluciones que permitan optimizar el uso de las redes para reducir su impacto ambiental.
@@ -46,9 +53,13 @@ Específicamente, en este trabajo se presentan dos versiones del algoritmo, en u
 \noindent\textbf{Palabras clave}: \printkeywords.
 
 \chapter*{Abstract}
-EL RESUMEN EN INGLÉS
+Nowadays, communication networks are an essential component of people’s daily lives and business operations. Data traffic has grown exponentially, increasing by a factor of 80 between 2007 and 2023 \cite{Paska2025}. Although the growth in energy consumption has not been proportional to the increase in data traffic, having only doubled, this does not mean that there is no significant environmental impact. Communication networks are estimated to account for approximately 1\% of global electricity consumption and around 1.4\% of global $CO_2$ emissions. Moreover, these figures are expected to continue rising due to the growth of Artificial Intelligence (AI) and large-scale data processing centers. Therefore, it is essential to seek solutions that optimize the use of communication networks in order to reduce their environmental impact.
 
-\noindent\textbf{Keywords}: Most important or descriptive words, separated by commas.
+This work proposes a solution based on Software-Defined Networking (SDN) and bio-inspired algorithms to optimize the $CO_2$ emissions associated with the use of communication networks. More specifically, it builds upon the advances presented in \cite{ElZahr2023}, where the authors provide a formula to calculate the $CO_2$ emissions of wired networks as a function of data traffic and the energy consumption of network devices. Based on this formula, an optimization function has been modeled to be used within a Particle Swarm Optimization (PSO) algorithm in order to find the network configuration that minimizes $CO_2$ emissions.
+
+Specifically, this work presents two versions of the algorithm. In one version, a solution stops being evaluated if it violates any of the constraints, whereas in the other, solutions that do not satisfy the constraints are penalized. Regarding the experiments, the study analyzes how different routing techniques, increased traffic, and the scalability of the network topology affect $CO_2$ emissions.
+
+\noindent\textbf{Keywords}: SDN, carbon-aware routing.
 
 % Índices con enlaces de las secciones, tablas y figuras
 \newpage
@@ -57,8 +68,8 @@ EL RESUMEN EN INGLÉS
 \setcounter{page}{1}
 \tableofcontents
 %\pagebreak
-\newpage
-\listoftables
+%\newpage
+%\listoftables
 \newpage
 \listoffigures
 \newpage
