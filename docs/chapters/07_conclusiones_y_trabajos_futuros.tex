@@ -1,5 +1,24 @@
 \chapter{\conclusionsname} \label{chp:conclusiones}
 
+A lo largo de los seis capítulos anteriores se ha detallado todo el proceso de investigación, desarrollo, implementación y evaluación del algoritmo propuesto. A partir de los conocimientos y la experiencia adquiridos en todo el proceso, en este último capítulo se recogen las conclusiones extraídas tras valorar todo el trabajo realizado, así como algunas líneas futuras de trabajo de cara a mejorar el rendimiento del algoritmo y, por ende, la calidad de sus soluciones.
+
 \section{Conclusiones}
 
+El objetivo principal de este trabajo ha sido proponer una solución que permita reducir las emisiones de carbono en redes cableadas. Para ello, se han investigado diferentes técnicas de optimización como ILP, DL y algoritmos metaheurísticos, de las cuales se optó por PSO, un algoritmo de optimización metaheurístico.
+
+Una vez elegida la técnica, se diseñó e implementó un algoritmo de PSO adpatado a espacios de búsqueda discretos. La mejora de esta solución se hizo de forma iterativa a través de diferentes experimentos y evaluando los resultados obtenidos, así como investigando en profundidad el motivo de ciertos errores y funcionamientos anómalos del algoritmo.
+
+Aunque los resultados usando topologías reales son realmente alentadores, hay que tener en cuenta que se trata de un entorno controlado. Hay muchas variables que en este trabajo no se han tenido en cuenta, como la variación constante de la intensidad de carbono o la falta de información de los routers de las redes para modelar correctamente su consumo. También es importante conocer las características de los controladores SDN en los que se ejecutaría el algoritmo, pues afecta tanto a los tiempos de ejecución como a las emisiones finales.
+
+A pesar de las limitaciones propias de un entorno académico, este trabajo demuestra que es posible reducir las emisiones de carbono en grandes redes combinando el enrutamiento consciente de carbono con el apagado eficiente de enlaces. A raíz de los resultados obtenidos, se podrían realizar mejoras, adaptaciones o extensiones sobre el algoritmo que se traduzcan en soluciones de mayor calidad. Es más, este trabajo podría servir como base para el rediseño de las infraestructuras de red con el objetivo de alcanzar emisiones netas cero.
+
 \section{Trabajos Futuros}
+
+Los análisis realizados sobre los resultados obtenidos, abren diferentes líneas de investigación y desarrollo de cara a mejorar y ampliar la solución propuesta, entre las que destacan las siguientes:
+
+\begin{itemize}
+    \item Mejora del rendimiento computacional. Conociendo el comportamiento interno de Python, se podrían corregir los cuellos de botella del algoritmo para reducir los tiempos de ejecución sin tener que modificar la lógica del mismo.
+    \item Ajuste dinámico de parámetros. El rendimiento de PSO depende en gran medida de sus parámetros. El uso de inteligencia artificial permitiría ajustarlos dinámicamente durante la ejecución para que el algoritmo funcione siempre con la combinación que más se ajusta a cada situación.
+    \item Balanceo de carga en el enrutamiento. Los resultados obtenidos muestran que, tras el apagado de enlaces, la carga de tráfico se distribuye de forma desigual: mientras que la mayoría de enlaces apenas llega al 20\% de ocupación, unos pocos alcanzan entre el 50\% y el 80\% de su capacidad. Incorporar un mecanismo de balanceo de carga en la estrategia de KSP, podría traducirse en soluciones más equilibradas y eficientes.
+    \item Reimplementación en lenguajes de bajo nivel. Lenguajes como C, C++ o Rust ofrecen un control sobre la memoria y los recursos del sistema que Python no puede igualar, lo que se podría traducir en mejoras de rendimiento significativas y, por tanto, en la capacidad de abordar redes de mayor tamaño.
+\end{itemize}
