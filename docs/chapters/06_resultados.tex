@@ -4,20 +4,22 @@ A lo largo de este capítulo se presentan las pruebas realizadas para evaluar el
 
 \section{Detalles de la Implementación}
 
-Para la implementación del algoritmo desarrollado, se ha hecho uso del lenguaje de programación Python, debido a su versatilidad y a la gran cantidad de librerías disponibles para el desarrollo de algoritmos de optimización y análisis de datos. Además, es el mismo lenguaje que se ha utilizado por parte del co-tutor, José Antonio Gómez de la Hiz, en sus investigaciones en el mismo ámbito, lo que ha sido de gran ayuda.
+Para la implementación del algoritmo desarrollado, se ha hecho uso del lenguaje de programación Python, debido a su versatilidad y a la gran cantidad de librerías disponibles para el desarrollo de algoritmos de optimización y análisis de datos.
 
 Inicialmente se valoraron dos herramientas para el desarrollo del algoritmo: Visual Studio Code y PyCharm. Finalmente se optó por PyCharm, puesto que ofrece diferentes funcionalidades que facilitan en gran medida el desarrollo de código, como pueden ser la integración de sistemas de control de versiones, la depuración de código o la gestión de entornos virtuales.
 
 En cuanto a las librerías, se han utilizado principalmente las siguientes:
 \begin{itemize}
-    \item NumPy: para el manejo de arrays y matrices, así como carga de datos desde archivos de texto o \textit{csv}.
-    \item NetworkX: para la creación y manipulación de grafos, fundamental para poder modelar las topologías de red usadas.
-    \item Matplotlib: para la visualización de resultados y gráficos.
-    \item PySwarms: para el uso de algoritmos de PSO en espacios dicretos.
-    \item SciPy: para cálculos estadísticos adicionales, como los intervalos de confianza.
+    \item NumPy \cite{numpy}: para el manejo de arrays y matrices, así como la carga de datos desde archivos de texto plano y CSV.
+    \item NetworkX \cite{networkx}: para la creación y manipulación de grafos, fundamental para poder modelar las topologías de red usadas.
+    \item Matplotlib \cite{matplotlib}: para la visualización de resultados y gráficos.
+    \item PySwarms \cite{pyswarms}: para el uso de algoritmos de PSO en espacios dicretos.
+    \item SciPy \cite{scipy}: para cálculos estadísticos adicionales, como los intervalos de confianza.
 \end{itemize}
 
-PySwarms permite usar paralelización para acelerar el proceso de evaluación de las partículas, lo que ha sido de gran ayuda para reducir el tiempo de ejecución del algoritmo. Aunque la CPU presente \textit{hyper-threading}, Python solo es capaz de correr en paralelo tantos procesos como núcleos tenga el procesador, es decir, si el ordenador tiene una CPU de 6 núcleos y 12 hilos, por mucho que se hayan creado 40 procesos, solamente 6 se ejecutan a la vez. Aún así, la paralelización de PySwarms ha permitido aprovechar al máximo la capacidad de la CPU y reducir significativamente los tiempos de ejecución.
+PySwarms es una librería de Python de código abierto diseñada para la implementación de algoritmos de PSO. Ofrece diferentes opciones de control y configuración sobre estos, sus parámetros, las funciones de coste y las condiciones de convergencia. También dispone de un módulo discreto que permite realizar optimizaciones en espacios de búsqueda discretos, especialmente útil en escenarios donde las variables de decisión toman valores discretos o enteros.
+
+Una de las opciones de configuración es la paralelización para acelerar el proceso de evaluación de las partículas, lo que ha sido de gran ayuda para reducir el tiempo de ejecución del algoritmo. Aunque la CPU presente \textit{hyper-threading}, para tareas de cómputo intensivo Python solo es capaz de ejecutar en paralelo de forma efectiva tantos procesos como núcleos físicos tenga el procesador, es decir, si el ordenador tiene una CPU de 6 núcleos y 12 hilos, por mucho que se hayan creado 40 procesos, solamente 6 se ejecutan a la vez. Aún así, la paralelización de PySwarms ha permitido aprovechar al máximo la capacidad de la CPU y reducir significativamente los tiempos de ejecución.
 
 Todas las pruebas y experimentos realizados se han llevado a cabo en un ordenador con las siguientes especificaciones:
 \begin{itemize}
@@ -28,17 +30,45 @@ Todas las pruebas y experimentos realizados se han llevado a cabo en un ordenado
 
 \section{Topologías Utilizadas}
 
-Para poder realizar las pruebas, se han utilizado diferentes topologías de red reales, cuya información se ha obtenido a través de la web SNDlib \cite{Orlowski2010}. Estas topologías se han seleccionado para cubrir diferentes escenarios y tamaños de red, lo que permite evaluar el rendimiento del algoritmo y su viabilidad en el mundo real. Las topologías usadas son las de Abilene, Nobel-Germany, Geant y Germany-50.
+Las pruebas se han realizado sobre diferentes topologías de red reales, cuya información se ha obtenido de la web SNDlib \cite{Orlowski2010}, las cuales se detallan a continuación:
 
-Abilene es la red más pequeña de las cuatro, con 12 nodos y 30 enlaces unidireccionales. Es la red que se ha usado en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones. El uso de esta red ha facilitado la realización de pruebas rápidas para analizar cómo se comportaba el algoritmo en las diferentes fases del desarrollo. Geant y Nobel-EU son redes de tamaño medio, con 22 nodos y 72 enlaces unidireccionales, y 17 nodos y 52 enlaces unidireccionales, respectivamente. Estas redes han servido para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene y comprobar la viabilidad de la solución, o de alguna modificación de esta, en redes del mismo tamaño o parecidas. Finalmente, Germany-50 es la red más grande de las cuatro, con 50 nodos y 176 enlaces unidireccionales. Al duplicar el tamaño de la red con respecto a las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta, lo cual permite evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
+\begin{itemize}
+    \item Abilene. La red más pequeña de las cuatro, usada en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones.
+    \item Nobel-Germany. Red de tamaño medio, se ha usado para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene.
+    \item Geant. Esta red, que es ligeramente más grande que Nobel, se ha utilizado para comprobar que la solución sigue siendo viable en redes de un tamaño parecido al de Nobel.
+    \item Germany-50. Al duplicar el tamaño de la red con respecto las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta como para evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
+\end{itemize}
 
-Inicialmente, para las emisiones de carbono se iba a hacer uso de la API de Electricity Maps \cite{ElectricityMaps2025}, pero debido a un cambio en la política de recuperación de datos por parte de los desarrolladores de la API, las zonas accesibles con un token de autenticación quedaron limitadas a una. Intentar hacer uso de sus \textit{endpoints} significa definir un token por cada zona que se quisiera acceder y desarrollar la lógica necesaria para traducir las coordenadas geográficas de los nodos a zonas del mapa de Electricity Maps para, posteriormente, buscar qué token tiene acceso a esa zona y realizar la petición a la API. Evidentemente, no se terminó haciendo todo esto, en su lugar se usaron históricos de intensidad de carbono generados por José Antonio Gómez de la Hiz con los datos de Electricity Maps y utilizados en sus estudios.
+Estas topologías se han seleccionado con el objetivo de cubrir diferentes tamaños de red y localizacion, lo que permite evaluar de forma contundente el rendimiento del algoritmo y su viabilidad. En la \autoref{tab:topologias} se recogen las principales características de cada red.
+
+\begin{table}[h]
+    \centering
+    \captionsetup{justification=centering}
+    \begin{tabular}{|l|c|c|l|}
+        \hline
+        \textbf{Red} & \textbf{Nodos} & \textbf{Enlaces (unidir.)} \\
+        \hline
+        Abilene & 12 & 30 \\
+        Nobel-Germany & 17 & 52 \\
+        Geant & 22 & 72 \\
+        Germany-50 & 50 & 176 \\
+        \hline
+    \end{tabular}
+    \caption[Detalles topologías]{Topologías de red utilizadas en las pruebas.\\Fuente: SNDlib.}
+    \label{tab:topologias}
+\end{table}
+
+%Estas topologías se han seleccionado para cubrir diferentes escenarios y tamaños de red, lo que permite evaluar el rendimiento del algoritmo y su viabilidad en el mundo real. Las topologías usadas son las de Abilene, Nobel-Germany, Geant y Germany-50.
+
+%Abilene es la red más pequeña de las cuatro, con 12 nodos y 30 enlaces unidireccionales. Es la red que se ha usado en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones. El uso de esta red ha facilitado la realización de pruebas rápidas para analizar cómo se comportaba el algoritmo en las diferentes fases del desarrollo. Geant y Nobel-Germany son redes de tamaño medio, con 22 nodos y 72 enlaces unidireccionales, y 17 nodos y 52 enlaces unidireccionales, respectivamente. Estas redes han servido para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene y comprobar la viabilidad de la solución, o de alguna modificación de esta, en redes del mismo tamaño o parecidas. Finalmente, Germany-50 es la red más grande de las cuatro, con 50 nodos y 176 enlaces unidireccionales. Al duplicar el tamaño de la red con respecto a las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta, lo cual permite evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
+
+Inicialmente, para las emisiones de carbono se iba a hacer uso de la API de Electricity Maps \cite{ElectricityMaps2025}, pero debido a un cambio en la política de recuperación de datos por parte de los desarrolladores de la API, las zonas accesibles con un token de autenticación quedaron limitadas a una. Intentar hacer uso de sus \textit{endpoints} significa definir un token por cada zona que se quisiera acceder y desarrollar la lógica necesaria para traducir las coordenadas geográficas de los nodos a zonas del mapa de Electricity Maps para, posteriormente, buscar qué token tiene acceso a esa zona y realizar la petición a la API. Debido al aumento de complejidad en la lógica del código, se terminó optando por usar datos históricos de intensidad de carbono publicados en Electricity Maps.
 
 \section{Definición de las Pruebas}
 
-Con las topologías seleccionadas, se han definido diferentes pruebas para evaluar el rendimiento del algoritmo. Estas pruebas consisten en, usando KSP como técnica de enrutamiento, ejecutar el algoritmo con las diferentes configuraciones de parámetros y estrategias de manejo de restricciones que se han definido a lo largo del \autoref{chp:implementacion}. Para cada matriz de tráfico, se han realizado 20 y 100 ejecuciones del algoritmo para obtener resultados representativos. Con 20 ejecuciones se obtiene una visión general del comportamiento del algoritmo más fácilmente que con 100 ejecuciones, mientras que con esta segunda cantidad de ejecuciones se obtienen resultados, estadísticamente hablando, más exactos y con unos intervalos de confianza más ajustados, los cuales se han calculado usando la distribución normal estándar al tratarse de una muestra lo suficientemente grande. Para las pruebas de 20 ejecuciones se emplea la distribución T de Student, que es más adecuada para muestras pequeñas.
+En esta sección, se definen diferentes pruebas que evaluarán el rendimiento del algoritmo. En estos experimentos se ejecuta el algoritmo con las diferentes configuraciones de parámetros y estrategias de manejo de restricciones obtenidas en el \autoref{chp:implementacion}. Para cada matriz de tráfico, se ha ejecutado el algoritmo de dos maneras: 20 ejecuciones y 100 ejecuciones. La primera permite obtener una visión general del comportamiento del algoritmo rápidamente, además de emplear la distribución T de Student \cite{montgomery2010applied} para calcular los intervalos de confianza, pues resulta ser más adecuada para muestras pequeñas. La segunda, 100 ejecuciones, proporciona resultados estadísticamente más precisos y con intervalos de confianza más ajustados, calculados usando la distribución normal estándar \cite{montgomery2010applied} al tratarse de una muestra lo suficientemente grande.
 
-\section{Resultados de Abilene}
+\section{Resultados para Abilene}\label{sec:abilene_resultados}
 
 A continuación, se muestran diferentes gráficas elaboradas a partir de los resultados obtenidos de las pruebas realizadas sobre Abilene. Esta topología es una infraestructura de red situada en Estados Unidos que interconecta universidades y centros de investigación. Como se muestra en la \autoref{fig:topologia_abilene}, se compone de 12 nodos y 30 enlaces unidireccionales.
 
@@ -46,13 +76,13 @@ A continuación, se muestran diferentes gráficas elaboradas a partir de los res
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.8\textwidth]{pictures/abilene.jpg}
-\caption[Topología Abilene]{Topología de Abilene.\\Fuente: SNDlib.}
+\caption[Topología Abilene]{Topología de Abilene.\\Fuente: SNDlib \cite{Orlowski2010}.}
 \label{fig:topologia_abilene}
 \end{figure}
 
-\subsection{Emisiones de cada matriz de tráfico}
+\subsection{Emisiones de referencia}
 
-Previo a mostrar los resultados obtenidos de las pruebas realizadas, es importante conocer cuáles son las emisiones de la red con todos los enlaces encendidos para poder evaluar correctamente las mejoras alcanzadas. En la \autoref{fig:max_emisiones_abilene} se puede observar que las emisiones de la red son mayores a medida que aumenta el tráfico, pues el grado de utilización de los enlaces es un factor que influye bastante. Un detalle a tener en cuenta es que las emisiones mostradas en la gráfica no comienzan en cero, esto se ha hecho para observar claramente las diferencias entre cada matriz de tráfico.
+Previo a mostrar los resultados obtenidos de las pruebas realizadas, es importante conocer cuáles son las emisiones de la red con todos los enlaces encendidos para poder evaluar correctamente las mejoras alcanzadas. Para ello, se ha definido un escenario de referencia en el que la red permanece completamente activa y los flujos se enrutan siguiendo el criterio de camino más corto, sin aplicar ningún tipo de optimización energética. En la \autoref{fig:max_emisiones_abilene} se puede observar que las emisiones de la red son mayores a medida que aumenta el tráfico, pues el grado de utilización de los enlaces es un factor que influye bastante. Un detalle a tener en cuenta es que las emisiones mostradas en la gráfica no comienzan en cero, esto se ha hecho para observar claramente las diferencias entre cada matriz de tráfico.
 
 \begin{figure}[H]
 \centering
@@ -74,7 +104,9 @@ Las primeras pruebas que se realizaron con Abilene arrojaron unos resultados rea
 \label{fig:abilene_pso_20runs}
 \end{figure}
 
-Al ejecutar el algoritmo 100 veces por cada matriz de tráfico con la misma configuración, los resultados que se muestran en la \autoref{fig:abilene_pso_100runs} son básicamente idénticos que los obtenidos en la prueba anterior. Lo único que cambia son los intervalos de confianza, que son aún más estrechos, lo que confirma el buen funcionamiento del algoritmo y su convergencia hacia soluciones de calidad.
+En la \autoref{fig:abilene_pso_20runs} se puede observar que el coste medio es ligeramente superior en TM1 que en TM2, lo que podría parecer contradictorio. Sin embargo, esta diferencia refleja una mayor dificultad del algoritmo para converger en el caso de TM1. De hecho, el mejor resultado individual obtenido para la TM1 (72.72) es inferior al de la TM2 (73.94), ambos con la misma configuración de enlaces, lo cual es coherente con el hecho de que una menor cantidad de tráfico se traduce en un menor coste total. El motivo por el cual el promedio en TM1 es mayor es que PSO encontró soluciones de peor calidad en varias ejecuciones debido a una mayor cantidad de óptimos locales al ser una matriz menos cargada. Esto aumenta la variabilidad en la calidad de las soluciones encontradas y, por tanto, eleva la media.
+
+Al ejecutar el algoritmo 100 veces, los resultados que se muestran en la \autoref{fig:abilene_pso_100runs} son prácticamente idénticos a los obtenidos en la prueba anterior, lo que confirma el buen funcionamiento del algoritmo. Los intervalos de confianza son aún más estrechos, lo cual es consecuencia del mayor tamaño muestral y refleja una estimación más precisa de la media. La consistencia entre los resultados de ambos experimentos evidencia que PSO converge de forma fiable hacia soluciones de calidad.
 
 \begin{figure}[H]
 \centering
@@ -112,7 +144,7 @@ Estas mejoras al usar PSO VCH con 200 partículas y 1200 iteraciones, inevitable
         \caption[Resultados Abilene PSO VCH 100p 600i 20runs]{Emisiones para 600 iteraciones y 100 partículas.\\Fuente: Elaboración propia.}
         \label{fig:abilene_vch_100p_600i}
     \end{subfigure}
-    \caption[Resultados Abilene PSO VCH 100p 600-1200i 20runs]{Emisiones de Abilene tras ejecutar PSO VCH 20 veces por TM modificando partículas e iteraciones. Intervalos de confianza al 95\%}
+    \caption[Resultados Abilene PSO VCH 100p 600-1200i 20runs]{Emisiones de Abilene tras ejecutar PSO VCH 20 veces por TM. Intervalos de confianza al 95\%}
     \label{fig:abilene_vch_100p}
 \end{figure}
 
@@ -144,7 +176,7 @@ Si se tiene en cuenta la información relativa a las emisiones que muestra la \a
 
 \subsection{Porcentaje de enlaces apagados}
 
-Una métrica que resulta muy interesante estudiar es el porcentaje de enlaces que se consiguen apagar por cada matriz de tráfico. Gracias a ella, se puede saber cuánto se ha reducido la infraestructura activa de la red: cuanto mayor sea el porcentaje, mayor será la potencial reducción de las emisiones de carbono. También es un indicador de hasta qué punto el algoritmo es capaz de enrutar el tráfico usando menos enlaces sin violar las restricciones de capacidad y conectividad. Si el porcentaje es alto, significa que el algoritmo ha sido capaz de redirigir todo el tráfico eficientemente.
+Una métrica que resulta muy interesante estudiar es el porcentaje de enlaces que se consiguen apagar por cada matriz de tráfico. Gracias a ella, se puede saber cuánto se ha reducido la infraestructura activa de la red: cuanto mayor sea el porcentaje, mayor será la potencial reducción de las emisiones de carbono. También es un indicador de hasta qué punto el algoritmo es capaz de enrutar el tráfico usando menos enlaces sin violar las restricciones de capacidad y conectividad.
 
 \begin{figure}[H]
 \centering
@@ -170,9 +202,9 @@ Medir el grado de ocupación de los enlaces que quedan encendidos tras la ejecuc
 
 En el histograma de la \autoref{fig:abilene_uso_enlaces} se observa que la mayoría de enlaces activos tienden a estar por debajo del 50\% de su capacidad, mientras que solo unos pocos superan el 50\%, alcanzando el 80\% de uso. Probablemente esto se deba a que el algoritmo prioriza los caminos más cortos que se encuentran con KSP, por tanto, los enlaces que pertenecen a estos caminos terminan estando mucho más utilizados que los demás.
 
-\section{Resultados de Nobel y Geant}
+\section{Resultados para Nobel y Geant}
 
-Una vez se han realizado exhaustivas pruebas y experimentos con Abilene para estudiar el funcionamiento del algoritmo, llega el momento de utilizar topologías más grandes y demandantes para refinar aún más el comportamiento del algoritmo. Para ello, se han usado las topologías de Nobel-Germany y Geant, que dados sus tamaños y matrices de tráfico, son candidatos perfectos para esta tarea.
+Una vez se han realizado exhaustivas pruebas y experimentos con Abilene para estudiar el funcionamiento del algoritmo, llega el momento de utilizar topologías más grandes y demandantes para probar la escalabilidad del algoritmo. Para ello, se han usado las topologías Nobel-Germany y Geant, que dados sus tamaños y matrices de tráfico, son candidatos perfectos para esta tarea.
 
 \subsection{Emisiones de cada matriz de tráfico}
 
@@ -200,7 +232,9 @@ Geant, cuyas emisiones se encuentran en la \autoref{fig:max_emisiones_geant}, pr
 
 \subsection{Emisiones después del apagado de enlaces}
 
-Con Geant y Nobel se han realizado las mismas pruebas que con Abilene, empezando por PSO normal y una configuración de 200 partículas y 1200 iteraciones. En la \autoref{fig:geant_pso} se muestran los resultados obtenidos con Geant, concretamente, en la \autoref{fig:geant_pso_200p_1200i_20r} se encuentran los resultados tras ejecutar el algoritmo 20 veces por TM, mientras que la \autoref{fig:geant_pso_200p_1200i_100r} representa esas mismas pruebas pero con 100 ejecuciones por TM. Comparando estas gráficas con las emisiones de la \autoref{fig:max_emisiones_geant} se pueden observar reducciones de unos 40g$CO_2$ en las tres primeras matrices de tráfico. La TM4 muestra reducciones un poco más pequeñas, mientras que la TM5 presenta una mejora mínima.
+Al igual que con Abilene, se ejecutan sobre Geant y Nobel las mismas configuraciones de PSO descritas en la \autoref{sec:abilene_resultados}: PSO normal y PSO VCH, ambos con 200 partículas y 1200 iteraciones como configuración principal, y PSO VCH reducido a 100 partículas y 600 iteraciones. En todos los casos se realizan 20 ejecuciones por matriz de tráfico, salvo que se indique lo contrario.
+
+Comenzando por PSO normal, los resultados de Geant se recogen en la \autoref{fig:geant_pso}, donde se aprecia una reducción de aproximadamente 40 $gCO_2$ en las tres primeras matrices de tráfico. La TM4 presenta mejoras algo menores, y la TM5 apenas experimenta variación. Nobel, en cambio, muestra mejoras más pronunciadas (\autoref{fig:nobel_pso}), con reducciones de hasta 70 $gCO_2$ en las matrices 1 a 4 y de entre 30 y 40 $gCO_2$ en la TM5. Esta diferencia se debe al tamaño y la zona geográfica de Nobel: al tratarse de una red más pequeña con todos sus nodos en una misma zona de emisiones, la optimización se reduce a encontrar la configuración con el menor número de enlaces activos que sea capaz de redirigir todo el tráfico.
 
 \begin{figure}[H]
     \centering
@@ -208,53 +242,43 @@ Con Geant y Nobel se han realizado las mismas pruebas que con Abilene, empezando
     \begin{subfigure}{0.48\textwidth}
         \captionsetup{justification=centering}
         \includegraphics[width=\textwidth]{pictures/geant_pso_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
-        \caption[Resultados Geant PSO 200p 1200i 20runs]{Emisiones para 20 ejecuciones por TM.\\Fuente: Elaboración propia.}
-        \label{fig:geant_pso_200p_1200i_20r}
+        \caption[Resultados Geant PSO 200p 1200i 20runs]{Emisiones de Geant.\\Fuente: Elaboración propia.}
+        \label{fig:geant_pso}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \captionsetup{justification=centering}
-        \includegraphics[width=\textwidth]{pictures/geant_pso_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_100runs.pdf}
-        \caption[Resultados Geant PSO 200p 1200i 100runs]{Emisiones para 100 ejecuciones por TM.\\Fuente: Elaboración propia.}
-        \label{fig:geant_pso_200p_1200i_100r}
+        \includegraphics[width=\textwidth]{pictures/nobel_pso_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
+        \caption[Resultados Nobel PSO 200p 1200i 20runs]{Emisiones de Nobel.\\Fuente: Elaboración propia.}
+        \label{fig:nobel_pso}
     \end{subfigure}
-    \caption[Resultados Geant PSO normal 200p 1200i 20-100runs]{Emisiones de Geant tras ejecutar PSO normal con 200 partículas y 1200 iteraciones. Intervalos de confianza al 95\%}
-    \label{fig:geant_pso}
+    \caption[Resultados Geant y Nobel PSO normal 200p 1200i 20runs]{Emisiones de Geant y Nobel tras ejecutar PSO normal con 200 partículas y 1200 iteraciones 20 veces por TM. Intervalos de confianza al 95\%}
+    \label{fig:geant_nobel_pso}
 \end{figure}
 
-Por otro lado, en la \autoref{fig:nobel_pso} se recogen las emisiones resultantes de Nobel tras ejecutar PSO normal 20 veces por matriz de tráfico con 200 partículas y 1200 iteraciones. En este caso, las mejoras que se consiguen son sustanciales, llegando a disminuir unos 70g de carbono en las matrices 1, 2, 3 y 4, mientras que la reducción en la TM5 se queda alrededor de los 30-40g$CO_2$. Esta diferencia con respecto a Geant se debe al tamaño de Nobel, al ser esta última una red más pequeña es más sencillo apagar enlaces y enrutar todo el tráfico por los enlaces que quedan activos. Además, estar en una sola zona de emisiones ahora juega a su favor, pues al optimizar da igual si se apaga el enlace A o el B, ambos terminan emitiendo la misma cantidad de carbono, lo cual hace que la optimización se reduzca a buscar la configuración que menos enlaces encendidos tenga y sea capaz de redirigir todo el tráfico.
+Con PSO VCH y la configuración de 200 partículas y 1200 iteraciones, los resultados mejoran notablemente en ambas redes. En Geant (\autoref{fig:geant_vch_200p_1200i}), las cuatro primeras matrices de tráfico consiguen reducciones de entre 70 y 80 $gCO_2$ respecto a las emisiones iniciales, mientras que la TM5, que apenas mejoraba con PSO normal, pasa a reducir sus emisiones en torno a 60-70 $gCO_2$. En conjunto, PSO VCH logra eliminar aproximadamente un tercio de las emisiones de carbono de la red. Nobel sigue una tendencia similar (\autoref{fig:nobel_vch_200p_1200i}), con reducciones de entre 80 y 110 $gCO_2$ frente a las emisiones iniciales, lo que supone una mejora cercana al 40\%. Comparando ambas estrategias, PSO VCH supera a PSO normal en unos 25 $gCO_2$ de media en todas las matrices de tráfico de Nobel.
 
 \begin{figure}[H]
-\centering
-\captionsetup{justification=centering}
-\includegraphics[width=0.6\textwidth]{pictures/nobel_pso_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
-\caption[Resultados Nobel PSO normal 200p 1200i 20runs]{Emisiones de Nobel tras ejecutar PSO normal 20 veces por TM con 200 partículas y 1200 iteraciones. Intervalos de confianza al 95\%\\Fuente: Elaboración propia.}
-\label{fig:nobel_pso}
+    \centering
+    \captionsetup{justification=centering}
+    \begin{subfigure}{0.48\textwidth}
+        \captionsetup{justification=centering}
+        \includegraphics[width=\textwidth]{pictures/geant__vch_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
+        \caption[Resultados Geant VCH 200p 1200i 20runs]{Emisiones de Geant.\\Fuente: Elaboración propia.}
+        \label{fig:geant_vch_200p_1200i}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \captionsetup{justification=centering}
+        \includegraphics[width=\textwidth]{pictures/nobel_vch_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
+        \caption[Resultados Nobel VCH 200p 1200i 20runs]{Emisiones de Nobel.\\Fuente: Elaboración propia.}
+        \label{fig:nobel_vch_200p_1200i}
+    \end{subfigure}
+    \caption[Resultados Geant y Nobel PSO VCH 200p 1200i 20runs]{Emisiones de Geant y Nobel tras ejecutar PSO VCH con 200 partículas y 1200 iteraciones 20 veces por TM. Intervalos de confianza al 95\%}
+    \label{fig:geant_nobel_vch_200p_1200i}
 \end{figure}
 
-Tras estos resultados, se procede a ejecutar PSO VCH manteniendo la configuración de partículas e iteraciones. En el caso de Geant, el cual se muestra en la \autoref{fig:geant_vch_200p_1200i}, esta segunda estrategia presenta unos resultados ampliamente mejores, no solo con respecto a las emisiones iniciales, sino también con respecto a las emisiones conseguidas ejecutando PSO normal. Comparando estos resultados con los de la \autoref{fig:max_emisiones_geant}, se observa que las emisiones se reducen enormemente, en especial la TM5, que pasa de casi no conseguir mejoras con PSO normal a reducir las emisiones en aproximadamente 60-70g$CO_2$. Las otras cuatro matrices de tráfico no se quedan atrás al conseguir unas emisiones con 70-80g$CO_2$ menos respecto a las iniciales. Estos resultados muestran que PSO VCH ha sido capaz de, básicamente, eliminar una tercera parte de las emisiones de carbono de Geant.
-
-\begin{figure}[H]
-\centering
-\captionsetup{justification=centering}
-\includegraphics[width=0.6\textwidth]{pictures/geant__vch_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
-\caption[Resultados Geant PSO VCH 200p 1200i 20runs]{Emisiones de Geant tras ejecutar PSO VCH 20 veces por TM con 200 partículas y 1200 iteraciones. Intervalos de confianza al 95\%\\Fuente: Elaboración propia.}
-\label{fig:geant_vch_200p_1200i}
-\end{figure}
-
-En Nobel, las emisiones asociadas a la red tras ejecutar PSO VCH, las cuales se muestran en la \autoref{fig:nobel_vch_200p_1200i}, se han reducido entre 80 y 110 gramos de carbono con respecto a las emisiones iniciales, es decir, se consigue una mejora de aproximadamente el 40\%.
-
-\begin{figure}[H]
-\centering
-\captionsetup{justification=centering}
-\includegraphics[width=0.6\textwidth]{pictures/nobel_vch_p200_i1200_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
-\caption[Resultados Nobel PSO VCH 200p 1200i 20runs]{Emisiones de Nobel tras ejecutar PSO VCH 20 veces por TM con 200 partículas y 1200 iteraciones. Intervalos de confianza al 95\%\\Fuente: Elaboración propia.}
-\label{fig:nobel_vch_200p_1200i}
-\end{figure}
-
-Aunque es cierto que PSO normal en Nobel conseguía reducir las emisiones sustancialmente, es innegable que PSO VCH obtiene resultados notablemente mejores, pues comparando las emisiones de ambas ejecuciones, la estrategia con control de violaciones reduce las emisiones obtenidas con PSO normal en unos 25 gramos de carbono de media en todas las matrices de tráfico.
-
-Se pasa ahora a modificar la configuración de PSO VCH, concretamente, se fijan las partículas en 100 y la iteraciones bajan a 600, manteniendo en 20 las ejecuciones por matriz de tráfico. Los resultados, los cuales se pueden intuir en base a los experimentos realizados con Abilene, no son mejores que los mostrados recientemente, pero sí bastante parecidos. En la \autoref{fig:geant_vch_100p_600i_20r} se muestran las emisiones de Geant, mientras que las de Nobel se pueden encontrar en la \autoref{fig:nobel_vch_100p_600i_20r}.
+Al reducir la configuración a 100 partículas y 600 iteraciones, los resultados empeoran ligeramente, como cabía esperar dado que el espacio de búsqueda se explora con menos recursos. Aun así, las emisiones obtenidas tanto en Geant como en Nobel (\autoref{fig:geant_nobel_vch_100p_600i}) siguen siendo significativamente inferiores a las de PSO normal y a las emisiones sin apagado de enlaces.
 
 \begin{figure}[H]
     \centering
@@ -262,23 +286,21 @@ Se pasa ahora a modificar la configuración de PSO VCH, concretamente, se fijan 
     \begin{subfigure}{0.48\textwidth}
         \captionsetup{justification=centering}
         \includegraphics[width=\textwidth]{pictures/geant_vch_p100_i600_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
-        \caption[Resultados Geant VCH 100p 600i 20runs]{Emisiones de Geant para 20 ejecuciones por TM.\\Fuente: Elaboración propia.}
+        \caption[Resultados Geant VCH 100p 600i 20runs]{Emisiones de Geant.\\Fuente: Elaboración propia.}
         \label{fig:geant_vch_100p_600i_20r}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \captionsetup{justification=centering}
         \includegraphics[width=\textwidth]{pictures/nobel_vch_p100_i600_c1-1.75_c2-2.25_w0.7_k100_20runs.pdf}
-        \caption[Resultados Nobel VCH 100p 600i 20runs]{Emisiones de Nobel para 20 ejecuciones por TM.\\Fuente: Elaboración propia.}
+        \caption[Resultados Nobel VCH 100p 600i 20runs]{Emisiones de Nobel.\\Fuente: Elaboración propia.}
         \label{fig:nobel_vch_100p_600i_20r}
     \end{subfigure}
     \caption[Resultados Geant y Nobel PSO VCH 100p 600i 20runs]{Emisiones de Geant y Nobel tras ejecutar PSO VCH con 100 partículas y 600 iteraciones. Intervalos de confianza al 95\%}
-    \label{fig:geant_nobel_vch}
+    \label{fig:geant_nobel_vch_100p_600i}
 \end{figure}
 
-Tanto en Geant como en Nobel se aprecia un ligero aumento en las emisiones, aunque era de esperar, pues al reducir a la mitad tanto el número de agentes como las iteraciones, las soluciones que se encuentran no alcanzan la misma calidad. Aún así, los resultados siguen siendo significativamente mejores que los obtenidos con PSO normal o que las emisiones de la red sin apagado de enlaces.
-
-Por último, la \autoref{fig:geant_nobel_comparacion_costes} muestra dos comparativas, una para Geant y otra para Nobel, con los resultados obtenidos en todas las configuraciones de PSO probadas. Ambas topologías presentan grandes mejoras en las emisiones, siendo Geant la que más se beneficia de PSO VCH, aunque esto se debe a la localización geográfica de Nobel, pues tiene todos sus nodos en la misma zona de emisiones.
+Por último, la \autoref{fig:geant_nobel_comparacion_costes} muestra una comparativa global de todas las configuraciones probadas. Ambas topologías presentan grandes mejoras en las emisiones, siendo Geant la que más se beneficia con PSO VCH, en parte por tener sus nodos en diferentes zonas de emisiones, lo que hace que la elección de qué enlaces pagar tenga un impacto mayor en las emisiones totales.
 
 \begin{figure}[H]
     \centering
@@ -384,4 +406,6 @@ Se descubrió que PySwarms permite modificar la inicialización de partículas, 
 \label{fig:germany_barrido}
 \end{figure}
 
-Y aunque esta inicialización controlada consiguió que los resultados siempre fuesen viables, la calidad de las soluciones seguía siendo muy variable. Para intentar corregir esta variabilidad, se decidió hacer un barrido de iteraciones fijando las partículas en 100, cuyo resultado se muestra en la \autoref{fig:germany_barrido}. Para esta gráfica se ha usado una nube de puntos con línea de tendencia, de esta manera se pueden observar las mejoras y si es capaz de converger hacia soluciones de calidad a medida que aumentan las iteraciones. Sin embargo, el comportamiento sigue siendo errático, cada nube de puntos presenta una gran dispersión que no mejora con el aumento de iteraciones. Aunque el motivo de este comportamiento no se ha podido determinar con certeza, se sospecha que el problema radica en el uso de KSP, al darle demasiada importancia a los caminos más cortos, el algoritmo termina saturando los enlaces que pertenecen a estos caminos, lo que hace que el resto de enlaces estén infrautilizados.
+Y aunque esta inicialización controlada consiguió que los resultados siempre fuesen viables, la calidad de las soluciones seguía siendo muy variable. Para intentar corregir esta variabilidad, se decidió hacer un barrido de iteraciones fijando las partículas en 100, cuyo resultado se muestra en la \autoref{fig:germany_barrido}. Para esta gráfica se ha usado una nube de puntos con línea de tendencia, de esta manera se pueden observar las mejoras y si es capaz de converger hacia soluciones de calidad a medida que aumentan las iteraciones. Sin embargo, el comportamiento sigue siendo errático, cada nube de puntos presenta una gran dispersión que no mejora con el aumento de iteraciones. Este comportamiento apunta a un problema en el uso de KSP, ya que al priorizar los caminos más cortos, el algoritmo tiende a saturar los enlaces pertenecientes a dichas rutas, dejando el resto de la red infrautilizada. Esta saturación limita la capacidad del algoritmo para explorar configuraciones más equilibradas, lo que se traduce en una alta variabilidad en la calidad de las soluciones independientemente del número de iteraciones.
+
+%Aunque el motivo de este comportamiento no se ha podido determinar con certeza, se sospecha que el problema radica en el uso de KSP, al darle demasiada importancia a los caminos más cortos, el algoritmo termina saturando los enlaces que pertenecen a estos caminos, lo que hace que el resto de enlaces estén infrautilizados.
