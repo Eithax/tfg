@@ -6,7 +6,7 @@ En esta sección se presenta detalladamente la implementación del algoritmo des
 
 Como se ha visto en el apartado del estado del arte, los problemas de optimización se pueden abordar con diferentes técnicas dependiendo de las características del problema.
 
-Una de las técnicas que ofrece soluciones óptimas, a costa de un gran tiempo de cómputo, es la programación lineal entera (ILP). El estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} muestra cómo esta técnica es capaz de reducir las emisiones de carbono en hasta un 84.5\%, aunque el tiempo de ejecución llegó a alcanzar los 17 minutos, lo que es prohibitivo en escenarios tan cambiantes. 
+Una de las técnicas que ofrece soluciones óptimas, a costa de un gran tiempo de cómputo, es ILP. El estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} muestra cómo esta técnica es capaz de reducir las emisiones de carbono en hasta un 84.5\%, aunque el tiempo de ejecución llegó a alcanzar los 17 minutos, lo que es prohibitivo en escenarios tan cambiantes. 
 
 Como alternativa a soluciones basadas en ILP, se pueden usar técnicas de \textit{Deep Learning} (DL). Pero estas técnicas, además de requerir una gran cantidad de datos para entrenar el modelo, no son viables para este tipo de problemas, pues en el momento en el que se modifique la topología de red, el modelo entrenado dejará de ser válido, lo que obligará a volver a entrenar el modelo desde cero, con la consecuente pérdida de tiempo y recursos.
 
@@ -226,7 +226,7 @@ Donde:
     \item $c_{l_{n_1}}$ y $c_{l_{n_2}}$ son las emisiones de $CO_2$ asociadas a los nodos $n_1$ y $n_2$ que están conectados por el enlace $l$.
 \end{itemize}
 
-El primer sumatorio representa el consumo dinámico de energía asociado al tráfico que pasa por cada nodo, es decir, cuanto más tráfico pase por un nodo, más energía consumirá ese nodo. El segundo sumatorio se corresponde con el consumo estático de energía asociado a los enlaces que están activos. Un enlace activo implica que hay un puerto habilitado en cada uno de los nodos que conecta, lo que genera un consumo de energía adicional. La \autoref{fig:consumo_router} representa gráficamente lo que se acaba de explicar: la potencia estática es el consumo base de energía de un router y no se puede reducir. La potencia de los puertos es la cantidad de energía extra que se consume al habilitar un puerto. Este valor es orientativo, ya que el consumo real también depende del modo de operación en el que trabaje el router, puesto que cada modo influye en aspectos como la velocidad de los datos. Por último, la componente azul del modelo es la potencia dinámica, que depende de la carga de tráfico del router.
+El primer sumatorio representa el consumo dinámico de energía asociado al tráfico que pasa por cada nodo, es decir, cuanto más tráfico pase por un nodo, más energía consumirá ese nodo. El segundo sumatorio se corresponde con el consumo estático de energía asociado a los enlaces que están activos. Un enlace activo implica que hay un puerto habilitado en cada uno de los nodos que conecta, lo que genera un consumo de energía adicional. La \autoref{fig:consumo_router} representa gráficamente el modelo de consumo de energía de un router, lo cual refuerza la explicación anterior: la potencia estática es el consumo base de energía de un router y no se puede reducir. La potencia de los puertos es la cantidad de energía extra que se consume al habilitar un puerto. Por último, la componente azul del modelo es la potencia dinámica, que depende de la carga de tráfico del router.
 
 \begin{figure}[H]
 \centering
@@ -236,9 +236,9 @@ El primer sumatorio representa el consumo dinámico de energía asociado al trá
 \label{fig:consumo_router}
 \end{figure}
 
-A lo largo de este trabajo, se ha mencionado en varias ocasiones la importancia de no dejar sin conexión ninguna parte de la red. Si a eso se le junta querer reducir la carga de nodos y enlaces en zonas de altas emisiones, se genera la necesidad de buscar los caminos que cumplan ambos requisitos, necesidad que puede satisfacerse con la estrategia \textit{K-Shortest Path} (KSP). Esta técnica permite encontrar los \textit{K} caminos más cortos entre dos puntos, aunque en este caso los caminos no son los más cortos sino los más eficientes, ambientalmente hablando. De esta manera, si la ruta que menos emisiones genera no tiene capacidad de enrutar todo el tráfico, se evaluaría la siguiente ruta.
+A lo largo de este trabajo, se ha mencionado en varias ocasiones la importancia de no dejar sin conexión ninguna parte de la red. Si a eso se le junta querer reducir la carga de nodos y enlaces en zonas de altas emisiones, se genera la necesidad de buscar los caminos que cumplan ambos requisitos, necesidad que puede satisfacerse con la estrategia KSP. Esta técnica permite encontrar los \textit{K} caminos más cortos entre dos puntos, aunque en este caso el criterio de eficiencia no es la distancia sino las emisiones de carbono. PAra ello, se asigna a cada arista del grafo que representa la red su intensidad de carbono correspondiente, de manera que KSP calcule las rutas ambientalmente más eficientes. Así, si la ruta que menos emisiones genera no tiene capacidad de enrutar todo el tráfico, se evaluaría la siguiente ruta.
 
-Una vez explicada en detalle la fórmula en la que se basa la función objetivo, se procede a presentar el psudocódigo de la versión para PSO normal. El Algoritmo \ref{alg:carbon_pso}, dada una matriz de tráfico, asigna cada flujo al mejor camino disponible, procesando primero las demandas más grandes. Un camino se considera válido si solamente utiliza enlaces activos de la red y dispone de capacidad suficiente para satisfacer la demanda. Si algún flujo no puede ser asignado, la solución se considera inválida y se devuelve $+\infty$. Una vez asignados todos los flujos, se calcula la emisión de carbono tal y como se ha explicado con anterioridad: la potencia dinámica $P_{\text{dyn}}$, proporcional al tráfico en cada nodo, y la potencia de los puertos $P_{\text{ports}}$, asociada a los enlaces activos de la topología. Las emisiones totales de carbono de la red es el resultado de sumar ambos términos.
+El Algoritmo \ref{alg:carbon_pso} presenta el psudocódigo de la versión para PSO normal. Dada una matriz de tráfico, se asigna cada flujo al mejor camino disponible, procesando primero las demandas más grandes. Un camino se considera válido si solamente utiliza enlaces activos de la red y dispone de capacidad suficiente para satisfacer la demanda (línea \ref{line:pso_valid_path}). Si algún flujo no puede ser asignado, la solución se considera inválida y se devuelve $+\infty$ (línea \ref{line:pso_inf}). Una vez asignados todos los flujos, se calculan las emisiones de carbono (línea \ref{line:pso_carbon}): la potencia dinámica $P_{\text{dyn}}$, proporcional al tráfico en cada nodo (línea \ref{line:pso_p_dyn}), sumada a la potencia de los puertos $P_{\text{ports}}$, asociada a los enlaces activos de la topología (línea \ref{line:pso_p_ports}).
 
 \begin{algorithm}[H]
     \caption{Cálculo de la emisiones totales de la red para PSO normal}
@@ -253,24 +253,24 @@ Una vez explicada en detalle la fórmula en la que se basa la función objetivo,
     \State Ordenar demandas $\mathcal{D}$ de forma descendente por $\text{flow\_matrix}[s][d]$
     
     \For{$(s, d, \delta) \in \mathcal{D}$}
-        \State $p^* \leftarrow$ primer camino en $\text{all\_k\_paths}[(s,d)]$ válido y con capacidad $\geq \delta$
-        \If{$p^* = \textsc{None}$} \Return $+\infty$ \EndIf
+        \State $p^* \leftarrow$ primer camino en $\text{all\_k\_paths}[(s,d)]$ válido y con capacidad $\geq \delta$ \label{line:pso_valid_path}
+        \If{$p^* = \textsc{None}$} \Return $+\infty$ \label{line:pso_inf} \EndIf
         \State Actualizar $\text{links\_traffic}$ y $\text{nodes\_traffic}$ según $p^*$ y $\delta$
     \EndFor
     
     \For{$x \leftarrow 0$ \textbf{ to } $N-1$}
         \State $c_x \leftarrow \text{carbon\_intensity}[x] / 1000$
-        \State $P_{\text{dyn}} \mathrel{+}= \text{nodes\_traffic}[x] \cdot \lambda_n \cdot c_x$
+        \State $P_{\text{dyn}} \mathrel{+}= \text{nodes\_traffic}[x] \cdot \lambda_n \cdot c_x$ \label{line:pso_p_dyn}
         \For{$y \neq x$ \textbf{ con } $\text{position}[x][y] \neq 0$}
-            \State $P_{\text{ports}} \mathrel{+}= \beta_l \cdot (c_x + c_y)$
+            \State $P_{\text{ports}} \mathrel{+}= \beta_l \cdot (c_x + c_y)$ \label{line:pso_p_ports}
         \EndFor
     \EndFor
     
-    \State \Return $P_{\text{dyn}} + P_{\text{ports}}$
+    \State \Return $P_{\text{dyn}} + P_{\text{ports}}$ \label{line:pso_carbon}
     \end{algorithmic}
 \end{algorithm}
 
-A continuación se presenta la variante del algoritmo anterior que introduce el mecanismo de penalización VCH. Cuando un flujo no puede ser asignado por ausencia de un camino válido o falta de capacidad, el Algoritmo \ref{alg:carbon_vch} lo cuenta como una violación. Al finalizar la asignación, el número de violaciones se multiplica por un factor de penalización $M$ y se añade a las emisiones de carbono. Esto permite que el algoritmo siempre devuelva un valor finito, penalizando las soluciones que incumplen las restricciones de la red.
+El Algoritmo \ref{alg:carbon_vch} presenta la variante que introduce el mecanismo de penalización VCH. Cuando un flujo no puede ser asignado por ausencia de un camino válido o falta de capacidad, esta versión lo cuenta como una violación (línea \ref{line:vch_violation}). Al finalizar la asignación, el número de violaciones se multiplica por un factor de penalización $M$ y se añade a las emisiones de carbono (línea \ref{line:vch_carbon}). Esto permite que el algoritmo siempre devuelva un valor finito, penalizando las soluciones que incumplen las restricciones de la red. En el Algoritmo \ref{alg:carbon_vch}, el cambio puede observarse en las líneas \ref{line:vch_violation} y \ref{line:vch_carbon} respecto al Algoritmo \ref{alg:carbon_pso}.
 
 \begin{algorithm}[H]
 \caption{Cálculo de la emisiones totales de la red para PSO VCH}
@@ -286,7 +286,7 @@ A continuación se presenta la variante del algoritmo anterior que introduce el 
 \For{$(s, d, \delta) \in \mathcal{D}$}
     \State $p^* \leftarrow$ primer camino en $\text{all\_k\_paths}[(s,d)]$ válido y con capacidad $\geq \delta$
     \If{$p^* = \textsc{None}$}
-        \State $v \mathrel{+}= 1$ \Comment{Contabilizar violación y continuar}
+        \State $v \mathrel{+}= 1$ \Comment{Contabilizar violación y continuar} \label{line:vch_violation}
     \Else
         \State Actualizar $\text{links\_traffic}$ y $\text{nodes\_traffic}$ según $p^*$ y $\delta$
     \EndIf
@@ -300,6 +300,6 @@ A continuación se presenta la variante del algoritmo anterior que introduce el 
     \EndFor
 \EndFor
 
-\State \Return $P_{\text{dyn}} + P_{\text{ports}} + v \cdot M$
+\State \Return $P_{\text{dyn}} + P_{\text{ports}} + v \cdot M$ \label{line:vch_carbon}
 \end{algorithmic}
 \end{algorithm}
