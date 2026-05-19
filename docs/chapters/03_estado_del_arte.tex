@@ -4,60 +4,136 @@ Una de las tareas más importantes a la hora de desarrollar un proyecto es reali
 
 \section{Redes Cableadas y Emisiones de Carbono}
 
-La idea de esta sección es hablar sobre las principales fuentes de consumo de las redes e intensidad de carbono.
+El sector de las tecnologías de la información y la comunicación (TIC) representa en la actualidad una parte significativa del consumo energético mundial. Se estima que las redes de telecomunicaciones son responsables de entre el 1\% y el 2\% de las emisiones globales de $CO_2$ \cite{andrae2015global}, una cifra que se prevé que aumente con el crecimiento exponencial del tráfico de datos. Es por ello que es importante comprender las fuentes de consumo en las redes y los modelos que traducen ese consumo en emisiones de carbono para diseñar soluciones más sostenibles.
 
 \subsection{Consumo en redes}
 
-Redes y fuentes de consumo de las redes.
+Las redes cableadas están compuestas por una variedad de equipos activos y pasivos cuyo funcionamiento conlleva un consumo energético continuo, siendo los routers y switches \cite{vishwanath2014energy} los elementos que principalmente consumen energía. Este comportamiento hace que la intensidad de carbono de la electricidad consumida en cada punto de la red sea un factor determinante de las emisiones asociadas a cada enlace.
+
+Por este motivo, encaminar el tráfico a través de regiones o franjas horarias en las que la generación eléctrica es principalmente renovable, y por tanto la intensidad de carbono es baja, es una buena estrategia para reducir las emisiones totales de la red sin necesidad de modificar su infraestructura física.
 
 \subsection{Modelo de emisiones}
 
-Modelo de energía, intensidad de carbono.
+Traducir el consumo energético en emisiones de carbono requiere conocer la intensidad de carbono de la electricidad consumida, habitualmente expresada en gramos de $CO_2$ equivalente por kilovatio-hora ($gCO_2eq/kWh$). Este valor no es constante: varía en función de la fuente de generación (renovable, nuclear, fósil), la hora del día, la estación del año y la región geográfica.
 
-\section{Estrategias de \textit{green networking}}
+Un primer enfoque para estimar las emisiones consiste en relacionar el consumo energético de un equipo con las emisiones de $CO_2$ que genera su funcionamiento. Es un modelo sencillo pero que trata el consumo como un valor fijo, sin distinguir entre la parte que depende del tráfico y la que no.
 
-Aquí se puede hablar sobre la diferencia entre redes tradicionales y redes SDN (aunque ya se ha hablado de ello en la introducción). También se puede hablar sobre diferentes técnicas de enrutado centradas en el carbono (o adaptadas al carbono) o sobre el enfoque de redes conscientes de carbono.
+El modelo propuesto en \cite{ElZahr2023} sí introduce esta distinción de forma explícita, separando el consumo de un equipo en dos componentes: la potencia en reposo y la potencia dinámica. Las emisiones se calculan a partir de la suma de ambas componentes, teniendo en cuenta la intensidad de carbono de la electricidad consumida en cada punto de la red. Esto refuerza que elegir por qué nodos y enlaces se enruta el tráfico tiene un impacto importante en las emisiones de la red.
+
+\section{Estrategias de \textit{Green Networking}}
+
+El término \textit{green networking} agrupa las diferentes técnicas de diseño, construcción y operación de redes para que reduzcan el consumo de energía y generen un menor impacto ambiental sin comprometer su rendimiento, fiabilidad o seguridad \cite{bianzino2012survey}.
+
+A continuación se presentan dos enfoques que, aplicados en el contexto del \textit{green networking}, permiten optimizar el enrutamiento del tráfico minimizando el impacto ambiental: las redes SDN y los algoritmos de encaminamiento basados en la intensidad de carbono.
 
 \subsection{\textit{Software Defined Networks}}
 
-Explicar las redes SDN y su papel en todo esto.
+La aparición de las redes SDN, como ya se ha explicado en el \autoref{chp:introduction}, supone un cambio de paradigma en la gestión y el control tanto de la infraestructura como del tráfico de las redes cableadas. Esto se debede a que las redes SDN, a diferencia de las tradicionales, separan el plano de datos y el plano de control, centralizando el segundo en el controlador SDN, tal y como se muestra en la \autoref{fig:sdn_comparativa}.
 
-\subsection{Enrutado Basado en Criterios Ambientales}
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.8\textwidth]{pictures/sdn_comparativa.pdf}
+\caption[Comparación sdn y redes tradicionales]{Esquema comparativo entre una red tradicional y una red SDN.\\Fuente: Elaboración propia.}
+\label{fig:sdn_comparativa}
+\end{figure}
+
+En redes informáticas, el término ''plano'' describe una capa de arquitectura de red donde se realizan tareas específicas relacionadas con las operaciones de red. Los planos no son componentes físicos reales, sino conceptos que ayudan a comprender cómo fluye el tráfico de datos a través de una red.
+
+El plano de control es la parte de una red que controla cómo se reenvían los paquetes de datos, es decir, cómo se envían los datos de un lugar a otro. Utiliza protocolos de enrutamiento (reglas basadas en algoritmos) para determinar la mejor ruta que debe tomar la inforamción entre los dispositivos de red.
+
+Por otro lado, el plano de datos es la parte de la arquitectura de red responsable de mover los paquetes de datos. Controla el movimiento en tiempo real de los paquetes a través de la red en función de la información de enrutamiento y los protocolos que recibe del plano de control.
+
+La separación que hacen las redes SDN de estos planos, ofrece beneficios de cara al \textit{green networking} como los siguientes:
 
 \begin{itemize}
-    \item Dijsktra usando las emisiones como peso de los enlaces
-    \item KSP usando las emisiones como peso de los enlaces
+    \item Permite implementar estrategias de encaminamiento basadas en métricas de eficiencia energética.
+    \item Puede ajustarse a cambios en la demanda de tráfico y en la generación de emisiones en diferentes regiones.
+    \item Facilita el apagado y encendido inteligente de enlaces y nodos en función de criterios ambientales y de consumo energético.
 \end{itemize}
+
+Cada vez son más los estudios que destacan el papel de las redes SDN en aspectos como la optimización del tráfico, la mejora de la eficiencia energética o la reducción de la huella de carbono. En el estudio \textit{Energy-aware routing based on power profile of devices in data center networks using SDN} \cite{tran2015powerprofile}, se propone un esquema de ahorro energético que usa el perfil de consumo eléctrico de los dispositivos de red para encaminar el tráfico de forma flexible. La solución se implementa usando OpenFlow y tarjetas Net-FPGA sobre redes SDN.
+
+En \textit{Carbon-aware routing in software defined inter data center network} \cite{singh2015didcnetwork} se presenta una propuesta de arquitectura basada en OpenFlow y SDN para un enrutamiento consciente del carbono en redes ópticas entre centros de datos. El controlador centralizado tiene una visión global de la red, incluyendo la disponibilidad de energía verde, y puede decidir dinámicamente hacia dónde dirigir cada solicitud.
+
+En el artículo \textit{Using SDN for Controlling the Carbon Footprint of The Internet} \cite{hossain2020footprint} se proponen dos nuevas métricas para el enrutamiento ecológico en redes SDN: el factor de emisión de carbono (CEF), que mide la cantidad de $CO_2$ emitida por kWh de electricidad consumida en cada nodo, y el porcentaje de uso de energía no renovable (NRE), que representa el porcentaje de energía que proviene de fuentes no renovables. El objetivo del estudio es minimizar estas métricas usando dos políticas ecológicas: apagar nodos y enlaces no utilizados, y la tasa de enlace adaptativa.
+
+En definitiva, las redes SDN representan la plataforma perfecta donde implementar estrategias de enrutamiento consciente de carbono, además de ser un aspecto clave para alcanzar los objetivos fijados.
+
+\subsection{Enrutamiento consciente de carbono}
+
+El enrutamiento consciente de carbono adapta las decisiones de encaminamiento no solo a criterios de latencia o carga de red, sino también a la huella de carbono asociada a cada enlace o ruta. En la práctica, esto se traduce en asignar a cada enlace un peso que refleja su coste en términos de emisiones de carbono, calculado a partir de la intensidad de carbono asociada a la zona donde se encuentra el dispositivo de red correspondiente. A continuación, se explican dos de las técnicas de enrutamiento más usadas: Dijkstra y K-Shortest Path (KSP).
+
+\subsubsection{Algoritmo de Dijkstra}
+
+El algoritmo de Dijkstra \cite{dijkstra1959graph} es el método más clásico para calcular el camino de coste mínimo en un grafo con pesos no negativos. De manera estándar, el peso de cada enlace representa la latencia o el número de saltos, mientras que en el contexto del enrutamiento consciento de carbono, el peso se define como las emisiones de carbono asociadas al consumo eléctrico del dispositivo de red en cuestión. De esta manera, Dijkstra calcula el camino que minimiza las emisiones totales de $CO_2$ entre origen y destino, aunque solo proporciona un único camino óptimo.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.7\textwidth]{pictures/dijkstra.pdf}
+\caption[Representación de Dijsktra]{Representación gráfica del algoritmo de Dijsktra.\\Fuente: Elaboración propia.}
+\label{fig:dijkstra}
+\end{figure}
+
+\subsubsection{\textit{K-Shortest Path}}
+
+KSP \cite{yen1971finding} es un algoritmo que extiende el de Dijkstra para obtener los $K$ caminos de menor coste entre un par origen-destino. A difencia de Dijkstra, KSP explora de manera sistemática caminos alternativos mediante un proceso iterativo: en cada iteración, se generan caminos candidatos a partir de desviaciones del camino previamente encontrado, y se selecciona el de menor coste total.
+
+Al utilizar las emisiones de carbono como métrica de peso, KSP devuelve un conjunto de rutas ordenadas por su huella de carbono, lo que permite seleccionar la ruta más adecuada en función de restricciones adicionales, como pueden ser la latencia máxima o el ancho de banda disponible. De este modo, el algoritmo ofrece un conjunto de soluciones sobre el que aplicar políticas de selección con diferentes criterios.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.7\textwidth]{pictures/ksp.pdf}
+\caption[Representación de KSP]{Representación gráfica de KSP.\\Fuente: Elaboración propia.}
+\label{fig:ksp}
+\end{figure}
 
 \section{Técnicas de Optimización}
 
-Creo que aquí es buena idea hablar sobre las diferentes técnicas de optimización y sus ventajas y desventajas. Pero no sé si estaría pisando el contenido de la sección 5.1
+La optimización es una rama fundamental en la informática que, dadas ciertas restricciones, busca la mejor solución posible a un problema. En el contexto del enrutamiento consciente de carbono, el objetivo es encontrar la configuración de rutas y enlaces que minimice las emisiones totales de $CO_2$ de la red, manteniendo un rendimiento aceptable. A continuación, se presentan diferentes técnicas de optimización que podrían ser aplicadas para resolver este problema junto con sus ventajas e inconvenientes.
 
 \subsection{Métodos clásicos}
 
-\begin{itemize}
-    \item ILP - MILP
-    \item Heurísticas deterministas (voraces)
-\end{itemize}
+La optimización clásica incluye técnicas como la programación lineal entera (ILP) y la programación lineal mixta (MILP), que permiten modelar y resolver problemas de optimización con restricciones específicas. Además, existen heurísticas deterministas, como los algoritmos voraces, que ofrecen soluciones aproximadas en tiempo razonable.
+
+\subsubsection{Programación Lineal Entera}
+
+La ILP es una técnica de optimización que se utiliza para resolver problemas donde las variables de decisión son enteras. En el contexto del enrutamiento consciente de carbono, se puede modelar el problema como una ILP donde las variables representan si un enlace está activo o no, y las restricciones aseguran la conectividad y el rendimiento de la red. Aunque ILP proporciona la solución óptima, su complejidad computacional puede llegar a ser prohibitiva para redes de gran tamaño. José Antonio Gómez de la Hiz, en su estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} utiliza esta técnica para modelar el problema de enrutamiento consciente de carbono, demostrando que aunque se obtienen soluciones óptimas, el tiempo de ejecución llega a ser de 17 minutos. Aún así, las ILP y las MILP son una gran referencia a la hora de evaluar la calidad de las soluciones obtenidas por otras técnicas, como pueden ser las metaheurísticas.
+
+\subsubsection{Heurísticas deterministas}
+
+Las heurísticas deterministas, como pueden ser los algoritmos voraces, ofrecen una solución aproximada al problema de optimización en un tiempo razonable. Estas técnicas se basan en tomar decisiones locales óptimas con la esperanza de que conduzcan a una solución globalmente óptima. En el contexto del enrutamiento consciente de carbono, esto se traduce en seleccionar el enlace con menor huella de carbono en cada paso del camino. Aunque estas heurísticas son computacionalmente eficientes y fáciles de implementar, no garantizan que la solución obtenida sea la mejor posible, incluso pueden llegar a dar resultados que empeoren significativamente aspectos como la latencia o la conectividad de la red.
 
 \subsection{Metaheurísticas}
 
-\begin{itemize}
-    \item Algoritmos genéticos
-    \item PSO
-    \item Ant Colony o Simulated Annealing
-\end{itemize}
+Las metaheurísticas son técnicas de optimización que buscan soluciones aproximadas a problemas complejos mediante estrategias de búsqueda inspiradas en procesos naturales o sociales. A diferencia de los métodos exactos, las metaheurísticas no garantizan encontrar la solución óptima, pero pueden ofrecer soluciones de buena calidad en un tiempo razonable, especialmente para problemas de gran escala.
+
+\subsubsection{Algoritmos genéticos}
+
+Los algoritmos genéticos (GA) simulan el proceso de evolución natural mediante operadores de selección, cruce y mutación para generar nuevas soluciones a partir de una población de soluciones candidatas. Cada individuo de la población puede representar una configuración de rutas y enlaces en la red, y la función de aptitud se define en función de las emisiones de carbono asociadas a esa configuración. Los GA son especialmente útiles para problemas multiobjetivo, donde se busca optimizar varias métricas a la vez, como pueden ser las emisiones de carbono y la latencia. Sin embargo, su rendimiento puede verse afectado por la elección de los parámetros del algoritmo, como el tamaño de la población o las tasas de cruce y mutación.
+
+\subsubsection{Optimización por enjambre de partículas}
+
+La optimización por enjambre de partículas es un algoritmo inspirado en el comportamiento colectivo de grupos de animales, como bandadas de aves o bancos de peces. En este algoritmo, cada partícula representa una solución candidata y se mueve por el espacio de búsqueda influenciada por su propia experiencia y la de sus vecinos. PSO es conocido por su simplicidad y eficacia en la optimización de problemas continuos, aunque también se han desarrollado variantes para problemas discretos. La principal ventaja de PSO es su capacidad de converger rápidamente hacia soluciones de buena calidad, aunque puede quedar atrapado en óptimos locales si no se configura adecuadamente.
+
+\subsubsection{Optimización por colonia de hormigas}
+
+La optimización por colonia de hormigas (ACO) se basa en el comportamiento de las hormigas para encontrar rutas óptimas entre su nido y una fuente de alimento. En este algoritmo, las hormigas virtuales depositan feromonas en los caminos que recorren, y la cantidad de feromona depositada está relacionada con la calidad de la solución encontrada. ACO es especialmente efectivo para problemas de enrutamiento, como el problema del viajante o el enrutamiento consciente de carbono, ya que puede explorar múltiples rutas simultáneamente y adaptarse a cambios dinámicos en la red. Sin embargo, su rendimiento puede verse afectado por la configuración de los parámetros, como la tasa de evaporación de feromonas o el número de hormigas.
 
 \subsection{Métodos basados en aprendizaje automático}
 
+En los últimos años, los métodos basados en aprendizaje automático han ganado presencia en el campo del erutamiento de redes. Es importante distinguir entre el papel del aprendizaje automático y el de las técnicas de optimización clásicas: mientras que estas últimas buscan de forma explícita la solución óptima de un problema definido, los modelos de aprendizaje automático aprenden a tomar decisiones a partir de datos históricos o de la interacción con el entorno, sin necesidad de resolver un problema de optimización.
+
+En particular, el aprendizaje por refuerzo profundo (DRL) ha mostrado resultado prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del aprendizaje al cambiar la topología.
+
+\section{Limitaciones y Retos Abiertos}
+
+A pesar del creciente interés por el enrutamiento consciente de carbono y las redes verdes, existen limitaciones y retos abiertos que condicionan su implementación y eficacia. Entre ellos, destacan los siguientes:
+
 \begin{itemize}
-    \item Deep Learning (importante dejar claro que DL no optimiza, sino que aprende y toma decisiones)
+    \item Variabilidad en la generación de energía. La generación de energía renovable es intermitente y depende de factores como el clima, lo que obliga a desarrollar algoritmos de enrutamiento que puedan adaptarse dinámicamente a cambios en la intensidad de carbono.
+    \item Falta de transparencia de los equipos. La falta de datos precisos sobre los modelos de los equipos de red y su consumo energético dificulta la modelización precisa de la red para realizar optimizaciones.
+    \item Complejidad de la optimización. La integración de métricas de ambientales en el proceso de enrutamiento añade una capa adicional de complejidad, lo que puede requerir el desarrollo de algoritmos de optimización más sofisticados y eficientes.
 \end{itemize}
-
-\section{\textit{Particle Swarm Optimization}}
-
-No sé si sería repetitivo tener esta sección aquí, ya se habla de PSO en la sección 5.2 y 5.3. Puede que sea mejor que la sección sea "PSO aplicado a redes SDN'' o "PSO aplicado a la reducción de emisiones''.
-
-\section{No sé qué más}
-
-Pues eso, noto que faltaría una sección para cerrar el capítulo, pero no estoy seguro sobre qué. A lo mejor es buena idea que este apartado sea como el de Amanda, que habla sobre las limitaciones existentes como la variabilidad en la generación de energía o la falta de transparencia (no se saben modelos exactos de routers para poder realizar simulaciones más exactas).
