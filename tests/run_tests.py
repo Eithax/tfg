@@ -479,6 +479,74 @@ def plot_link_utilization_histogram(
     plt.close(fig)
 
 
+def plot_link_utilization_cdf(
+    results_per_tm: dict[int, dict],
+    network: str,
+    possible_links: list[tuple],
+    output_dir: str | Path = None,
+    fmt: str = "pdf",
+    show: bool = True,
+):
+    """
+    CDF del porcentaje de utilización de los enlaces, usando la media
+    de las matrices link_utilization de todos los TM.
+
+    Parámetros
+    ----------
+    results_per_tm : dict  { tm_index -> resultado de total_carbon_intensity() }
+                     Cada valor debe tener la clave 'link_utilization' (matriz NxN).
+    network        : nombre de la red.
+    possible_links : lista de tuplas (i, j) con los enlaces posibles de la topología.
+    output_dir     : carpeta de salida. Por defecto <PROJECT_ROOT>/results/figures/
+    fmt            : formato — "pdf", "png", "svg" ...
+    show           : si True llama a plt.show().
+    """
+    output_dir = Path(output_dir) if output_dir else PROJECT_ROOT / "results" / "figures"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    # Media de las matrices de utilización entre todos los TM
+    sorted_results = sorted(results_per_tm.items())
+    n_tms = len(sorted_results)
+
+    avg_util_matrix = sum(
+        result["link_utilization"] for _, result in sorted_results
+    ) / n_tms
+
+    # Un valor por enlace activo (en media), ordenado de menor a mayor
+    avg_utilizations = sorted([
+        avg_util_matrix[i][j] * 100
+        for (i, j) in possible_links
+        if avg_util_matrix[i][j] > 0
+    ])
+
+    # CDF: para cada valor x, fraccion acumulada de enlaces <= x
+    n = len(avg_utilizations)
+    cdf_y = [(k + 1) / n for k in range(n)]
+
+    plt.rcParams.update({"font.size": fuente, "axes.labelsize": fuente_eje})
+    fig, ax = plt.subplots(figsize=fs)
+
+    ax.plot(avg_utilizations, cdf_y, color="#8E44AD", linewidth=2)
+
+    ax.set_xlabel("Utilizacion del enlace (%)")
+    ax.set_ylabel("Fraccion acumulada de enlaces")
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 1)
+    ax.grid(linestyle="--", alpha=0.55)
+    ax.set_axisbelow(True)
+
+    fig.tight_layout()
+
+    filepath = output_dir / f"link_utilization_cdf_{network}.{fmt}"
+    fig.savefig(filepath, format=fmt, dpi=600, bbox_inches="tight")
+    print(f"  Guardada: {filepath}")
+
+    if show:
+        plt.show()
+    plt.close(fig)
+
+
+
 
 
 
@@ -607,14 +675,14 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10,
     init_pos = generate_initial_positions(PSO_CONFIG["n_particles"], dimensions)
 
     start_time = time.time()
-    best_cost, best_pos = run_pso(kwargs, init_pos, vch)
+    #best_cost, best_pos = run_pso(kwargs, init_pos, vch)
     end_time = time.time()
 
-    print("\n=== RESULTADO FINAL ===")
-    print("Best cost:", best_cost)
-    print("Best position:", best_pos)
-    print("Tiempo con carga de entorno: ", end_time - start_time_init)
-    print("Tiempo sin carga de entorno: ", end_time - start_time)
+    #print("\n=== RESULTADO FINAL ===")
+    #print("Best cost:", best_cost)
+    #print("Best position:", best_pos)
+    #print("Tiempo con carga de entorno: ", end_time - start_time_init)
+    #print("Tiempo sin carga de entorno: ", end_time - start_time)
 
     #adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
     #for k, (i, j) in enumerate(kwargs["possible_links"]):
@@ -624,26 +692,32 @@ def run_experiment(network="Abilene", tm=1, comprobar_solucion_jose=False, k=10,
     #print("\n=== SOLUCIÓN CON TODOS LOS ENLACES ENCENDIDOS ===")
     #print("Coste:", cost)
 
-    #results_normal = {}
-#
-    #for network_v, tms in BEST_SOLUTIONS.items():
-    #    for tm_v, solution_vector in tms.items():
-    #        kwargs = load_network(network_v, tm_v)
-    #        kwargs["all_k_paths"] = load_k_paths(
-    #            network_v,
-    #            kwargs["carbon_matrix"],
-    #            kwargs["possible_links"],
-    #            k
-    #        )
-    #        adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
-    #        for idx, (i, j) in enumerate(kwargs["possible_links"]):
-    #            adj[i][j] = solution_vector[idx]
-#
-    #        result_test = total_carbon_intensity(adj, **kwargs)
-    #        #print(result_test['link_utilization'])
-    #        results_normal[tm_v] = result_test
-#
-    #    total_links = len(kwargs["possible_links"])
+    results_normal = {}
+
+    for network_v, tms in BEST_SOLUTIONS.items():
+        for tm_v, solution_vector in tms.items():
+            kwargs = load_network(network_v, tm_v)
+            kwargs["all_k_paths"] = load_k_paths(
+                network_v,
+                kwargs["carbon_matrix"],
+                kwargs["possible_links"],
+                k
+            )
+            adj = np.zeros((kwargs["num_nodes"], kwargs["num_nodes"]), dtype=int)
+            for idx, (i, j) in enumerate(kwargs["possible_links"]):
+                adj[i][j] = solution_vector[idx]
+
+            result_test = total_carbon_intensity(adj, **kwargs)
+            #print(result_test['link_utilization'])
+            results_normal[tm_v] = result_test
+
+        total_links = len(kwargs["possible_links"])
+
+        plot_link_utilization_cdf(
+            results_per_tm=results_normal,
+            network=network_v,
+            possible_links=kwargs["possible_links"]
+        )
 #
     #    # Gráfica 1: % de enlaces apagados
     #    plot_sleeping_links_per_tm(
