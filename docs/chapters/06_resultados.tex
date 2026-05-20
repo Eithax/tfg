@@ -192,15 +192,25 @@ Como se puede observar en la \autoref{fig:abilene_enlaces_apagados}, el algoritm
 
 Medir el grado de ocupación de los enlaces que quedan encendidos tras la ejecución del algoritmo, es un gran complemento a la métrica anterior, puesto que permite conocer si los enlaces que permanecen activos están realmente aprovechados o, si por el contrario, están saturados o infrautilizados.
 
+%\begin{figure}[H]
+%\centering
+%\captionsetup{justification=centering}
+%\includegraphics[width=0.6\textwidth]{pictures/link_utilization_Abilene.pdf}
+%\caption[Uso de enlaces Abilene]{Histograma de utilización de los enlaces activos de Abilene.\\Fuente: Elaboración propia.}
+%\label{fig:abilene_uso_enlaces}
+%\end{figure}
+
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.6\textwidth]{pictures/link_utilization_Abilene.pdf}
-\caption[Uso de enlaces Abilene]{Histograma de utilización de los enlaces activos de Abilene.\\Fuente: Elaboración propia.}
+\includegraphics[width=0.6\textwidth]{pictures/link_utilization_cdf_Abilene.pdf}
+\caption[Uso de enlaces Abilene]{CDF de utilización de los enlaces activos de Abilene.\\Fuente: Elaboración propia.}
 \label{fig:abilene_uso_enlaces}
 \end{figure}
 
-En el histograma de la \autoref{fig:abilene_uso_enlaces} se observa que la mayoría de enlaces activos tienden a estar por debajo del 50\% de su capacidad, mientras que solo unos pocos superan el 50\%, alcanzando el 80\% de uso. Probablemente esto se deba a que el algoritmo prioriza los caminos más cortos que se encuentran con KSP, por tanto, los enlaces que pertenecen a estos caminos terminan estando mucho más utilizados que los demás.
+%En el histograma de la \autoref{fig:abilene_uso_enlaces} se observa que la mayoría de enlaces activos tienden a estar por debajo del 50\% de su capacidad, mientras que solo unos pocos superan el 50\%, alcanzando el 80\% de uso. Probablemente esto se deba a que el algoritmo prioriza los caminos más cortos que se encuentran con KSP, por tanto, los enlaces que pertenecen a estos caminos terminan estando mucho más utilizados que los demás.
+
+En la función de distribución acumulativa (CDF) de la \autoref{fig:abilene_uso_enlaces} se observa que la mayoría de enlaces activos tienden a estar por debajo del 50\% de su capacidad, mientras que solo unos pocos superan el 50\%, alcanzando el 80\% de uso. Probablemente esto se deba a que el algoritmo prioriza los caminos más cortos que se encuentran con KSP, por tanto, los enlaces que pertenecen a estos caminos terminan estando mucho más utilizados que los demás.
 
 \section{Resultados para Nobel y Geant}
 
@@ -368,23 +378,39 @@ En Nobel, el porcentaje de enlaces apagados es aún mayor que en Geant, superand
 
 \subsection{Ocupación de los enlaces tras el apagado}
 
-Análogamente a Abilene, se ha estudiado el grado de ocupación de los enlaces que quedan activos tras la ejecución del algoritmo. En el caso de Geant, el histograma que se muestra en la \autoref{fig:geant_uso_enlaces} presenta un comportamiento similar al observado en Abilene: la mayoría de enlaces activos tienden a estar por debajo del 20\% de su capacidad, mientras que solo unos pocos superan el 60\%, alcanzando el 80\% de uso. Esto indica que el algoritmo tiene margen de mejora a la hora de distribuir el tráfico entre los enlaces activos.
+Análogamente a Abilene, se ha estudiado el grado de ocupación de los enlaces que quedan activos tras la ejecución del algoritmo. En el caso de Geant, el CDF que se muestra en la \autoref{fig:geant_uso_enlaces} presenta un comportamiento similar al observado en Abilene: la mayoría de enlaces activos tienden a estar por debajo del 20\% de su capacidad, mientras que solo unos pocos superan el 60\%, alcanzando el 80\% de uso. Esto indica que el algoritmo tiene margen de mejora a la hora de distribuir el tráfico entre los enlaces activos.
+
+%\begin{figure}[H]
+%\centering
+%\captionsetup{justification=centering}
+%\includegraphics[width=0.6\textwidth]{pictures/link_utilization_Geant.pdf}
+%\caption[Uso de enlaces Geant]{Histograma de utilización de los enlaces activos de Geant.\\Fuente: Elaboración propia.}
+%\label{fig:geant_uso_enlaces}
+%\end{figure}
 
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.6\textwidth]{pictures/link_utilization_Geant.pdf}
-\caption[Uso de enlaces Geant]{Histograma de utilización de los enlaces activos de Geant.\\Fuente: Elaboración propia.}
+\includegraphics[width=0.6\textwidth]{pictures/link_utilization_cdf_Geant.pdf}
+\caption[Uso de enlaces Geant]{CDF de utilización de los enlaces activos de Geant.\\Fuente: Elaboración propia.}
 \label{fig:geant_uso_enlaces}
 \end{figure}
 
-En el caso de Nobel, cuyo histograma se muestra en la \autoref{fig:nobel_uso_enlaces}, el comportamiento es similar. Aunque se observa una mayor cantidad de enlaces activos con una ocupación entre el 20\% y el 40\%, la mayoría de enlaces siguen estando por debajo del 20\% de su capacidad, mientras que solo unos pocos superan el 50\%, alcanzando el 60\% de uso. De nuevo, este es un indicativo del margen de mejora que tiene el algoritmo, pues conseguir una distribución más equilibrada del tráfico entre los enlaces activos podría mejorar la calidad de las soluciones y reducir aún más las emisiones de carbono.
+En el caso de Nobel, cuyo CDF se muestra en la \autoref{fig:nobel_uso_enlaces}, el comportamiento es similar. Aunque se observa una mayor cantidad de enlaces activos con una ocupación entre el 20\% y el 40\%, la mayoría de enlaces siguen estando por debajo del 20\% de su capacidad, mientras que solo unos pocos superan el 50\%, alcanzando el 60\% de uso. De nuevo, este es un indicativo del margen de mejora que tiene el algoritmo, pues conseguir una distribución más equilibrada del tráfico entre los enlaces activos podría mejorar la calidad de las soluciones y reducir aún más las emisiones de carbono.
+
+%\begin{figure}[H]
+%\centering
+%\captionsetup{justification=centering}
+%\includegraphics[width=0.6\textwidth]{pictures/link_utilization_Nobel.pdf}
+%\caption[Uso de enlaces Nobel]{Histograma de utilización de los enlaces activos de Nobel.\\Fuente: Elaboración propia.}
+%\label{fig:nobel_uso_enlaces}
+%\end{figure}
 
 \begin{figure}[H]
 \centering
 \captionsetup{justification=centering}
-\includegraphics[width=0.6\textwidth]{pictures/link_utilization_Nobel.pdf}
-\caption[Uso de enlaces Nobel]{Histograma de utilización de los enlaces activos de Nobel.\\Fuente: Elaboración propia.}
+\includegraphics[width=0.6\textwidth]{pictures/link_utilization_cdf_Nobel.pdf}
+\caption[Uso de enlaces Nobel]{CDF de utilización de los enlaces activos de Nobel.\\Fuente: Elaboración propia.}
 \label{fig:nobel_uso_enlaces}
 \end{figure}
 
