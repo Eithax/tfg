@@ -4,8 +4,8 @@
 
 % Rellenar con los datos del estudiante y el trabajo
 \estudiante{Santiago Rodríguez-Arias Martínez-Berná}{Grado}{Ingeniería Informática en Ingeniería del Software}
-\title{Optimización de las emisiones de CO2 en redes definidas por software mediante algoritmos bioinspirados}
-\keywords{SDN\and enrutamiento consciente de carbono}
+\title{Aplicación de optimización por enjambre de partículas para la reducción de las emisiones de carbono en Redes Definidas por Software}
+\keywords{SDN\and enrutamiento consciente de carbono\and emisiones de carbono\and CO2}
 
 \begin{document}
 \sloppy 
@@ -13,7 +13,7 @@
 
 %%%%%%%%%%%%% PORTADA %%%%%%%%%%%%%
 % Poner convocatoria y año de presentación
-\portadaTFE{Convocatoria, 2026}
+\portadaTFE{Junio, 2026}
 
 \pagestyle{empty}
 
@@ -39,27 +39,31 @@ En primer lugar, quiero darle las gracias a mis padres, Mariano y Mónica, por s
 
 Agradecer también a mis tutores, Jaime Galán Jiménez y José Antonio Gómez de la Hiz, por su dedicación y por permitirme realizar el TFG con ellos. Ambos me han enseñado lo interesante que pueden llegar a ser las redes, en especial en temas aparentemente aburridos como la reducción de la huella de carbono. Gracias por la paciencia, los consejos y el tiempo empleado para desarrollar este trabajo.
 
-Y por último, aunque no menos importante, darle las gracias a mi amigo Rubén Serrano Izquierdo por las píldoras de información y los datos curiosos sobre redes y temas de \textit{backend}. Fue quien abrió la puerta a mi interés por las redes y a plantearme un TFG relacionado con este tema.
+Y por último, aunque no menos importante, darle las gracias a Rubén Serrano Izquierdo por las píldoras de información y los datos curiosos sobre redes y temas de \textit{backend}. Fue quien abrió la puerta a mi interés por las redes y a plantearme un TFG relacionado con este tema.
 
 Muchas gracias a todos.
 
 \chapter*{Resumen}
-A día de hoy, las redes de comunicaciones son un componente esencial en la vida diaria de las personas y en el funcionamiento de las empresas. El aumento del tráfico de datos ha crecido de forma exponencial, llegando a multiplicarse por 80 desde 2007 hasta 2023 \cite{Paska2025}. Aunque el crecimiento del consumo energético no es proporcional al aumento del tráfico de datos, pues apenas se ha duplicado, esto no significa que no haya un impacto ambiental significativo. Se estima que las redes de comunicaciones representan aproximadamente el 1\% del consumo eléctrico mundial y alrededor del 1,4\% de las emisiones globales de $CO_2$. Y estos datos no van a hacer más que aumentar debido al auge de las Inteligencias Artificiales (IA) y los grandes centros de procesamiento de datos. Por tanto, es fundamental buscar soluciones que permitan optimizar el uso de las redes para reducir su impacto ambiental.
+A día de hoy, las redes de comunicaciones son un componente esencial en la vida diaria de las personas y en el funcionamiento de las empresas. El aumento del tráfico de datos ha crecido de forma exponencial, llegando a multiplicarse por 80 desde 2007 hasta 2023 \cite{Paska2025}. Aunque el crecimiento del consumo energético no es proporcional al aumento del tráfico de datos, pues apenas se ha duplicado, esto no significa que no haya un impacto ambiental significativo. Se estima que el sector de las Tecnologías de la Información y la Comunicación (TIC) representan aproximadamente el 4\% del consumo eléctrico mundial y alrededor del 1,4\% de las emisiones globales de $CO_2$ \cite{malmodin2024ict}. Y estos datos no van a hacer más que aumentar debido al auge de la Inteligencia Artificial (IA) y los grandes centros de procesamiento de datos. Por tanto, es fundamental buscar soluciones que permitan optimizar el uso de las redes para reducir su impacto ambiental.
 
-En este trabajo se propone una solución basada en redes definidas por software (SDN) y algoritmos bioinspirados para optimizar las emisiones de $CO_2$ asociadas al uso de las redes de comunicaciones. Más concretamente, se parte de los avances expuestos en \cite{ElZahr2023}, donde los autores proporcionan una fórmula que permite calcular las emisiones de $CO_2$ de las redes cableadas en función del tráfico de datos y el consumo energético de los dispositivos de red. Con esta fórmula en mente, se ha modelado una función de optimización que se usará en un algoritmo de optimización por enjambre de partículas (PSO) para encontrar la configuración de red que minimice las emisiones de $CO_2$.
+En este trabajo se propone una solución basada en redes definidas por software (SDN) y algoritmos bioinspirados para optimizar las emisiones de $CO_2$ asociadas al uso de las redes de comunicaciones. Más concretamente, se parte de los avances expuestos en \cite{ElZahr2023}, donde los autores proporcionan una fórmula que permite calcular las emisiones de $CO_2$ de las redes cableadas en función del tráfico de datos y el consumo energético de los dispositivos de red. Con esta fórmula en mente, se ha modelado una función de optimización que se usará en un algoritmo de Optimización por Enjambre de Partículas (PSO) para encontrar la configuración de red que minimice las emisiones de $CO_2$.
 
 Específicamente, en este trabajo se presentan dos versiones del algoritmo, en una de ellas se deja de evaluar una solución si esta no cumple alguna de las restricciones, mientras que en la otra se penalizan las soluciones que no cumplen dichas restricciones. En cuanto a las pruebas, se estudian cómo diferentes técnicas de enrutamiento, el aumento del tráfico y la escalabilidad de la topología de red afectan a las emisiones de $CO_2$.
+
+Los resultados obtenidos muestran que el algoritmo es capaz de apagar entre el 30\% y el 50\% de los enlaces y reduccir así las emisiones de carbono en hasta un 50\%. Además, el análisis confirma que, al aumentar el tráfico y la complejidad de la topología, el framework mantiene la eficiencia y la escalabilidad.
 
 \noindent\textbf{Palabras clave}: \printkeywords.
 
 \chapter*{Abstract}
-Nowadays, communication networks are an essential component of people’s daily lives and business operations. Data traffic has grown exponentially, increasing by a factor of 80 between 2007 and 2023 \cite{Paska2025}. Although the growth in energy consumption has not been proportional to the increase in data traffic, having only doubled, this does not mean that there is no significant environmental impact. Communication networks are estimated to account for approximately 1\% of global electricity consumption and around 1.4\% of global $CO_2$ emissions. Moreover, these figures are expected to continue rising due to the growth of Artificial Intelligence (AI) and large-scale data processing centers. Therefore, it is essential to seek solutions that optimize the use of communication networks in order to reduce their environmental impact.
+Nowadays, communication networks are an essential component of people’s daily lives and business operations. Data traffic has grown exponentially, increasing by a factor of 80 between 2007 and 2023 \cite{Paska2025}. Although the growth in energy consumption has not been proportional to the increase in data traffic, having only doubled, this does not mean that there is no significant environmental impact. The Information and Communication Technology (ICT) sector is estimated to account for approximately 4\% of global electricity consumption and around 1.4\% of global $CO_2$ emissions \cite{malmodin2024ict}. Moreover, these figures are expected to continue rising due to the growth of Artificial Intelligence (AI) and large-scale data processing centers. Therefore, it is essential to seek solutions that optimize the use of communication networks in order to reduce their environmental impact.
 
 This work proposes a solution based on Software-Defined Networking (SDN) and bio-inspired algorithms to optimize the $CO_2$ emissions associated with the use of communication networks. More specifically, it builds upon the advances presented in \cite{ElZahr2023}, where the authors provide a formula to calculate the $CO_2$ emissions of wired networks as a function of data traffic and the energy consumption of network devices. Based on this formula, an optimization function has been modeled to be used within a Particle Swarm Optimization (PSO) algorithm in order to find the network configuration that minimizes $CO_2$ emissions.
 
 Specifically, this work presents two versions of the algorithm. In one version, a solution stops being evaluated if it violates any of the constraints, whereas in the other, solutions that do not satisfy the constraints are penalized. Regarding the experiments, the study analyzes how different routing techniques, increased traffic, and the scalability of the network topology affect $CO_2$ emissions.
 
-\noindent\textbf{Keywords}: SDN, carbon-aware routing.
+The obtained results show that the algorithm is capable of turning off between 30\% and 50\% of the links, thereby reducing carbon emissions by up to 50\%. Furthermore, the analysis confirms that, despite increases in traffic and topology complexity, the framework maintains both efficiency and scalability
+
+\noindent\textbf{Keywords}: SDN, carbon-aware routing, carbon emissions, CO2.
 
 % Índices con enlaces de las secciones, tablas y figuras
 \newpage
