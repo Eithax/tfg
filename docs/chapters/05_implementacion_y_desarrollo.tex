@@ -4,9 +4,9 @@ En esta sección se presenta detalladamente la implementación del algoritmo des
 
 \section{Elección de la Técnica de Optimización}
 
-Como se ha visto en el apartado del estado del arte, los problemas de optimización se pueden abordar con diferentes técnicas dependiendo de las características del problema.
+Como se ha visto en el \autoref{chp:stateoftheart}, los problemas de optimización se pueden abordar con diferentes técnicas dependiendo de las características del problema.
 
-Una de las técnicas que ofrece soluciones óptimas, a costa de un gran tiempo de cómputo, es ILP. El estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} muestra cómo esta técnica es capaz de reducir las emisiones de carbono en hasta un 84.5\%, aunque el tiempo de ejecución llegó a alcanzar los 17 minutos, lo que es prohibitivo en escenarios tan cambiantes. 
+Una de las técnicas que ofrece soluciones óptimas, a costa de un gran tiempo de cómputo, es ILP. El estudio \cite{GomezdelaHiz2025} muestra cómo esta técnica es capaz de reducir las emisiones de carbono en hasta un 84.5\%, aunque el tiempo de ejecución llegó a alcanzar los 17 minutos, lo que es prohibitivo en escenarios tan cambiantes. 
 
 Como alternativa a soluciones basadas en ILP, se pueden usar técnicas de \textit{Deep Learning} (DL). Pero estas técnicas, además de requerir una gran cantidad de datos para entrenar el modelo, no son viables para este tipo de problemas, pues en el momento en el que se modifique la topología de red, el modelo entrenado dejará de ser válido, lo que obligará a volver a entrenar el modelo desde cero, con la consecuente pérdida de tiempo y recursos.
 
@@ -98,7 +98,7 @@ La primera solución que se planteó fue tranformar el espacio discreto del prob
 
 Más adelante, se iteró sobre la idea anterior de transformar el espacio discreto en continuo, pero esta vez usando una función sigmoide para umbralizar a través del cálculo de la probabilidad de que un enlace esté activo o apagado. Sin embargo, y como se muestra en la \autoref{fig:sigmoide}, se observó que, a medida que el valor continuo de la partícula, $x$, se aleja del cero, la curva se vuelve casi plana. Esto hace que, si el algoritmo decide que el enlace debe estar encendido, la velocidad de PSO empuje el valor de $x$ hacia números positivos cada vez más altos. Pero si más tarde el algoritmo decide que ese enlace en realidad debe estar apagado, PSO tardará muchas iteraciones en generar una velocidad lo suficientemente negativa como para arrastrar el valor de $x$ de vuelta al cero. En todo ese tiempo, la partícula está estancada y pierde capacidad de exploración.
 
-Finalmente, se optó por hacer uso de adaptaciones de PSO para espacios de búsqueda discretos. De esta manera, se evitan los problemas de "cegera" de la umbralización y las pérdidas de capacidad de exploración que se observaban con la función sigmoide. Además, esto permite que PSO trabaje directamente con el espacio discreto del problema, mejorando así la eficiencia del algoritmo.
+Finalmente, se optó por hacer uso de adaptaciones de PSO para espacios de búsqueda discretos. De esta manera, se evitan los problemas de ''cegera'' de la umbralización y las pérdidas de capacidad de exploración que se observaban con la función sigmoide. Además, esto permite que PSO trabaje directamente con el espacio discreto del problema, mejorando así la eficiencia del algoritmo.
 
 En el entorno de las redes SDN, la solución propuesta se implementaría en el controlador SDN, lo que permitiría a PSO tener acceso a información en tiempo real sobre el estado de la red y evaluar a lo largo del día los cambios que habría que hacer en cada momento para mantener las emisiones de $CO_2$ al mínimo.
 
@@ -110,7 +110,7 @@ Para que el algoritmo sea realmente efectivo, se han de tener en cuenta las rest
 
 En esta variante, cuando una partícula propone una configuración de red que viola cualquiera de las restricciones, la función objetivo devuelve el valor infinito. En otras palabras, la posición de la partícula sufre una "muerte súbita", pues corta de golpe en el momento en el que no cumple una restricción.
 
-La ventaja principal que presenta esta estrategia es la rapidez, pues el algoritmo descarta de manera inmediata una solución que no cumple con alguna restricción. Pero esta rapidez computacional le genera "ceguera" a PSO al no ser capaz de saber cuán buena es una solución inválida.
+La ventaja principal que presenta esta estrategia es la rapidez, pues el algoritmo descarta de manera inmediata una solución que no cumple con alguna restricción. Pero esta rapidez computacional le genera ''ceguera'' a PSO al no ser capaz de saber cuán buena es una solución inválida.
 
 \subsubsection{PSO con manejo de violación de restricciones}
 

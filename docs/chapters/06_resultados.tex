@@ -35,10 +35,10 @@ Además, se ha hecho uso de un router Arista 7060CX-32S \cite{AristaNetworks2021
 Las pruebas se han realizado sobre diferentes topologías de red reales, cuya información se ha obtenido de la web SNDlib \cite{Orlowski2010}, las cuales se detallan a continuación:
 
 \begin{itemize}
-    \item Abilene. La red más pequeña de las cuatro, usada en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones.
-    \item Nobel-Germany. Red de tamaño medio, se ha usado para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene.
-    \item Geant. Esta red, que es ligeramente más grande que Nobel, se ha utilizado para comprobar que la solución sigue siendo viable en redes de un tamaño parecido al de Nobel.
-    \item Germany-50. Al duplicar el tamaño de la red con respecto las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta como para evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
+    \item Abilene. 12 nodos y 30 enlaces unidireccionales. La red más pequeña de las cuatro, usada en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones.
+    \item Nobel-Germany. 17 nodos y 52 enlaces unidireccionales. Red de tamaño medio, se ha usado para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene.
+    \item Geant. 22 nodos y 72 enlaces unidireccionales. Esta red, que es ligeramente más grande que Nobel, se ha utilizado para comprobar que la solución sigue siendo viable en redes de un tamaño parecido al de Nobel.
+    \item Germany-50. 50 nodos y 176 enlaces unidireccionales. Al duplicar el tamaño de la red con respecto las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta como para evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
 \end{itemize}
 
 Estas topologías se han seleccionado con el objetivo de cubrir diferentes tamaños de red y localizacion, lo que permite evaluar de forma contundente el rendimiento del algoritmo y su viabilidad. En la \autoref{tab:topologias} se recogen las principales características de cada red.
@@ -65,6 +65,14 @@ Estas topologías se han seleccionado con el objetivo de cubrir diferentes tama�
 %Abilene es la red más pequeña de las cuatro, con 12 nodos y 30 enlaces unidireccionales. Es la red que se ha usado en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones. El uso de esta red ha facilitado la realización de pruebas rápidas para analizar cómo se comportaba el algoritmo en las diferentes fases del desarrollo. Geant y Nobel-Germany son redes de tamaño medio, con 22 nodos y 72 enlaces unidireccionales, y 17 nodos y 52 enlaces unidireccionales, respectivamente. Estas redes han servido para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene y comprobar la viabilidad de la solución, o de alguna modificación de esta, en redes del mismo tamaño o parecidas. Finalmente, Germany-50 es la red más grande de las cuatro, con 50 nodos y 176 enlaces unidireccionales. Al duplicar el tamaño de la red con respecto a las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta, lo cual permite evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
 
 Inicialmente, para las emisiones de carbono se iba a hacer uso de la API de Electricity Maps \cite{ElectricityMaps2025}, pero debido a un cambio en la política de recuperación de datos por parte de los desarrolladores de la API, las zonas accesibles con un token de autenticación quedaron limitadas a una. Intentar hacer uso de sus \textit{endpoints} significa definir un token por cada zona que se quisiera acceder y desarrollar la lógica necesaria para traducir las coordenadas geográficas de los nodos a zonas del mapa de Electricity Maps para, posteriormente, buscar qué token tiene acceso a esa zona y realizar la petición a la API. Debido al aumento de complejidad en la lógica del código, se terminó optando por usar datos históricos de intensidad de carbono publicados en Electricity Maps.
+
+\begin{figure}[H]
+\centering
+\captionsetup{justification=centering}
+\includegraphics[width=0.8\textwidth]{pictures/electricity_maps.png}
+\caption[Captura de Electricity Maps]{Mapa de intensidad de carbono disponible en Electricity Maps.\\Fuente: Electricity Maps \cite{ElectricityMaps2025}.}
+\label{fig:electricity_maps}
+\end{figure}
 
 \section{Definición de las Pruebas}
 
@@ -106,7 +114,7 @@ Las primeras pruebas que se realizaron con Abilene arrojaron unos resultados rea
 \label{fig:abilene_pso_20runs}
 \end{figure}
 
-En la \autoref{fig:abilene_pso_20runs} se puede observar que el coste medio es ligeramente superior en TM1 que en TM2, lo que podría parecer contradictorio. Sin embargo, esta diferencia refleja una mayor dificultad del algoritmo para converger en el caso de TM1. De hecho, el mejor resultado individual obtenido para la TM1 (72.72) es inferior al de la TM2 (73.94), ambos con la misma configuración de enlaces, lo cual es coherente con el hecho de que una menor cantidad de tráfico se traduce en un menor coste total. El motivo por el cual el promedio en TM1 es mayor es que PSO encontró soluciones de peor calidad en varias ejecuciones debido a una mayor cantidad de óptimos locales al ser una matriz menos cargada. Esto aumenta la variabilidad en la calidad de las soluciones encontradas y, por tanto, eleva la media.
+En la \autoref{fig:abilene_pso_20runs} se puede observar que el coste medio es ligeramente superior en TM1 que en TM2, lo que podría parecer contradictorio. Sin embargo, esta diferencia refleja una mayor dificultad del algoritmo para converger en el caso de TM1. De hecho, el mejor resultado individual obtenido para la TM1 (72.72 $gCO_2$) es inferior al de la TM2 (73.94 $gCO_2$), ambos con la misma configuración de enlaces, lo cual es coherente con el hecho de que una menor cantidad de tráfico se traduce en un menor coste total. El motivo por el cual el promedio en TM1 es mayor es que PSO encontró soluciones de peor calidad en varias ejecuciones debido a una mayor cantidad de óptimos locales al ser una matriz menos cargada. Esto aumenta la variabilidad en la calidad de las soluciones encontradas y, por tanto, eleva la media.
 
 Al ejecutar el algoritmo 100 veces, los resultados que se muestran en la \autoref{fig:abilene_pso_100runs} son prácticamente idénticos a los obtenidos en la prueba anterior, lo que confirma el buen funcionamiento del algoritmo. Los intervalos de confianza son aún más estrechos, lo cual es consecuencia del mayor tamaño muestral y refleja una estimación más precisa de la media. La consistencia entre los resultados de ambos experimentos evidencia que PSO converge de forma fiable hacia soluciones de calidad.
 
@@ -190,7 +198,7 @@ Una métrica que resulta muy interesante estudiar es el porcentaje de enlaces qu
 
 Como se puede observar en la \autoref{fig:abilene_enlaces_apagados}, el algoritmo ha conseguido apagar más del 50\% de los enlaces de la red en el caso de las matrices menos cargadas como la TM1 y la TM2, mientras que al aumentar el tráfico considerablemente, como ocurre en la TM5, el algoritmo casi alcanza el 40\% enlaces apagados. En otras palabras, todas las matrices de tráfico presentan un alto porcentaje de apagado, lo que indica una gran eficiencia a la hora de redirigir el tráfico y apagar enlaces.
 
-\subsection{Ocupación de los enlaces tras el apagado}
+\subsection{Carga de los enlaces}
 
 Medir el grado de ocupación de los enlaces que quedan encendidos tras la ejecución del algoritmo, es un gran complemento a la métrica anterior, puesto que permite conocer si los enlaces que permanecen activos están realmente aprovechados o, si por el contrario, están saturados o infrautilizados.
 
@@ -206,7 +214,7 @@ Medir el grado de ocupación de los enlaces que quedan encendidos tras la ejecuc
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.6\textwidth]{pictures/link_utilization_cdf_Abilene.pdf}
-\caption[Uso de enlaces Abilene]{CDF de utilización de los enlaces activos de Abilene.\\Fuente: Elaboración propia.}
+\caption[Uso de enlaces Abilene]{CDF de utilización de los enlaces activos de Abilene tras ejecutar PSO.\\Fuente: Elaboración propia.}
 \label{fig:abilene_uso_enlaces}
 \end{figure}
 
@@ -378,7 +386,7 @@ En Nobel, el porcentaje de enlaces apagados es aún mayor que en Geant, superand
 \label{fig:nobel_enlaces_apagados}
 \end{figure}
 
-\subsection{Ocupación de los enlaces tras el apagado}
+\subsection{Carga de los enlaces}
 
 Análogamente a Abilene, se ha estudiado el grado de ocupación de los enlaces que quedan activos tras la ejecución del algoritmo. En el caso de Geant, el CDF que se muestra en la \autoref{fig:geant_uso_enlaces} presenta un comportamiento similar al observado en Abilene: la mayoría de enlaces activos tienden a estar por debajo del 20\% de su capacidad, mientras que solo unos pocos superan el 60\%, alcanzando el 80\% de uso. Esto indica que el algoritmo tiene margen de mejora a la hora de distribuir el tráfico entre los enlaces activos.
 
@@ -394,7 +402,7 @@ Análogamente a Abilene, se ha estudiado el grado de ocupación de los enlaces q
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.6\textwidth]{pictures/link_utilization_cdf_Geant.pdf}
-\caption[Uso de enlaces Geant]{CDF de utilización de los enlaces activos de Geant.\\Fuente: Elaboración propia.}
+\caption[Uso de enlaces Geant]{CDF de utilización de los enlaces activos de Geant tras ejecutar PSO.\\Fuente: Elaboración propia.}
 \label{fig:geant_uso_enlaces}
 \end{figure}
 
@@ -412,7 +420,7 @@ En el caso de Nobel, cuyo CDF se muestra en la \autoref{fig:nobel_uso_enlaces}, 
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.6\textwidth]{pictures/link_utilization_cdf_Nobel.pdf}
-\caption[Uso de enlaces Nobel]{CDF de utilización de los enlaces activos de Nobel.\\Fuente: Elaboración propia.}
+\caption[Uso de enlaces Nobel]{CDF de utilización de los enlaces activos de Nobel tras ejecutar PSO.\\Fuente: Elaboración propia.}
 \label{fig:nobel_uso_enlaces}
 \end{figure}
 
