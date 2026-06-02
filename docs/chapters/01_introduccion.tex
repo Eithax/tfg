@@ -19,7 +19,15 @@ En la \autoref{fig:sdn_schema} se muestra un sencillo esquema de cómo funcionan
     \label{fig:sdn_schema}
 \end{figure}
 
-El objetivo de este trabajo es reducir las emisiones de carbono de las redes cableadas SDN, y para ello, se implementará un framework que permita al controlador SDN realizar un enrutamiento consciente del carbono a la vez que realice un apagado eficiente de enlaces. Específicamente, si los enlaces que se apagan son aquellos que se encuentran en zonas de altas emisiones de carbono, se conseguiría reducir las emisiones totales de la red. Pero no basta solamente con apagar dichos enlaces, hay que tener en cuenta dos factores muy importantes: la conectividad de la red y la carga de los enlaces. De nada sirve reducir las emisiones si a cambio se aumenta considerablemente la latencia al sobrecargar los enlaces o se deja desconectado un nodo por apagar los enlaces que lo conectan a la red. Es aquí donde entra en juego el concepto de enrutamiento consciente de carbono. Este término se asemeja a la idea detrás del algoritmo que publicó Edsger W. Dijkstra en 1956, aunque en lugar de buscar el camino más corto, la idea es enrutar el tráfico a través del camino más "verde".
+El objetivo de este trabajo es reducir las emisiones de carbono de las redes cableadas SDN, y para ello, se implementará un framework que permita al controlador SDN realizar un enrutamiento consciente del carbono a la vez que realice un apagado eficiente de enlaces. Específicamente, si los enlaces que se apagan son aquellos que se encuentran en zonas de altas emisiones de carbono, se conseguiría reducir las emisiones totales de la red. Pero no basta solamente con apagar dichos enlaces, hay que tener en cuenta dos factores muy importantes: la conectividad de la red y la carga de los enlaces. De nada sirve reducir las emisiones si a cambio se aumenta considerablemente la latencia al sobrecargar los enlaces o se deja desconectado un nodo por apagar los enlaces que lo conectan a la red. Es aquí donde entra en juego el concepto de enrutamiento consciente de carbono. Este término se asemeja a la idea detrás del algoritmo que publicó Edsger W. Dijkstra en 1956 \cite{dijkstra1959graph}, aunque en lugar de buscar el camino más corto, la idea es enrutar el tráfico a través del camino más "verde", tal y como se representa en la \autoref{fig:green_routes}.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[width=0.7\textwidth]{pictures/green_routes.pdf}
+    \caption[Esquema de enrutado verde]{Representación gráfica del enrutado del tráfico a través de caminos de bajas emisiones.\\Fuente: Elaboración propia.}
+    \label{fig:green_routes}
+\end{figure}
 
 % Existen dos perspectivas desde las que abordar este problema: apagar enlaces enteros o imponer restricciones en el ancho de banda de los enlaces. Aunque el segundo enfoque ofrece una mayor flexibilidad y potencialmente mejores resultados respecto al primer enfoque \cite{GomezdelaHiz2025}, también es más complejo de implementar. Este es el motivo por el cual se ha decidido centrarse en el apagado de enlaces.
 
