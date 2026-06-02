@@ -4,15 +4,15 @@ Una de las tareas más importantes a la hora de desarrollar un proyecto es reali
 
 \section{Redes Cableadas y Emisiones de Carbono}
 
-El sector de las tecnologías de la información y la comunicación (TIC) representa en la actualidad una parte significativa del consumo energético mundial. Se estima que las redes de telecomunicaciones son responsables de entre el 1\% y el 2\% de las emisiones globales de $CO_2$ \cite{andrae2015global}, una cifra que se prevé que aumente con el crecimiento exponencial del tráfico de datos. Es por ello que es importante comprender las fuentes de consumo en las redes y los modelos que traducen ese consumo en emisiones de carbono para diseñar soluciones más sostenibles.
+El sector de las TIC representa en la actualidad una parte significativa del consumo energético mundial. Se estima que este sector es responsable de aproximadamente el 1.4\% de las emisiones globales de $CO_2$ \cite{malmodin2024ict}, una cifra que se prevé que aumente con el crecimiento exponencial del tráfico de datos. Es por ello que es importante comprender las fuentes de consumo en las redes y los modelos que traducen ese consumo en emisiones de carbono para diseñar soluciones más sostenibles.
 
-\subsection{Consumo en redes}
+\subsection{Consumo de energía en redes}
 
 Las redes cableadas están compuestas por una variedad de equipos activos y pasivos cuyo funcionamiento conlleva un consumo energético continuo, siendo los routers y switches \cite{vishwanath2014energy} los elementos que principalmente consumen energía. Este comportamiento hace que la intensidad de carbono de la electricidad consumida en cada punto de la red sea un factor determinante de las emisiones asociadas a cada enlace.
 
 Por este motivo, encaminar el tráfico a través de regiones o franjas horarias en las que la generación eléctrica es principalmente renovable, y por tanto la intensidad de carbono es baja, es una buena estrategia para reducir las emisiones totales de la red sin necesidad de modificar su infraestructura física.
 
-\subsection{Modelo de emisiones}
+\subsection{Modelo de emisiones de carbono}
 
 Traducir el consumo energético en emisiones de carbono requiere conocer la intensidad de carbono de la electricidad consumida, habitualmente expresada en gramos de $CO_2$ equivalente por kilovatio-hora ($gCO_2eq/kWh$). Este valor no es constante: varía en función de la fuente de generación (renovable, nuclear, fósil), la hora del día, la estación del año y la región geográfica.
 
@@ -52,11 +52,11 @@ La separación que hacen las redes SDN de estos planos, ofrece beneficios de car
     \item Facilita el apagado y encendido inteligente de enlaces y nodos en función de criterios ambientales y de consumo energético.
 \end{itemize}
 
-Cada vez son más los estudios que destacan el papel de las redes SDN en aspectos como la optimización del tráfico, la mejora de la eficiencia energética o la reducción de la huella de carbono. En el estudio \textit{Energy-aware routing based on power profile of devices in data center networks using SDN} \cite{tran2015powerprofile}, se propone un esquema de ahorro energético que usa el perfil de consumo eléctrico de los dispositivos de red para encaminar el tráfico de forma flexible. La solución se implementa usando OpenFlow y tarjetas Net-FPGA sobre redes SDN.
+Cada vez son más los estudios que destacan el papel de las redes SDN en aspectos como la optimización del tráfico, la mejora de la eficiencia energética o la reducción de la huella de carbono. En \cite{tran2015powerprofile}, se propone un esquema de ahorro energético que usa el perfil de consumo eléctrico de los dispositivos de red para encaminar el tráfico de forma flexible. La solución se implementa usando OpenFlow y tarjetas Net-FPGA sobre redes SDN.
 
-En \textit{Carbon-aware routing in software defined inter data center network} \cite{singh2015didcnetwork} se presenta una propuesta de arquitectura basada en OpenFlow y SDN para un enrutamiento consciente del carbono en redes ópticas entre centros de datos. El controlador centralizado tiene una visión global de la red, incluyendo la disponibilidad de energía verde, y puede decidir dinámicamente hacia dónde dirigir cada solicitud.
+En \cite{singh2015didcnetwork} se presenta una propuesta de arquitectura basada en OpenFlow y SDN para un enrutamiento consciente del carbono en redes ópticas entre centros de datos. El controlador centralizado tiene una visión global de la red, incluyendo la disponibilidad de energía verde, y puede decidir dinámicamente hacia dónde dirigir cada solicitud.
 
-En el artículo \textit{Using SDN for Controlling the Carbon Footprint of The Internet} \cite{hossain2020footprint} se proponen dos nuevas métricas para el enrutamiento ecológico en redes SDN: el factor de emisión de carbono (CEF), que mide la cantidad de $CO_2$ emitida por kWh de electricidad consumida en cada nodo, y el porcentaje de uso de energía no renovable (NRE), que representa el porcentaje de energía que proviene de fuentes no renovables. El objetivo del estudio es minimizar estas métricas usando dos políticas ecológicas: apagar nodos y enlaces no utilizados, y la tasa de enlace adaptativa.
+En \cite{hossain2020footprint} se proponen dos nuevas métricas para el enrutamiento ecológico en redes SDN: el Factor de Emisión de Carbono (CEF), que mide la cantidad de $CO_2$ emitida por kWh de electricidad consumida en cada nodo, y el porcentaje de uso de Energía No Renovable (NRE), que representa el porcentaje de energía que proviene de fuentes no renovables. El objetivo del estudio es minimizar estas métricas usando dos políticas ecológicas: apagar nodos y enlaces no utilizados, y la tasa de enlace adaptativa.
 
 En definitiva, las redes SDN representan la plataforma perfecta donde implementar estrategias de enrutamiento consciente de carbono, además de ser un aspecto clave para alcanzar los objetivos fijados.
 
@@ -100,7 +100,7 @@ La optimización clásica incluye técnicas como la programación lineal entera 
 
 \subsubsection{Programación Lineal Entera}
 
-La ILP es una técnica de optimización que se utiliza para resolver problemas donde las variables de decisión son enteras. En el contexto del enrutamiento consciente de carbono, se puede modelar el problema como una ILP donde las variables representan si un enlace está activo o no, y las restricciones aseguran la conectividad y el rendimiento de la red. Aunque ILP proporciona la solución óptima, su complejidad computacional puede llegar a ser prohibitiva para redes de gran tamaño. José Antonio Gómez de la Hiz, en su estudio \textit{Networking for a Low-Carbon Future: An ILP-Based Carbon-Aware Approach for SDN} \cite{GomezdelaHiz2025} utiliza esta técnica para modelar el problema de enrutamiento consciente de carbono, demostrando que aunque se obtienen soluciones óptimas, el tiempo de ejecución llega a ser de 17 minutos. Aún así, las ILP y las MILP son una gran referencia a la hora de evaluar la calidad de las soluciones obtenidas por otras técnicas, como pueden ser las metaheurísticas.
+La ILP es una técnica de optimización que se utiliza para resolver problemas donde las variables de decisión son enteras. En el contexto del enrutamiento consciente de carbono, se puede modelar el problema como una ILP donde las variables representan si un enlace está activo o no, y las restricciones aseguran la conectividad y el rendimiento de la red. Aunque ILP proporciona la solución óptima, su complejidad computacional puede llegar a ser prohibitiva para redes de gran tamaño. En el estudio \cite{GomezdelaHiz2025} se utiliza esta técnica para modelar el problema de enrutamiento consciente de carbono, demostrando que aunque se obtienen soluciones óptimas, el tiempo de ejecución llega a ser de 17 minutos. Aún así, las ILP y las MILP son una gran referencia a la hora de evaluar la calidad de las soluciones obtenidas por otras técnicas, como pueden ser las metaheurísticas.
 
 \subsubsection{Heurísticas deterministas}
 
@@ -126,7 +126,32 @@ La optimización por colonia de hormigas (ACO) se basa en el comportamiento de l
 
 En los últimos años, los métodos basados en aprendizaje automático han ganado presencia en el campo del erutamiento de redes. Es importante distinguir entre el papel del aprendizaje automático y el de las técnicas de optimización clásicas: mientras que estas últimas buscan de forma explícita la solución óptima de un problema definido, los modelos de aprendizaje automático aprenden a tomar decisiones a partir de datos históricos o de la interacción con el entorno, sin necesidad de resolver un problema de optimización.
 
-En particular, el aprendizaje por refuerzo profundo (DRL) ha mostrado resultado prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del aprendizaje al cambiar la topología.
+En particular, el aprendizaje por refuerzo profundo (DRL) ha mostrado resultado prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del mismo al cambiar la topología.
+
+\begin{table}[h]
+    \centering
+    \captionsetup{justification=centering}
+    \label{tab:comparativa_optimizacion}
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{|l|l|l|l|l|}
+        \hline
+        \textbf{Técnica} & \textbf{Solución} & \textbf{Escalabilidad} & \textbf{Coste computacional} \\
+        \hline
+        ILP / MILP         & Óptima       & Baja    & Muy alto  \\
+        
+        Heurísticas voraces & Aproximada  & Alta    & Muy bajo  \\
+        
+        Algoritmos genéticos & Aproximada & Media    & Medio-Alto     \\
+        
+        PSO                & Aproximada   & Alta    & Medio     \\
+        
+        ACO                & Aproximada   & Alta    & Medio     \\
+        
+        DRL                & Aproximada   & Baja    & Alto (entrenamiento)  \\
+        \hline
+    \end{tabular}
+    \caption[Comparativa técnicas de optimización]{Comparativa de técnicas de optimización para enrutamiento consciente de carbono.\\Fuente: Elaboración propia.}
+\end{table}
 
 \section{Limitaciones y Retos Abiertos}
 
