@@ -28,7 +28,7 @@ Todas las pruebas y experimentos realizados se han llevado a cabo en un ordenado
     \item RAM: 32GB DDR4 a 3200MT/s CL16.
 \end{itemize}
 
-Además, se ha hecho uso de un router Arista 7060CX-32S \cite{AristaNetworks2021} para modelar el comportamiento y el consumo de los nodos de red de forma más realista. Este dispositivo tiene un rendimiento de 3.2 Tbps, puertos de 100 Gbps con un consumo energético de 5.5 W, y un consumo de 187 W en reposo y 33 W en carga máxima.
+Además, se han tenido en cuenta las especificaciones técnicas de un router Arista 7060CX-32S \cite{AristaNetworks2021} para modelar el comportamiento y el consumo de los nodos de red de forma más realista. Este dispositivo tiene un rendimiento de 3.2 Tbps, puertos de 100 Gbps con un consumo energético de 5.5 W, y un consumo de 187 W en reposo y 33 W en carga máxima.
 
 \section{Topologías Utilizadas}
 
@@ -64,7 +64,7 @@ Estas topologías se han seleccionado con el objetivo de cubrir diferentes tama�
 
 %Abilene es la red más pequeña de las cuatro, con 12 nodos y 30 enlaces unidireccionales. Es la red que se ha usado en el \autoref{chp:implementacion} para realizar los barridos de partículas e iteraciones. El uso de esta red ha facilitado la realización de pruebas rápidas para analizar cómo se comportaba el algoritmo en las diferentes fases del desarrollo. Geant y Nobel-Germany son redes de tamaño medio, con 22 nodos y 72 enlaces unidireccionales, y 17 nodos y 52 enlaces unidireccionales, respectivamente. Estas redes han servido para evaluar el rendimiento del algoritmo en escenarios más complejos que el de Abilene y comprobar la viabilidad de la solución, o de alguna modificación de esta, en redes del mismo tamaño o parecidas. Finalmente, Germany-50 es la red más grande de las cuatro, con 50 nodos y 176 enlaces unidireccionales. Al duplicar el tamaño de la red con respecto a las dos anteriores, se obtiene un escenario con una complejidad lo suficientemente alta, lo cual permite evaluar la escalabilidad del algoritmo y su rendimiento en redes más grandes.
 
-Inicialmente, para las emisiones de carbono se iba a hacer uso de la API de Electricity Maps \cite{ElectricityMaps2025}, pero debido a un cambio en la política de recuperación de datos por parte de los desarrolladores de la API, las zonas accesibles con un token de autenticación quedaron limitadas a una. Intentar hacer uso de sus \textit{endpoints} significa definir un token por cada zona que se quisiera acceder y desarrollar la lógica necesaria para traducir las coordenadas geográficas de los nodos a zonas del mapa de Electricity Maps para, posteriormente, buscar qué token tiene acceso a esa zona y realizar la petición a la API. Debido al aumento de complejidad en la lógica del código, se terminó optando por usar datos históricos de intensidad de carbono publicados en Electricity Maps.
+Inicialmente, para las emisiones de carbono se iba a hacer uso de la API de Electricity Maps \cite{ElectricityMaps2025}, que divide el mundo en zonas con diferentes intensidades de carbono, como se puede observar en la \autoref{fig:electricity_maps}. Sin embargo, un cambio en la política de recuperación de datos por parte de los desarrolladores de la API, las zonas accesibles con un token de autenticación quedaron limitadas a una. Intentar hacer uso de sus \textit{endpoints} significa definir un token por cada zona que se quisiera acceder y desarrollar la lógica necesaria para traducir las coordenadas geográficas de los nodos a zonas del mapa de Electricity Maps para, posteriormente, buscar qué token tiene acceso a esa zona y realizar la petición a la API. Debido al aumento de complejidad en la lógica del código, se terminó optando por usar datos históricos de intensidad de carbono publicados en Electricity Maps.
 
 \begin{figure}[H]
 \centering
@@ -160,7 +160,7 @@ Estas mejoras al usar PSO VCH con 200 partículas y 1200 iteraciones, inevitable
 
 Los resultados de estas dos pruebas pueden verse en la \autoref{fig:abilene_vch_100p}. Aunque las emisiones son ligeramente más altas que con 200 partículas, siguen siendo soluciones de buena calidad. Además, los intervalos de confianza están bastante ajustados, lo cual indica que el comportamiento del algoritmo reduciendo a la mitad tanto el número de partículas como la cantidad de iteraciones, sigue presentando muy poca variabilidad y mantiene su tendencia a obtener soluciones de calidad. La mejora más significativa reside en los tiempos de ejecución, pero esto se verá en detalle más adelante en la \autoref{sec:tiempos_abilene}.
 
-Por último, en la \autoref{fig:abilene_comparacion_costes} se presenta una gráfica final donde se muestran los resultados obtenidos con anterioridad, así como las emisiones de Abilene con todos los enlaces encendidos. De esta manera, de un solo vistazo se pueden comparar todos los resultados y observar las mejoras que se obtienen con cada configuración.
+Por último, en la \autoref{fig:abilene_comparacion_costes} se presenta una gráfica final donde se muestran los resultados obtenidos con anterioridad, así como las emisiones de Abilene con todos los enlaces encendidos (topología base). De esta manera, de un solo vistazo se pueden comparar todos los resultados y observar las mejoras que se obtienen con cada configuración.
 
 \begin{figure}[H]
 \centering
