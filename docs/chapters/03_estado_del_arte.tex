@@ -18,7 +18,11 @@ Traducir el consumo energético en emisiones de carbono requiere conocer la inte
 
 Un primer enfoque para estimar las emisiones consiste en relacionar el consumo energético de un equipo con las emisiones de $CO_2$ que genera su funcionamiento. Es un modelo sencillo pero que trata el consumo como un valor fijo, sin distinguir entre la parte que depende del tráfico y la que no.
 
-El modelo propuesto en \cite{ElZahr2023} sí introduce esta distinción de forma explícita, separando el consumo de un equipo en dos componentes: la potencia en reposo y la potencia dinámica. Las emisiones se calculan a partir de la suma de ambas componentes, teniendo en cuenta la intensidad de carbono de la electricidad consumida en cada punto de la red. Esto refuerza que elegir por qué nodos y enlaces se enruta el tráfico tiene un impacto importante en las emisiones de la red.
+El modelo propuesto en \cite{ElZahr2023} sí introduce esta distinción de forma explícita, separando el consumo de un equipo en dos componentes: la potencia en reposo y la potencia dinámica. Las emisiones se calculan a partir de la suma de ambas componentes, teniendo en cuenta la intensidad de carbono de la electricidad consumida en cada punto de la red. Esto refuerza que elegir por qué nodos y enlaces se enruta el tráfico tiene un impacto importante en las emisiones de la red, tal y como refleja la \autoref{eq:modelo_zahr}, que recoge el modelo propuesto por los autores y que se detallará en profundidad en el \autoref{chp:implementacion}.
+
+\begin{equation}\label{eq:modelo_zahr}
+    C_{tot}(G, X, \lambda, c, \beta) = \sum_{n=1}^{V} (x_n * \lambda_n * c_n) + \sum_{l=1}^{E} \beta_l (c_{l_{n_1}} + c_{l_{n_2}})
+\end{equation}
 
 \section{Estrategias de \textit{Green Networking}}
 
@@ -30,7 +34,7 @@ A continuación se presentan dos enfoques que, aplicados en el contexto del \tex
 
 La aparición de las redes SDN, como ya se ha explicado en el \autoref{chp:introduction}, supone un cambio de paradigma en la gestión y el control tanto de la infraestructura como del tráfico de las redes cableadas. Esto se debede a que las redes SDN, a diferencia de las tradicionales, separan el plano de datos y el plano de control, centralizando el segundo en el controlador SDN, tal y como se muestra en la \autoref{fig:sdn_comparativa}.
 
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 \captionsetup{justification=centering}
 \includegraphics[width=0.8\textwidth]{pictures/sdn_comparativa.pdf}
@@ -56,7 +60,7 @@ Cada vez son más los estudios que destacan el papel de las redes SDN en aspecto
 
 En \cite{singh2015didcnetwork} se presenta una propuesta de arquitectura basada en OpenFlow y SDN para un enrutamiento consciente del carbono en redes ópticas entre centros de datos. El controlador centralizado tiene una visión global de la red, incluyendo la disponibilidad de energía verde, y puede decidir dinámicamente hacia dónde dirigir cada solicitud.
 
-En \cite{hossain2020footprint} se proponen dos nuevas métricas para el enrutamiento ecológico en redes SDN: el Factor de Emisión de Carbono (CEF), que mide la cantidad de $CO_2$ emitida por kWh de electricidad consumida en cada nodo, y el porcentaje de uso de Energía No Renovable (NRE), que representa el porcentaje de energía que proviene de fuentes no renovables. El objetivo del estudio es minimizar estas métricas usando dos políticas ecológicas: apagar nodos y enlaces no utilizados, y la tasa de enlace adaptativa.
+En \cite{hossain2020footprint} se proponen dos nuevas métricas para el enrutamiento ecológico en redes SDN: el Factor de Emisión de Carbono (CEF, del inglés \textit{Carbon Emission Factor}), que mide la cantidad de $CO_2$ emitida por kWh de electricidad consumida en cada nodo, y el porcentaje de uso de Energía No Renovable (NRE, del inglés \textit{Non-Renewable Energy}), que representa el porcentaje de energía que proviene de fuentes no renovables. El objetivo del estudio es minimizar estas métricas usando dos políticas ecológicas: apagar nodos y enlaces no utilizados, y la tasa de enlace adaptativa.
 
 En definitiva, las redes SDN representan la plataforma perfecta donde implementar estrategias de enrutamiento consciente de carbono, además de ser un aspecto clave para alcanzar los objetivos fijados.
 
@@ -96,7 +100,7 @@ La optimización es una rama fundamental en la informática que, dadas ciertas r
 
 \subsection{Métodos clásicos}
 
-La optimización clásica incluye técnicas como la programación lineal entera (ILP) y la programación lineal mixta (MILP), que permiten modelar y resolver problemas de optimización con restricciones específicas. Además, existen heurísticas deterministas, como los algoritmos voraces, que ofrecen soluciones aproximadas en tiempo razonable.
+La optimización clásica incluye técnicas como la Programación Lineal Entera (ILP, del inglés \textit{Integer Lineal Programming}) y la Programación Lineal Mixta (MILP, del inglés \textit{Mixed-Integer Lineal Programming}), que permiten modelar y resolver problemas de optimización con restricciones específicas. Además, existen heurísticas deterministas, como los algoritmos voraces, que ofrecen soluciones aproximadas en tiempo razonable.
 
 \subsubsection{Programación Lineal Entera}
 
@@ -112,7 +116,7 @@ Las metaheurísticas son técnicas de optimización que buscan soluciones aproxi
 
 \subsubsection{Algoritmos genéticos}
 
-Los algoritmos genéticos (GA) simulan el proceso de evolución natural mediante operadores de selección, cruce y mutación para generar nuevas soluciones a partir de una población de soluciones candidatas. Cada individuo de la población puede representar una configuración de rutas y enlaces en la red, y la función de aptitud se define en función de las emisiones de carbono asociadas a esa configuración. Los GA son especialmente útiles para problemas multiobjetivo, donde se busca optimizar varias métricas a la vez, como pueden ser las emisiones de carbono y la latencia. Sin embargo, su rendimiento puede verse afectado por la elección de los parámetros del algoritmo, como el tamaño de la población o las tasas de cruce y mutación.
+Los Algoritmos Genéticos (GA, del inglés \textit{Genetic Algorithm}) simulan el proceso de evolución natural mediante operadores de selección, cruce y mutación para generar nuevas soluciones a partir de una población de soluciones candidatas. Cada individuo de la población puede representar una configuración de rutas y enlaces en la red, y la función de aptitud se define en función de las emisiones de carbono asociadas a esa configuración. Los GA son especialmente útiles para problemas multiobjetivo, donde se busca optimizar varias métricas a la vez, como pueden ser las emisiones de carbono y la latencia. Sin embargo, su rendimiento puede verse afectado por la elección de los parámetros del algoritmo, como el tamaño de la población o las tasas de cruce y mutación.
 
 \subsubsection{Optimización por enjambre de partículas}
 
@@ -120,13 +124,13 @@ La optimización por enjambre de partículas es un algoritmo inspirado en el com
 
 \subsubsection{Optimización por colonia de hormigas}
 
-La optimización por colonia de hormigas (ACO) se basa en el comportamiento de las hormigas para encontrar rutas óptimas entre su nido y una fuente de alimento. En este algoritmo, las hormigas virtuales depositan feromonas en los caminos que recorren, y la cantidad de feromona depositada está relacionada con la calidad de la solución encontrada. ACO es especialmente efectivo para problemas de enrutamiento, como el problema del viajante o el enrutamiento consciente de carbono, ya que puede explorar múltiples rutas simultáneamente y adaptarse a cambios dinámicos en la red. Sin embargo, su rendimiento puede verse afectado por la configuración de los parámetros, como la tasa de evaporación de feromonas o el número de hormigas.
+La Optimización por Colonia de Hormigas (ACO, del inglés \textit{Ant Colony Optimization}) se basa en el comportamiento de las hormigas para encontrar rutas óptimas entre su nido y una fuente de alimento. En este algoritmo, las hormigas virtuales depositan feromonas en los caminos que recorren, y la cantidad de feromona depositada está relacionada con la calidad de la solución encontrada. ACO es especialmente efectivo para problemas de enrutamiento, como el problema del viajante o el enrutamiento consciente de carbono, ya que puede explorar múltiples rutas simultáneamente y adaptarse a cambios dinámicos en la red. Sin embargo, su rendimiento puede verse afectado por la configuración de los parámetros, como la tasa de evaporación de feromonas o el número de hormigas.
 
 \subsection{Métodos basados en aprendizaje automático}
 
 En los últimos años, los métodos basados en aprendizaje automático han ganado presencia en el campo del erutamiento de redes. Es importante distinguir entre el papel del aprendizaje automático y el de las técnicas de optimización clásicas: mientras que estas últimas buscan de forma explícita la solución óptima de un problema definido, los modelos de aprendizaje automático aprenden a tomar decisiones a partir de datos históricos o de la interacción con el entorno, sin necesidad de resolver un problema de optimización.
 
-En particular, el aprendizaje por refuerzo profundo (DRL) ha mostrado resultado prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del mismo al cambiar la topología.
+En particular, el Aprendizaje por Refuerzo Profundo (DRL, del inglés \textit{Deep Reinforcement Learning}) ha mostrado resultado prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del mismo al cambiar la topología.
 
 \begin{table}[h]
     \centering
