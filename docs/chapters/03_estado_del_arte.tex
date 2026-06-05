@@ -30,7 +30,7 @@ El término \textit{green networking} agrupa las diferentes técnicas de diseño
 
 A continuación se presentan dos enfoques que, aplicados en el contexto del \textit{green networking}, permiten optimizar el enrutamiento del tráfico minimizando el impacto ambiental: las redes SDN y los algoritmos de encaminamiento basados en la intensidad de carbono.
 
-\subsection{\textit{Software Defined Networks}}
+\subsection{\textit{Software-Defined Networking}}
 
 La aparición de las redes SDN, como ya se ha explicado en el \autoref{chp:introduction}, supone un cambio de paradigma en la gestión y el control tanto de la infraestructura como del tráfico de las redes cableadas. Esto se debede a que las redes SDN, a diferencia de las tradicionales, separan el plano de datos y el plano de control, centralizando el segundo en el controlador SDN, tal y como se muestra en la \autoref{fig:sdn_comparativa}.
 
@@ -44,7 +44,7 @@ La aparición de las redes SDN, como ya se ha explicado en el \autoref{chp:intro
 
 En redes informáticas, el término ''plano'' describe una capa de arquitectura de red donde se realizan tareas específicas relacionadas con las operaciones de red. Los planos no son componentes físicos reales, sino conceptos que ayudan a comprender cómo fluye el tráfico de datos a través de una red.
 
-El plano de control es la parte de una red que controla cómo se reenvían los paquetes de datos, es decir, cómo se envían los datos de un lugar a otro. Utiliza protocolos de enrutamiento (reglas basadas en algoritmos) para determinar la mejor ruta que debe tomar la inforamción entre los dispositivos de red.
+El plano de control es la parte de una red que controla cómo se reenvían los paquetes de datos, es decir, cómo se envían los datos de un lugar a otro. Utiliza protocolos de enrutamiento (reglas basadas en algoritmos) para determinar la mejor ruta que debe tomar la información entre los dispositivos de red.
 
 Por otro lado, el plano de datos es la parte de la arquitectura de red responsable de mover los paquetes de datos. Controla el movimiento en tiempo real de los paquetes a través de la red en función de la información de enrutamiento y los protocolos que recibe del plano de control.
 
@@ -70,7 +70,7 @@ El enrutamiento consciente de carbono adapta las decisiones de encaminamiento no
 
 \subsubsection{Algoritmo de Dijkstra}
 
-El algoritmo de Dijkstra \cite{dijkstra1959graph} es el método más clásico para calcular el camino de coste mínimo en un grafo con pesos no negativos. De manera estándar, el peso de cada enlace representa la latencia o el número de saltos, mientras que en el contexto del enrutamiento consciento de carbono, el peso se define como las emisiones de carbono asociadas al consumo eléctrico del dispositivo de red en cuestión. De esta manera, Dijkstra calcula el camino que minimiza las emisiones totales de $CO_2$ entre origen y destino, aunque solo proporciona un único camino óptimo.
+El algoritmo de Dijkstra \cite{dijkstra1959graph} es el método más clásico para calcular el camino de coste mínimo en un grafo con pesos no negativos. De manera estándar, el peso de cada enlace representa la latencia o el número de saltos, mientras que en el contexto del enrutamiento consciente de carbono, el peso se define como las emisiones de carbono asociadas al consumo eléctrico del dispositivo de red en cuestión. De esta manera, Dijkstra calcula el camino que minimiza las emisiones totales de $CO_2$ entre origen y destino, aunque solo proporciona un único camino óptimo.
 
 \begin{figure}[H]
 \centering
@@ -128,9 +128,9 @@ La Optimización por Colonia de Hormigas (ACO, del inglés \textit{Ant Colony Op
 
 \subsection{Métodos basados en aprendizaje automático}
 
-En los últimos años, los métodos basados en aprendizaje automático han ganado presencia en el campo del erutamiento de redes. Es importante distinguir entre el papel del aprendizaje automático y el de las técnicas de optimización clásicas: mientras que estas últimas buscan de forma explícita la solución óptima de un problema definido, los modelos de aprendizaje automático aprenden a tomar decisiones a partir de datos históricos o de la interacción con el entorno, sin necesidad de resolver un problema de optimización.
+En los últimos años, los métodos basados en aprendizaje automático han ganado presencia en el campo del enrutamiento de redes. Es importante distinguir entre el papel del aprendizaje automático y el de las técnicas de optimización clásicas: mientras que estas últimas buscan de forma explícita la solución óptima de un problema definido, los modelos de aprendizaje automático aprenden a tomar decisiones a partir de datos históricos o de la interacción con el entorno, sin necesidad de resolver un problema de optimización.
 
-En particular, el Aprendizaje por Refuerzo Profundo (DRL, del inglés \textit{Deep Reinforcement Learning}) ha mostrado resultado prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del mismo al cambiar la topología.
+En particular, el Aprendizaje por Refuerzo Profundo (DRL, del inglés \textit{Deep Reinforcement Learning}) ha mostrado resultados prometedores en problemas de gestión de redes \cite{mao2016drl}, al permitir que un agente aprenda políticas de encaminamiento que maximizan una recompensa acumulada mediante la interacción con un simulador de red. Pero estas técnicas presentan algunos retos importantes respecto al coste computacional del aprendizaje y la validez del mismo al cambiar la topología.
 
 \begin{table}[h]
     \centering
